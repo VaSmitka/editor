@@ -3,6 +3,8 @@ import { Table as AntdTable } from 'antd';
 import { FONT_SIZE } from '@app/styles/themes/constants';
 
 export const Table = styled(AntdTable)`
+  background: var(--background-color);
+
   & thead .ant-table-cell {
     color: var(--primary-color);
     font-size: ${FONT_SIZE.xs};
@@ -17,6 +19,7 @@ export const Table = styled(AntdTable)`
     color: var(--text-main-color);
     font-size: ${FONT_SIZE.xs};
     line-height: 1.25rem;
+    background: var(--background-color);
   }
 
   & tbody .ant-table-row-expand-icon {

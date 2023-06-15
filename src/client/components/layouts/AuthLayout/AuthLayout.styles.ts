@@ -84,6 +84,7 @@ export const FormCheckbox = styled(BaseCheckbox)`
   & .ant-checkbox-inner {
     border-radius: 3px;
     transform: scale(1.375);
+    background-color: transparent;
   }
 
   & .ant-checkbox-input {
@@ -115,6 +116,8 @@ export const FormItem = styled(BaseForm.Item)`
 export const FormInput = styled(CommonInput)`
   color: var(--text-main-color);
   background: transparent;
+  padding: 11.4px 11px;
+  border: 1px solid var(--border-base-color);
 
   & input.ant-input {
     background: transparent;
@@ -124,6 +127,8 @@ export const FormInput = styled(CommonInput)`
 export const FormInputPassword = styled(CommonInputPassword)`
   color: var(--text-main-color);
   background: transparent;
+  padding: 11.4px 11px;
+  border: 1px solid var(--border-base-color);
 
   & input.ant-input {
     background: transparent;
@@ -151,6 +156,8 @@ export const SubmitButton = styled(BaseButton)`
   font-size: ${FONT_SIZE.md};
   font-weight: ${FONT_WEIGHT.semibold};
   width: 100%;
+  padding: 11.4px 11px;
+  height: 50px;
 `;
 
 export const SocialButton = styled(BaseButton)`
@@ -164,6 +171,8 @@ export const SocialButton = styled(BaseButton)`
   justify-content: center;
   align-items: center;
   background: transparent;
+  padding: 11.4px 11px;
+  height: 50px;
 `;
 
 export const FooterWrapper = styled.div`

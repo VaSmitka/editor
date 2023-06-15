@@ -12,6 +12,12 @@ export const Menu = styled(BaseMenu)`
   }
 
   .ant-menu-item,
+  > .ant-menu-submenu > .ant-menu-submenu-title {
+    height: 50px;
+    line-height: 50px;
+  }
+
+  .ant-menu-item,
   .ant-menu-submenu {
     font-size: ${FONT_SIZE.xs};
   }

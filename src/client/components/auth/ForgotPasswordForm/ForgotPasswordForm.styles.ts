@@ -23,4 +23,6 @@ export const SubmitButton = styled(BaseButton)`
   width: 100%;
   margin-top: 1.125rem;
   margin-bottom: 1rem;
+  padding: 11.4px 11px;
+  height: 50px;
 `;

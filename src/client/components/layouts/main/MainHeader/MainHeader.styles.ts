@@ -8,6 +8,7 @@ interface Header {
 }
 
 export const Header = styled(BaseLayout.Header)<Header>`
+  background: var(--layout-body-bg-color);
   line-height: 1.5;
 
   @media only screen and ${media.md} {

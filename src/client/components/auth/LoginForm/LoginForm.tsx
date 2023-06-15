@@ -44,6 +44,7 @@ export const LoginForm: React.FC = () => {
         <Auth.FormTitle>{t('common.login')}</Auth.FormTitle>
         <S.LoginDescription>{t('login.loginInfo')}</S.LoginDescription>
         <Auth.FormItem
+          $size='large'
           name="email"
           label={t('common.email')}
           rules={[

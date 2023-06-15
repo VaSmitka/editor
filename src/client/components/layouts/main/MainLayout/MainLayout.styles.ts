@@ -7,6 +7,8 @@ export const LayoutMaster = styled(BaseLayout)`
 `;
 
 export const LayoutMain = styled(BaseLayout)`
+  background: var(--layout-body-bg-color);
+
   @media only screen and ${media.md} {
     margin-left: 80px;
   }

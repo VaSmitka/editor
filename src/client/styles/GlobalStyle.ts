@@ -194,4 +194,8 @@ export default createGlobalStyle`
     border-right: 0;
   }
   // notifications end
+
+  .ant-input {
+    background-color: transparent;  
+  }
 `;

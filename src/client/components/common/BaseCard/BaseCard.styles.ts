@@ -9,6 +9,7 @@ interface CardInternalProps {
 }
 
 export const Card = styled(AntCard)<CardInternalProps>`
+  background: var(--background-color);
   display: flex;
   flex-direction: column;
 

@@ -28,6 +28,13 @@ export const Select = styled(AntSelect)<InternalSelectProps>`
     color: var(--text-main-color);
   }
 
+  .ant-select-selector {
+    padding: 11.4px 11px !important;
+    height: 50px !important;
+    border: 1px solid var(--border-base-color) !important;
+    background-color: transparent !important;
+  }
+
   .ant-select-arrow {
     color: var(--text-main-color);
   }

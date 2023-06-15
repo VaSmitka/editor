@@ -26,6 +26,7 @@ export const InputSearch = styled(SearchInput)`
       border-radius: 3.125rem;
       border: 0;
       padding: 0.5625rem 1.25rem;
+      background-color: var(--background-color);
     }
   }
 `;

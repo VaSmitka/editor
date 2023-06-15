@@ -10,11 +10,15 @@ export const GitHubButton: React.FC = (props) => {
 
   return (
     <Button
-      type="default"
       href="https://github.com/altence/lightence-admin"
       icon={<GithubIcon />}
       target="_blank"
       $isDark={theme === 'dark'}
+      style={{
+        padding: '11.4px 11px', 
+        height: '50px', 
+        border: '1px solid var(--border-base-color)'
+      }}
       {...props}
     >
       GitHub
