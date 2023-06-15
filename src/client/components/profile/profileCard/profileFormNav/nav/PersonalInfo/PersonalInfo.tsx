@@ -6,15 +6,11 @@ import { FirstNameItem } from '@app/components/profile/profileCard/profileFormNa
 import { LastNameItem } from '@app/components/profile/profileCard/profileFormNav/nav/PersonalInfo/LastNameItem/LastNameItem';
 import { NicknameItem } from '@app/components/profile/profileCard/profileFormNav/nav/PersonalInfo/NicknameItem/NicknameItem';
 import { SexItem } from '@app/components/profile/profileCard/profileFormNav/nav/PersonalInfo/SexItem/SexItem';
-import { BirthdayItem } from '@app/components/profile/profileCard/profileFormNav/nav/PersonalInfo/BirthdayItem/BirthdayItem';
 import { EmailItem } from '@app/components/profile/profileCard/profileFormNav/nav/PersonalInfo/EmailItem/EmailItem';
 import { CitiesItem } from '@app/components/profile/profileCard/profileFormNav/nav/PersonalInfo/CitiesItem/CitiesItem';
 import { ZipcodeItem } from '@app/components/profile/profileCard/profileFormNav/nav/PersonalInfo/ZipcodeItem/ZipcodeItem';
 import { AddressItem } from '@app/components/profile/profileCard/profileFormNav/nav/PersonalInfo/AddressItem/AddressItem';
-import { WebsiteItem } from '@app/components/profile/profileCard/profileFormNav/nav/PersonalInfo/WebsiteItem/WebsiteItem';
-import { SocialLinksItem } from '@app/components/profile/profileCard/profileFormNav/nav/PersonalInfo/SocialLinksItem/SocialLinksItem';
 import { useAppSelector } from '@app/hooks/reduxHooks';
-import { Dates } from '@app/constants/Dates';
 import { notificationController } from '@app/controllers/notificationController';
 import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
@@ -70,15 +66,10 @@ export const PersonalInfo: React.FC = () => {
             email: user.email.name,
             nickname: user.userName,
             sex: user.sex,
-            birthday: Dates.getDate(user.birthday),
             city: user.city,
             address1: user.address1,
             address2: user?.address2,
             zipcode: user.zipcode,
-            website: user?.website,
-            twitter: user?.socials?.twitter,
-            linkedin: user?.socials?.linkedin,
-            facebook: user?.socials?.facebook,
           }
         : initialPersonalInfoValues,
     [user],
@@ -137,10 +128,6 @@ export const PersonalInfo: React.FC = () => {
             <SexItem />
           </BaseCol>
 
-          <BaseCol xs={24} md={12}>
-            <BirthdayItem />
-          </BaseCol>
-
           <BaseCol span={24}>
             <BaseButtonsForm.Item>
               <BaseButtonsForm.Title>{t('profile.nav.personalInfo.contactInfo')}</BaseButtonsForm.Title>
@@ -173,19 +160,6 @@ export const PersonalInfo: React.FC = () => {
             <ZipcodeItem />
           </BaseCol>
 
-          <BaseCol span={24}>
-            <BaseButtonsForm.Item>
-              <BaseButtonsForm.Title>{t('profile.nav.personalInfo.otherInfo')}</BaseButtonsForm.Title>
-            </BaseButtonsForm.Item>
-          </BaseCol>
-
-          <BaseCol xs={24} md={12}>
-            <WebsiteItem />
-          </BaseCol>
-
-          <BaseCol span={24}>
-            <SocialLinksItem />
-          </BaseCol>
         </BaseRow>
       </BaseButtonsForm>
     </BaseCard>
