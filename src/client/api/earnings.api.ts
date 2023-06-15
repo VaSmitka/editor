@@ -19,19 +19,8 @@ export interface TotalEarning {
   timeline: Earning[];
 }
 
-export const getBalance = (id: number): Promise<Balance> => {
-  return new Promise((res) => {
-    setTimeout(() => {
-      res({
-        USD: 3040.51,
-        ETH: 1040.51,
-        BTC: 5373.51,
-      });
-    }, 0);
-  });
-};
-
 export const getTotalEarning = (id: number, currency: CurrencyTypeEnum): Promise<TotalEarning> => {
+  console.log(id, currency)
   return new Promise((res) => {
     setTimeout(() => {
       res({

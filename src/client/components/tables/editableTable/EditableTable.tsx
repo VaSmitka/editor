@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { BaseTable } from '@app/components/common/BaseTable/BaseTable';
-import { getEditableTableData, BasicTableRow, Pagination } from '@app/api/table.api';
+import { getEditableTableData, BasicTableRow, Pagination } from '@app/api/table.api.ts';
 import { EditableCell } from './EditableCell';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 import { useTranslation } from 'react-i18next';
@@ -28,7 +28,7 @@ export const EditableTable: React.FC = () => {
   const fetch = useCallback(
     (pagination: Pagination) => {
       setTableData((tableData) => ({ ...tableData, loading: true }));
-      getEditableTableData(pagination).then((res) => {
+      getEditableTableData(pagination).then((res: { data: any; pagination: any; }) => {
         if (isMounted.current) {
           setTableData({ data: res.data, pagination: res.pagination, loading: false });
         }
@@ -108,6 +108,7 @@ export const EditableTable: React.FC = () => {
       width: '15%',
       render: (text: string, record: BasicTableRow) => {
         const editable = isEditing(record);
+        console.log(text)
         return (
           <BaseSpace>
             {editable ? (

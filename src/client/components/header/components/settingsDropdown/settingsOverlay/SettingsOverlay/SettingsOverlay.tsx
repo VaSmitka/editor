@@ -1,5 +1,6 @@
 import React from 'react';
 import { DropdownCollapse } from '@app/components/header/Header.styles';
+import { BaseCollapse } from '@app/components/common/BaseCollapse/BaseCollapse';
 import { useTranslation } from 'react-i18next';
 import { NightModeSettings } from '../nightModeSettings/NightModeSettings';
 import { ThemePicker } from '../ThemePicker/ThemePicker';
@@ -15,12 +16,12 @@ export const SettingsOverlay: React.FC = ({ ...props }) => {
   return (
     <S.SettingsOverlayMenu {...props}>
       <DropdownCollapse bordered={false} expandIconPosition="end" ghost defaultActiveKey="themePicker">
-        <DropdownCollapse.Panel header={t('header.changeTheme')} key="themePicker">
+        <BaseCollapse.Panel header={t('header.changeTheme')} key="themePicker">
           <ThemePicker />
-        </DropdownCollapse.Panel>
-        <DropdownCollapse.Panel header={t('header.nightMode.title')} key="nightMode">
+        </BaseCollapse.Panel>
+        <BaseCollapse.Panel header={t('header.nightMode.title')} key="nightMode">
           <NightModeSettings />
-        </DropdownCollapse.Panel>
+        </BaseCollapse.Panel>
       </DropdownCollapse>
       {isPWASupported && (
         <S.PwaInstallWrapper>

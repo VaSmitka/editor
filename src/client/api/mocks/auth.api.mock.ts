@@ -21,23 +21,12 @@ httpApiMock.onPost('login').reply((config) => {
             name: 'chris.johnson@altence.com',
             verified: false,
           },
-          phone: {
-            number: '+18143519459',
-            verified: true,
-          },
           sex: 'male',
-          birthday: '01/26/2022',
           lang: 'en',
           country: 'GB',
           city: 'London',
           address1: '14 London Road',
           zipcode: 5211,
-          website: 'altence.com',
-          socials: {
-            twitter: '@altence_team',
-            facebook: 'https://facebook.com/groups/1076577369582221',
-            linkedin: 'https://linkedin.com/company/altence',
-          },
         },
       },
     ];

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { BasicTableRow, getBasicTableData, Pagination, Tag } from '@app/api/table.api';
+import { BasicTableRow, getBasicTableData, Pagination, Tag } from '@app/api/table.api.ts';
 import { BaseTable } from '@app/components/common/BaseTable/BaseTable';
 import { ColumnsType } from 'antd/es/table';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
@@ -28,7 +28,7 @@ export const BasicTable: React.FC = () => {
   const fetch = useCallback(
     (pagination: Pagination) => {
       setTableData((tableData) => ({ ...tableData, loading: true }));
-      getBasicTableData(pagination).then((res) => {
+      getBasicTableData(pagination).then((res: { data: any; pagination: any; }) => {
         if (isMounted.current) {
           setTableData({ data: res.data, pagination: res.pagination, loading: false });
         }
@@ -138,6 +138,7 @@ export const BasicTable: React.FC = () => {
       dataIndex: 'actions',
       width: '15%',
       render: (text: string, record: { name: string; key: number }) => {
+        console.log(text)
         return (
           <BaseSpace>
             <BaseButton

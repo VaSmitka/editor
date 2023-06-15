@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Overlay } from '../../../../common/Overlay/Overlay';
 import { useResponsive } from '@app/hooks/useResponsive';
 import * as S from './MainSider.styles';

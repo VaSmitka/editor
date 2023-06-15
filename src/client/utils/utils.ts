@@ -21,15 +21,20 @@ type MarkArea = {
   xAxis: number;
 };
 
-export const getMarkAreaData = (data: string[] | number[]): MarkArea[][] =>
-  data.map((el, index) => [
-    {
-      xAxis: 2 * index,
-    },
-    {
-      xAxis: 2 * index + 1,
-    },
-  ]);
+export const getMarkAreaData = (data: string[] | number[]): MarkArea[][] => {
+  const arr = [];
+  for (let i = 0; i < data.length; i++) {
+    arr.push([
+      {
+        xAxis: 2 * i,
+      },
+      {
+        xAxis: 2 * i + 1,
+      },
+    ])
+  }
+  return arr;
+}
 
 export const capitalize = (word: string): string => `${word[0].toUpperCase()}${word.slice(1)}`;
 

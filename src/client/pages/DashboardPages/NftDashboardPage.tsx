@@ -2,7 +2,6 @@ import React from 'react';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { References } from '@app/components/common/References/References';
 import { useResponsive } from '@app/hooks/useResponsive';
-import { TrendingCreators } from '@app/components/nft-dashboard/trending-creators/TrendingCreators';
 import { RecentlyAddedNft } from '@app/components/nft-dashboard/recently-added/RecentlyAddedNft';
 import { TrendingCollections } from '@app/components/nft-dashboard/trending-collections/TrendingCollections';
 import { TotalEarning } from '@app/components/nft-dashboard/totalEarning/TotalEarning';
@@ -19,9 +18,6 @@ const MedicalDashboardPage: React.FC = () => {
     <BaseRow>
       <S.LeftSideCol xl={16} xxl={17} id="desktop-content">
         <BaseRow gutter={[60, 60]}>
-          <BaseCol span={24}>
-            <TrendingCreators />
-          </BaseCol>
 
           <BaseCol span={24}>
             <RecentlyAddedNft />
@@ -53,9 +49,6 @@ const MedicalDashboardPage: React.FC = () => {
 
   const mobileAndTabletLayout = (
     <BaseRow gutter={[20, 24]}>
-      <BaseCol span={24}>
-        <TrendingCreators />
-      </BaseCol>
 
       <BaseCol span={24}>
         <RecentlyAddedNft />

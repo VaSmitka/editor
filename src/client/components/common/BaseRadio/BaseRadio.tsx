@@ -13,4 +13,5 @@ export const BaseRadio: BaseRadioInterface = (props) => {
 };
 
 BaseRadio.Group = Radio.Group;
+// @ts-ignore: TODO
 BaseRadio.Button = S.RadioButton;

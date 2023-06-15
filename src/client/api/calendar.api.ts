@@ -9,6 +9,7 @@ const now = Dates.getToday().valueOf();
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getUserCalendar = (id: number): Promise<CalendarEvent[]> => {
+  console.log(id)
   return new Promise((res) => {
     setTimeout(() => {
       res([
