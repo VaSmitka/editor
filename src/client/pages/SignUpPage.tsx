@@ -9,7 +9,7 @@ const SignUpPage: React.FC = () => {
   return (
     <>
       <PageTitle>{t('common.signUp')}</PageTitle>
-      <SignUpForm />
+      <SignUpForm role='teacher'/>
     </>
   );
 };

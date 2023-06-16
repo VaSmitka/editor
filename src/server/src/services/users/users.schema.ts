@@ -11,9 +11,11 @@ import { dataValidator, queryValidator } from '../../validators'
 export const userSchema = Type.Object(
   {
     id: Type.Number(),
+    firstName: Type.String(),
+    lastName: Type.String(),
     email: Type.String(),
     password: Type.Optional(Type.String()),
-    role: StringEnum(['lector', 'student'])
+    role: StringEnum(['teacher', 'student'])
   },
   { $id: 'User', additionalProperties: false }
 )
@@ -27,7 +29,7 @@ export const userExternalResolver = resolve<User, HookContext>({
 })
 
 // Schema for creating new entries
-export const userDataSchema = Type.Pick(userSchema, ['email', 'password'], {
+export const userDataSchema = Type.Pick(userSchema, ['email', 'password', 'firstName', 'lastName', 'role'], {
   $id: 'UserData'
 })
 export type UserData = Static<typeof userDataSchema>
