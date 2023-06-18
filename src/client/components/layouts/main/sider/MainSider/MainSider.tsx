@@ -21,7 +21,7 @@ const MainSider: React.FC<MainSiderProps> = ({ isCollapsed, setCollapsed, ...pro
         trigger={null}
         collapsed={isCollapsed}
         collapsedWidth={80}
-        collapsible={true}
+        collapsible={false}
         width={260}
         {...props}
       >

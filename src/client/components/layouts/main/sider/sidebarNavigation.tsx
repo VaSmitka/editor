@@ -1,10 +1,8 @@
 import React from 'react';
 import {
-  DashboardOutlined,
   FormOutlined,
   HomeOutlined,
   LayoutOutlined,
-  LineChartOutlined,
   TableOutlined,
   UserOutlined,
   BlockOutlined,
@@ -25,24 +23,6 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
     // TODO use path variable
     url: '/',
     icon: <HomeOutlined />,
-  },
-  {
-    title: 'common.medical-dashboard',
-    key: 'medical-dashboard',
-    url: '/medical-dashboard',
-    icon: <DashboardOutlined />,
-  },
-  {
-    title: 'common.apps',
-    key: 'apps',
-    icon: <HomeOutlined />,
-    children: [
-      {
-        title: 'common.feed',
-        key: 'feed',
-        url: '/apps/feed',
-      },
-    ],
   },
   {
     title: 'common.authPages',
@@ -98,12 +78,6 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
     key: 'dataTables',
     url: '/data-tables',
     icon: <TableOutlined />,
-  },
-  {
-    title: 'common.charts',
-    key: 'charts',
-    url: '/charts',
-    icon: <LineChartOutlined />,
   },
   {
     title: 'common.pages',
