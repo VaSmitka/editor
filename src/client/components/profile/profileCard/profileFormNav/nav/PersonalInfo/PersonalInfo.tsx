@@ -65,11 +65,6 @@ export const PersonalInfo: React.FC = () => {
             lastName: user.lastName,
             email: user.email.name,
             nickname: user.userName,
-            sex: user.sex,
-            city: user.city,
-            address1: user.address1,
-            address2: user?.address2,
-            zipcode: user.zipcode,
           }
         : initialPersonalInfoValues,
     [user],

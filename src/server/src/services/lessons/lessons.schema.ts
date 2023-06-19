@@ -12,7 +12,8 @@ export const lessonsSchema = Type.Object(
     id: Type.Number(),
     name: Type.String(),
     description: Type.String(),
-    creator: Type.Number()
+    creator: Type.Number(),
+    courseId: Type.Number()
   },
   { $id: 'Lessons', additionalProperties: false }
 )
@@ -23,7 +24,7 @@ export const lessonsResolver = resolve<Lessons, HookContext>({})
 export const lessonsExternalResolver = resolve<Lessons, HookContext>({})
 
 // Schema for creating new entries
-export const lessonsDataSchema = Type.Pick(lessonsSchema, ['name', 'description', 'creator'], {
+export const lessonsDataSchema = Type.Pick(lessonsSchema, ['name', 'description', 'creator', 'courseId'], {
   $id: 'LessonsData'
 })
 export type LessonsData = Static<typeof lessonsDataSchema>
@@ -44,9 +45,9 @@ export const lessonsQuerySchema = Type.Intersect(
   [
     querySyntax(lessonsQueryProperties),
     // Add additional query properties here
-    Type.Object({}, { additionalProperties: false })
+    Type.Object({}, { additionalProperties: true })
   ],
-  { additionalProperties: false }
+  { additionalProperties: true }
 )
 export type LessonsQuery = Static<typeof lessonsQuerySchema>
 export const lessonsQueryValidator = getValidator(lessonsQuerySchema, queryValidator)

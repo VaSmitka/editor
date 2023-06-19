@@ -108,7 +108,7 @@ export const EditableTable: React.FC = () => {
       width: '15%',
       render: (text: string, record: BasicTableRow) => {
         const editable = isEditing(record);
-        console.log(text)
+        console.log(text, record)
         return (
           <BaseSpace>
             {editable ? (

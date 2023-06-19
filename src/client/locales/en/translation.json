@@ -73,27 +73,6 @@
     "text": "Text",
     "types": "Button types"
   },
-  "charts": {
-    "averageValue": "Average Value",
-    "barLabel": "Bar Animation Delay",
-    "coal": "Coal",
-    "direct": "Direct",
-    "females": "Females",
-    "gas": "Gas",
-    "gradientLabel": "Gradient Stacked Area",
-    "hydro": "Hydro",
-    "incomeOf": "Income of Germany and France since 1950",
-    "lineRace": "Line Race",
-    "males": "Males",
-    "nuclear": "Nuclear",
-    "oil": "Oil",
-    "pie": "Pie",
-    "scatter": "Scatter",
-    "search": "Search Engine",
-    "union": "Union Ads",
-    "video": "Video Ads",
-    "visitorsFrom": "Visitors from"
-  },
   "checkboxes": {
     "apple": "Apple",
     "basic": "Basic checkbox",

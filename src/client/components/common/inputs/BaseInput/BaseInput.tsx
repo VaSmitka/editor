@@ -9,7 +9,7 @@ export type BaseInputProps = InputProps;
 interface BaseInputInterface extends React.ForwardRefExoticComponent<InputProps & React.RefAttributes<InputRef>> {
   Group: typeof Input.Group;
   Search: typeof Input.Search;
-  TextArea: typeof Input.TextArea;
+  TextArea: typeof S.TextArea;
   Password: typeof Input.Password;
 }
 
@@ -23,5 +23,5 @@ export const BaseInput = InternalInput as BaseInputInterface;
 
 BaseInput.Group = Input.Group;
 BaseInput.Search = Input.Search;
-BaseInput.TextArea = Input.TextArea;
+BaseInput.TextArea = S.TextArea;
 BaseInput.Password = Input.Password;

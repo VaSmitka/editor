@@ -4,6 +4,7 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import * as S from './MainSider.styles';
 import { SiderLogo } from '../SiderLogo';
 import SiderMenu from '../SiderMenu/SiderMenu';
+// import { useTranslation } from 'react-i18next';
 
 interface MainSiderProps {
   isCollapsed: boolean;
@@ -12,6 +13,8 @@ interface MainSiderProps {
 
 const MainSider: React.FC<MainSiderProps> = ({ isCollapsed, setCollapsed, ...props }) => {
   const { mobileOnly } = useResponsive();
+
+  // const { t } = useTranslation();
 
   const toggleSider = () => setCollapsed(!isCollapsed);
 

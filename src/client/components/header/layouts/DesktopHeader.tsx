@@ -7,12 +7,16 @@ import { HeaderFullscreen } from '../components/HeaderFullscreen/HeaderFullscree
 import * as S from '../Header.styles';
 import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
+import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
+import { useNavigate } from 'react-router-dom';
 
 interface DesktopHeaderProps {
   isTwoColumnsLayout: boolean;
 }
 
 export const DesktopHeader: React.FC<DesktopHeaderProps> = ({ isTwoColumnsLayout }) => {
+  const navigate = useNavigate();
+
   const leftSide = isTwoColumnsLayout ? (
     <S.SearchColumn xl={16} xxl={17}>
       <BaseRow justify="space-between">
@@ -20,7 +24,9 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({ isTwoColumnsLayout
           <HeaderSearch />
         </BaseCol>
         <BaseCol>
-          <S.GHButton />
+          <BaseButton type="primary" size="large" onClick={() => navigate('/cource-creator')}>
+            Create course
+          </BaseButton> 
         </BaseCol>
       </BaseRow>
     </S.SearchColumn>
@@ -30,7 +36,9 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({ isTwoColumnsLayout
         <HeaderSearch />
       </BaseCol>
       <BaseCol>
-        <S.GHButton />
+        <BaseButton type="primary" size="large" onClick={() => navigate('/cource-creator')}>
+          Create course
+        </BaseButton> 
       </BaseCol>
     </>
   );

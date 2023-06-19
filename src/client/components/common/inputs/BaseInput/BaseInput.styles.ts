@@ -6,7 +6,7 @@ export const Input = styled(AntInput)`
   padding: 11.4px 11px;
   height: 50px;
   border: 1px solid var(--border-base-color);
-  background-color: transparent;  
+  background-color: transparent;
 
   .ant-input-group-addon:first-child,
   .ant-input-group-addon:last-child {
@@ -29,3 +29,7 @@ export const Input = styled(AntInput)`
     color: var(--disabled-color);
   }
 `;
+
+export const TextArea = styled(AntInput.TextArea)`
+  border: 1px solid var(--border-base-color);
+`
