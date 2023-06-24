@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import * as S from './SiderMenu.styles';
 import { sidebarNavigation, SidebarNavigationItem } from '../sidebarNavigation';
+import { doGetCoursesByCreator } from '@app/store/slices/courseSlice';
+import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
+import { Lesson } from '@app/api/lessons.api';
+import { notificationController } from '@app/controllers/notificationController';
+import { CourseCreatorData } from '@app/api/course.api';
+import { ProfileOutlined } from '@ant-design/icons';
 
 interface SiderContentProps {
   setCollapsed: (isCollapsed: boolean) => void;
@@ -14,7 +20,30 @@ const sidebarNavFlat = sidebarNavigation.reduce(
   [],
 );
 
-const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
+const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {  
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.user.user);
+  const [sidebarNavigation, setSidebarNavigation] = useState<any[]>([]);
+
+  useEffect(() => {
+    dispatch(doGetCoursesByCreator(user!.id))
+    .unwrap()
+    .then((result: CourseCreatorData[]) => {
+      const items = result.map(elm => ({
+        title: elm.name,
+        key: `course-${elm.id}`,
+        icon: <ProfileOutlined />,
+        url: `/course/${elm.id}`,
+        children: []
+      }))
+      setSidebarNavigation(items);
+    })
+    .catch((err: { message: any; }) => {
+      notificationController.error({ message: err.message });
+    });
+  }, [])
+
+
   const { t } = useTranslation();
   const location = useLocation();
 

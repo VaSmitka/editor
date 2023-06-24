@@ -8,21 +8,21 @@ import { Step3 } from './Steps/Step3';
 import { notificationController } from '@app/controllers/notificationController';
 import * as S from './CreatorForm.styles';
 import { Steps } from './CreatorForm.styles';
-import { Course, CourseCreatorData, getCourses } from '@app/api/course.api';
-import { mergeBy } from '@app/utils/utils';
+import { Course, CourseCreatorData } from '@app/api/course.api';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
+import { doGetCourses, doCreateCourse } from '@app/store/slices/courseSlice';
+import { Lesson } from '@app/api/lessons.api';
+import { doGetLessonsByCourseId } from '@app/store/slices/lessonSlice';
 
-interface FormValues {
-  [key: string]: string | undefined;
-}
-
-interface FieldData {
-  name: string | number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value?: any;
-}
 
 export const CreatorForm: React.FC = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { t } = useTranslation();
+
+  const user = useAppSelector((state) => state.user.user);
+
   const [form] = BaseForm.useForm();
   
   const [fromData, setFormData] = useState<CourseCreatorData>();
@@ -31,10 +31,35 @@ export const CreatorForm: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
 
   useEffect(() => {
-    getCourses().then((result) => {
-      setCourses(result);
-    });
+    setIsLoading(true);
+    dispatch(doGetCourses())
+      .unwrap()
+      .then((result) => {
+        setCourses(result);
+        setIsLoading(false);
+      })
+      .catch((err: { message: any; }) => {
+        notificationController.error({ message: err.message });
+        setIsLoading(false);
+      });
   }, []);
+
+  useEffect(() => {
+    if (fromData?.template) {
+      setIsLoading(true);
+      dispatch(doGetLessonsByCourseId(fromData.template))
+        .unwrap()
+        .then((result: Lesson[]) => {
+          form.setFieldValue('lessons', result)
+          setIsLoading(false);
+        })
+        .catch((err: { message: any; }) => {
+          notificationController.error({ message: err.message });
+          setIsLoading(false);
+        });
+    }
+
+  }, [fromData?.template]);
 
   const next = () => {
     form.validateFields().then(() => {
@@ -47,11 +72,32 @@ export const CreatorForm: React.FC = () => {
   };
 
   // kazdy step je rerender
-  const onFinish = (values: any) => {
-    console.log('Received values of form: ', values);
+  const onFinishPart = (values: any) => {
     setFormData((oldValues) => ({...oldValues, ...values}))
     next()
   };
+
+  const onDone = () => {
+    const {name, description, lessons, template} = fromData!;
+
+    const request = {
+      name,
+      description,
+      template,
+      lessons,
+      creator: user!.id
+    }
+
+    console.log(request)
+    setIsLoading(true);
+    dispatch(doCreateCourse(request))
+      .unwrap()
+      .then(() => navigate('/'))
+      .catch((err: { message: any; }) => {
+        notificationController.error({ message: err.message });
+        setIsLoading(false);
+      });
+  }
 
   const steps = [
     {
@@ -75,7 +121,7 @@ export const CreatorForm: React.FC = () => {
     <BaseForm
       name="creatorForm"
       form={form}
-      onFinish={onFinish}
+      onFinish={onFinishPart}
     >
       <Steps size="small" current={current} items={steps} />
       <div>{formFieldsUi[current]}</div>
@@ -92,7 +138,7 @@ export const CreatorForm: React.FC = () => {
           </BaseButton>
         )}
         {current === steps.length - 1 && (
-          <BaseButton type="primary" loading={isLoading} onClick={() => console.log(fromData)}>
+          <BaseButton type="primary" loading={isLoading} onClick={() => onDone()}>
             {t('forms.stepFormLabels.done')}
           </BaseButton>
         )}

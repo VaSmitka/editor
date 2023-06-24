@@ -17,7 +17,8 @@ export async function up(knex: Knex): Promise<void> {
         table.string('name').notNullable()
         table.string('description').notNullable()
 
-        table.integer('creator').notNullable().references('users.id')
+        table.bigint('creator').notNullable().references('users.id')
+        table.bigint('template').references('courses.id')
     })
     
     await knex.schema.createTable('lessons', (table) => {
@@ -26,8 +27,8 @@ export async function up(knex: Knex): Promise<void> {
         table.string('description').notNullable()
 
 
-        table.integer('creator').notNullable().unsigned().references('users.id')
-        table.integer('course_id').notNullable().unsigned().references('courses.id')
+        table.bigint('creator').notNullable().unsigned().references('users.id')
+        table.bigint('course_id').notNullable().unsigned().references('courses.id')
     })
 }
 

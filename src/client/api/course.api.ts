@@ -16,13 +16,19 @@ export interface CoursesResponse {
 }
 
 export interface CourseCreatorData {
+    id: number,
     name: string,
     description: string,
-    template: string,
-    lessons?: Lesson[]
-  }
+    template: number,
+    creator: number,
+    lessons: Lesson[]
+}
 
 export const getCourses = (): Promise<Course[]> =>
   httpApi.get('courses').then(({ data }) => data.data);
 
+  export const getCoursesByCreator = (userId: number): Promise<any> =>
+  httpApi.get(`courses?creator=${userId}`).then(({ data }) => data.data);
 
+export const buildCourse = (data:CourseCreatorData): Promise<any> =>
+  httpApi.post<CourseCreatorData>('courses', data).then((data) => data.data);

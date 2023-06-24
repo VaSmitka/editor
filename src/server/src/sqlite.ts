@@ -11,7 +11,11 @@ declare module './declarations' {
 
 export const sqlite = (app: Application) => {
   const config = app.get('sqlite');
-  const db = knex(config!);
+
+  const db = knex({
+    ...config!,
+    useNullAsDefault: true
+  });
 
   app.set('sqliteClient', db);
 };

@@ -8,6 +8,10 @@ import type { Lessons, LessonsData, LessonsPatch, LessonsQuery } from './lessons
 
 export type { Lessons, LessonsData, LessonsPatch, LessonsQuery }
 
+export interface Lesson {
+  id: number, name: string, description: string,
+}
+
 export interface LessonsParams extends KnexAdapterParams<LessonsQuery> {}
 
 // By default calls the standard Knex adapter service methods but can be customized with your own functionality.

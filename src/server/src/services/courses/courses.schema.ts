@@ -12,9 +12,10 @@ export const coursesSchema = Type.Object(
     id: Type.Number(),
     name: Type.String(),
     description: Type.String(),
-    creator: Type.Number()
+    creator: Type.Number(),
+    template: Type.Number(),
   },
-  { $id: 'Courses', additionalProperties: false }
+  { $id: 'Courses', additionalProperties: true }
 )
 export type Courses = Static<typeof coursesSchema>
 export const coursesValidator = getValidator(coursesSchema, dataValidator)
@@ -39,7 +40,7 @@ export const coursesPatchValidator = getValidator(coursesPatchSchema, dataValida
 export const coursesPatchResolver = resolve<Courses, HookContext>({})
 
 // Schema for allowed query properties
-export const coursesQueryProperties = Type.Pick(coursesSchema, ['id', 'name'])
+export const coursesQueryProperties = Type.Pick(coursesSchema, ['id', 'name', 'creator'])
 export const coursesQuerySchema = Type.Intersect(
   [
     querySyntax(coursesQueryProperties),
