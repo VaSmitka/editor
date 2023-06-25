@@ -18,7 +18,11 @@ export interface CoursesCreateData {
   template: number,
   lessons: Lesson[]
 }
-export interface CoursesParams extends KnexAdapterParams<CoursesQuery> {}
+export interface CoursesParams extends KnexAdapterParams<CoursesQuery> {
+  query?: {
+    creator?: number
+  }
+}
 
 // By default calls the standard Knex adapter service methods but can be customized with your own functionality.
 export class CoursesService<ServiceParams extends Params = CoursesParams> extends KnexService<
@@ -32,7 +36,7 @@ export class CoursesService<ServiceParams extends Params = CoursesParams> extend
     let resData = course;
 
     try {
-      await knex('Featherjs').transaction(async trx => {
+      await this.Model.transaction(async trx => {
         const ids = await trx.insert(course, 'id').into('courses')
     
         resData.id = ids[0].id;
@@ -40,7 +44,7 @@ export class CoursesService<ServiceParams extends Params = CoursesParams> extend
           elm.course_id = resData.id;
           elm.creator = course.creator;
         }));
-        resData.lessons = await trx('Featherjs').insert(lessons, ['id', 'name', 'description', 'creator', 'course_id']).into('lessons');
+        resData.lessons = await trx.insert(lessons, ['id', 'name', 'description', 'creator', 'course_id']).into('lessons');
 
         console.log('data', resData)
       })
@@ -53,9 +57,23 @@ export class CoursesService<ServiceParams extends Params = CoursesParams> extend
     return resData;
   }
 
-  async find(params: Params) {
-    console.log(params);
-    return [];
+  async find({query}: CoursesParams & { paginate: false; }): Promise<any> {
+    const response: {data?: any} = {}
+    
+    if (query?.creator) {
+      const courses = await this.Model.from('courses').where({creator: query.creator});
+    
+      for (let course of courses) {
+        const lessons = await this.Model.from('lessons').where({course_id: course.id});
+        course.lessons = lessons;
+      }
+
+      response.data = courses;
+    } else {
+      response.data = await this.Model.from('courses');
+    }
+
+    return response;
   }
 }
 

@@ -17,6 +17,7 @@ import { withLoading } from '@app/hocs/withLoading.hoc';
 import NftDashboardPage from '@app/pages/DashboardPages/NftDashboardPage';
 
 const CourseCreator = React.lazy(() => import('@app/pages/CourseCreatorPage'));
+const CoursePage = React.lazy(() => import('@app/pages/CoursePage'));
 
 const DataTablesPage = React.lazy(() => import('@app/pages/DataTablesPage'));
 const ServerErrorPage = React.lazy(() => import('@app/pages/ServerErrorPage'));
@@ -124,6 +125,11 @@ export const AppRouter: React.FC = () => {
             <Route path="personal-info" element={<PersonalInfo />} />
             <Route path="security-settings" element={<SecuritySettings />} />
             <Route path="notifications" element={<Notifications />} />
+          </Route>
+          <Route path='course/:courseId' >
+            <Route path='lessons' element={<CoursePage />} />
+            <Route path='students' element={<CoursePage />} />
+            <Route path='lesson/:lessonId' element={<CoursePage />} />
           </Route>
           <Route path="ui-components">
             <Route path="button" element={<Buttons />} />

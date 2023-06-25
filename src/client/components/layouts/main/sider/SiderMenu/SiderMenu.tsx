@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
 import { Lesson } from '@app/api/lessons.api';
 import { notificationController } from '@app/controllers/notificationController';
 import { CourseCreatorData } from '@app/api/course.api';
-import { ProfileOutlined } from '@ant-design/icons';
+import { BlockOutlined, ProfileOutlined } from '@ant-design/icons';
 
 interface SiderContentProps {
   setCollapsed: (isCollapsed: boolean) => void;
@@ -33,9 +33,158 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
         title: elm.name,
         key: `course-${elm.id}`,
         icon: <ProfileOutlined />,
-        url: `/course/${elm.id}`,
-        children: []
-      }))
+        children: elm.lessons.map(les => ({
+          title: les.name,
+          key: `lesson-${les.id}`,
+          url: `/course/${elm.id}/lesson/${les.id}`,
+        })).reduce(function (acc: any[], obj: any) { acc.push(obj); return acc; }, [{
+          title: '-- Administrace --',
+          key: `course-${elm.id}`,
+          url: `/course/${elm.id}/lessons`,
+        }])
+      })).reduce(function (acc: any[], obj: any) { acc.push(obj); return acc; }, [{
+          title: 'common.ui',
+          key: 'ui',
+          icon: <BlockOutlined />,
+          children: [
+            {
+              title: 'common.alert',
+              key: 'alert',
+              url: '/ui-components/alert',
+            },
+            {
+              title: 'common.avatar',
+              key: 'avatar',
+              url: '/ui-components/avatar',
+            },
+            {
+              title: 'common.autocomplete',
+              key: 'auto-complete',
+              url: '/ui-components/auto-complete',
+            },
+            {
+              title: 'common.badge',
+              key: 'badge',
+              url: '/ui-components/badge',
+            },
+            {
+              title: 'common.breadcrumbs',
+              key: 'breadcrumbs',
+              url: '/ui-components/breadcrumbs',
+            },
+            {
+              title: 'common.button',
+              key: 'button',
+              url: '/ui-components/button',
+            },
+            {
+              title: 'common.checkbox',
+              key: 'checkbox',
+              url: '/ui-components/checkbox',
+            },
+            {
+              title: 'common.collapse',
+              key: 'collapse',
+              url: '/ui-components/collapse',
+            },
+            {
+              title: 'common.dateTimePicker',
+              key: 'dateTimePicker',
+              url: '/ui-components/date-time-picker',
+            },
+            {
+              title: 'common.dropdown',
+              key: 'dropdown',
+              url: '/ui-components/dropdown',
+            },
+            {
+              title: 'common.input',
+              key: 'input',
+              url: '/ui-components/input',
+            },
+            {
+              title: 'common.modal',
+              key: 'modal',
+              url: '/ui-components/modal',
+            },
+            {
+              title: 'common.notification',
+              key: 'notification',
+              url: '/ui-components/notification',
+            },
+            {
+              title: 'common.pagination',
+              key: 'pagination',
+              url: '/ui-components/pagination',
+            },
+            {
+              title: 'common.popconfirm',
+              key: 'popconfirm',
+              url: '/ui-components/popconfirm',
+            },
+            {
+              title: 'common.popover',
+              key: 'popover',
+              url: '/ui-components/popover',
+            },
+            {
+              title: 'common.progress',
+              key: 'progress',
+              url: '/ui-components/progress',
+            },
+            {
+              title: 'common.radio',
+              key: 'radio',
+              url: '/ui-components/radio',
+            },
+            {
+              title: 'common.rate',
+              key: 'rate',
+              url: '/ui-components/rate',
+            },
+            {
+              title: 'common.result',
+              key: 'result',
+              url: '/ui-components/result',
+            },
+            {
+              title: 'common.select',
+              key: 'select',
+              url: '/ui-components/select',
+            },
+            {
+              title: 'common.skeleton',
+              key: 'skeleton',
+              url: '/ui-components/skeleton',
+            },
+            {
+              title: 'common.spinner',
+              key: 'spinner',
+              url: '/ui-components/spinner',
+            },
+            {
+              title: 'common.steps',
+              key: 'steps',
+              url: '/ui-components/steps',
+            },
+            {
+              title: 'common.switch',
+              key: 'switch',
+              url: '/ui-components/switch',
+            },
+            {
+              title: 'common.tabs',
+              key: 'tabs',
+              url: '/ui-components/tabs',
+            },
+            {
+              title: 'common.upload',
+              key: 'upload',
+              url: '/ui-components/upload',
+            },
+          ],
+        }
+      ])
       setSidebarNavigation(items);
     })
     .catch((err: { message: any; }) => {
