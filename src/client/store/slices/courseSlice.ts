@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { CourseCreatorData, buildCourse, getCourses, getCoursesByCreator } from '@app/api/course.api';
+import { CourseCreatorData, buildCourse, getCourse, getCourses, getCoursesByCreator } from '@app/api/course.api';
 
 export interface CourseSlice {
 }
@@ -8,6 +8,13 @@ export interface CourseSlice {
 const initialState: CourseSlice = {
 };
 
+
+export const doGetCourse = createAsyncThunk('course/getOne', async (id: number) =>
+  getCourse(id).then((res: any) => {
+    console.log('Get course', res)
+    return res;
+  }),
+);
 
 export const doGetCourses = createAsyncThunk('course/getAll', async () =>
   getCourses().then((res: any) => {

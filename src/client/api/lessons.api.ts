@@ -17,5 +17,8 @@ export interface LessonsResponse {
     data: Lesson[]
 }
 
+export const getLesson = (id: number): Promise<Lesson> =>
+  httpApi.get(`lessons/${id}`).then(({ data }) => data);
+
 export const getCourseLessonsData = (courseId: number, pagination: Pagination): Promise<LessonsResponse> =>
   httpApi.get(`lessons?course_id=${courseId}`).then(({ data }) => data.data);

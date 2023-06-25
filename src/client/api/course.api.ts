@@ -16,7 +16,7 @@ export interface CoursesResponse {
 }
 
 export interface CourseCreatorData {
-    id: number,
+    id?: number,
     name: string,
     description: string,
     template: number,
@@ -27,7 +27,13 @@ export interface CourseCreatorData {
 export const getCourses = (): Promise<Course[]> =>
   httpApi.get('courses').then(({ data }) => data.data);
 
-  export const getCoursesByCreator = (userId: number): Promise<any> =>
+export const getCourse = (id: number): Promise<void> =>
+  httpApi.get(`courses/${id}`).then((data) => data.data);
+
+export const getCourseStudents = (id: string): Promise<void> =>
+  httpApi.get(`courses/${id}/students`).then((data) => console.log(data));
+
+export const getCoursesByCreator = (userId: number): Promise<any> =>
   httpApi.get(`courses?creator=${userId}`).then(({ data }) => data.data);
 
 export const buildCourse = (data:CourseCreatorData): Promise<any> =>

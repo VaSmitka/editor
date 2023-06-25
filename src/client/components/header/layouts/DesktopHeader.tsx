@@ -24,7 +24,7 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({ isTwoColumnsLayout
           <HeaderSearch />
         </BaseCol>
         <BaseCol>
-          <BaseButton type="primary" size="large" onClick={() => navigate('/cource-creator')}>
+          <BaseButton type="default" size="large" onClick={() => navigate('/cource-creator')}>
             Create course
           </BaseButton> 
         </BaseCol>
@@ -36,7 +36,7 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({ isTwoColumnsLayout
         <HeaderSearch />
       </BaseCol>
       <BaseCol>
-        <BaseButton type="primary" size="large" onClick={() => navigate('/cource-creator')}>
+        <BaseButton type="default" size="large" onClick={() => navigate('/cource-creator')}>
           Create course
         </BaseButton> 
       </BaseCol>
