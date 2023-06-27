@@ -26,7 +26,7 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
   const [sidebarNavigation, setSidebarNavigation] = useState<any[]>([]);
 
   useEffect(() => {
-    dispatch(doGetCoursesByCreator(user!.id))
+    dispatch(doGetCoursesByCreator(user!.id.toString()))
     .unwrap()
     .then((result: CourseCreatorData[]) => {
       const items = result.map(elm => ({
@@ -221,7 +221,7 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
           children:
             isSubMenu &&
             nav.children &&
-            nav.children.map((childNav) => ({
+            nav.children.map((childNav: { key: any; url: any; title: any; }) => ({
               key: childNav.key,
               label: <Link to={childNav.url || ''}>{t(childNav.title)}</Link>,
               title: t(childNav.title),

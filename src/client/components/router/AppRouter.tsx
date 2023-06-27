@@ -18,6 +18,7 @@ import NftDashboardPage from '@app/pages/DashboardPages/NftDashboardPage';
 
 const CourseCreatorPage = React.lazy(() => import('@app/pages/CourseCreatorPage'));
 const CoursePage = React.lazy(() => import('@app/pages/CoursePage'));
+const LessonPage = React.lazy(() => import('@app/pages/LessonPage/LessonPage'));
 
 const DataTablesPage = React.lazy(() => import('@app/pages/DataTablesPage'));
 const ServerErrorPage = React.lazy(() => import('@app/pages/ServerErrorPage'));
@@ -62,6 +63,7 @@ const AdvancedForm = withLoading(AdvancedFormsPage);
 
 const CourseCreator = withLoading(CourseCreatorPage);
 const Course = withLoading(CoursePage);
+const Lesson = withLoading(LessonPage);
 
 // UI Components
 const Buttons = withLoading(ButtonsPage);
@@ -134,6 +136,7 @@ export const AppRouter: React.FC = () => {
             <Route path='students' element={<Course />} />
             <Route path='lesson/:lessonId' element={<Course />} />
           </Route>
+          <Route path='lesson/:lessonId' element={<Lesson />}/>
           <Route path="ui-components">
             <Route path="button" element={<Buttons />} />
             <Route path="spinner" element={<Spinners />} />

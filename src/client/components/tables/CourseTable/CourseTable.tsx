@@ -139,7 +139,11 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
               type="ghost"
               onClick={() => {
                 // notificationController.info({ message: t('tables.inviteMessage', { name: record.name }) });
-                console.log('jdeme na to')
+                if (type === PageType.LESSON) {
+                  navigate(`/lesson/${lessonId}`)
+                } else {
+                  console.log('jdeme na to')
+                }
               }}
             >
               {type === PageType.LESSON ? 'Show' : 'Edit' }
@@ -174,7 +178,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
               type="ghost"
               onClick={() => {
                 // notificationController.info({ message: t('tables.inviteMessage', { name: record.name }) });
-                console.log('jdeme na to')
+                navigate(`/course/${courseId}/lesson/${lessonId}/edit`)
               }}
             >
               Edit
