@@ -14,6 +14,9 @@ import { doGetLesson, doGetLessonsByCourseId } from '@app/store/slices/lessonSli
 import { Lesson } from '@app/api/lessons.api';
 import { doGetCourse } from '@app/store/slices/courseSlice';
 import { Course } from '@app/api/course.api';
+import { BaseModal } from '@app/components/common/BaseModal/BaseModal';
+import RegisterStudentPage from './RegisterStudentModal';
+import RegisterStudentModal from './RegisterStudentModal';
 
 enum ButtonType {
     ACTIVE = "primary",
@@ -37,13 +40,14 @@ const CoursePage: React.FC = () => {
     const [pageData, setPageData] = useState<Lesson[]>();
     const [info, setInfo] = useState<Course| Lesson>()
     const [isLoading, setIsLoading] = useState(false);
+    const [isOpen, setModalOpen] = useState(false);
 
     useEffect(() => {
         setIsLoading(true);
         const pageType = detectPage();
         
         if (pageType !== PageType.LESSON) {
-            dispatch(doGetCourse(Number.parseInt(courseId!)))
+            dispatch(doGetCourse(courseId!))
             .unwrap()
             .then((result) => {
                 setInfo(result);
@@ -54,7 +58,7 @@ const CoursePage: React.FC = () => {
                 setIsLoading(false);
             });
         } else {
-            dispatch(doGetLesson(Number.parseInt(lessonId!)))
+            dispatch(doGetLesson(lessonId!))
             .unwrap()
             .then((result) => {
                 setInfo(result);
@@ -68,8 +72,6 @@ const CoursePage: React.FC = () => {
 
         setPageType(pageType);
     }, [pathname])
-
-    console.log(pageType)
 
     // const { t } = useTranslation();
     // primary - active
@@ -107,9 +109,20 @@ const CoursePage: React.FC = () => {
             
             <S.TablesWrapper>
                 <S.Card id="basic-table" title={info?.name} padding="1.25rem 1.25rem 0">
-                    <CourseTable type={pageType}/>
+                    <CourseTable courseId={courseId} lessonId={lessonId} type={pageType} setModalOpen={setModalOpen}/>
                 </S.Card>
             </S.TablesWrapper>
+
+            <BaseModal 
+                title="Register Student"
+                centered
+                open={isOpen}
+                onCancel={() => setModalOpen(false)}
+                size="medium"
+                footer={false}
+            >
+                <RegisterStudentModal courseId={courseId} lessonId={lessonId} type={pageType} setModalOpen={setModalOpen}/>
+            </BaseModal>
         </>
     );
 };

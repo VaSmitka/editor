@@ -1,3 +1,5 @@
+import { userHasCourse } from './course/users/users'
+import { userHasLesson } from './lesson/users/users'
 import { lessons } from './lessons/lessons'
 import { courses } from './courses/courses'
 import { user } from './users/users'
@@ -5,6 +7,8 @@ import { user } from './users/users'
 import type { Application } from '../declarations'
 
 export const services = (app: Application) => {
+  app.configure(userHasCourse)
+  app.configure(userHasLesson)
   app.configure(lessons)
   app.configure(courses)
   app.configure(user)

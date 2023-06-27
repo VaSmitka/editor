@@ -10,6 +10,9 @@ import {
   SecurityCodePayload,
   NewPasswordData,
   setNewPassword,
+  StudentSignUpRequest,
+  studentSignUpToLessons,
+  studentSignUpToLesson,
 } from '@app/api/auth.api.ts';
 import { setUser } from '@app/store/slices/userSlice';
 import { deleteToken, deleteUser, persistToken, readToken } from '@app/services/localStorage.service';
@@ -33,6 +36,14 @@ export const doLogin = createAsyncThunk('auth/login', async (loginPayload: Login
 
 export const doSignUp = createAsyncThunk('auth/doSignUp', async (signUpPayload: SignUpRequest) =>
   signUp(signUpPayload),
+);
+
+export const doStudentSignUpToLessons = createAsyncThunk('auth/doStudentSignUpToLessons', async (signUpPayload: StudentSignUpRequest) =>
+  studentSignUpToLessons(signUpPayload),
+);
+
+export const doStudentSignUpToLesson = createAsyncThunk('auth/doStudentSignUpToLesson', async (signUpPayload: StudentSignUpRequest) =>
+  studentSignUpToLesson(signUpPayload),
 );
 
 export const doResetPassword = createAsyncThunk(

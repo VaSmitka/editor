@@ -19,6 +19,14 @@ export interface Pagination {
   total?: number;
 }
 
+export interface StudentTableRow {
+  id: number,
+  status: string,
+  firstName: string,
+  lastName: string,
+  role: string,
+}
+
 export interface BasicTableData {
   data: BasicTableRow[];
   pagination: Pagination;

@@ -16,7 +16,7 @@ import RequireAuth from '@app/components/router/RequireAuth';
 import { withLoading } from '@app/hocs/withLoading.hoc';
 import NftDashboardPage from '@app/pages/DashboardPages/NftDashboardPage';
 
-const CourseCreator = React.lazy(() => import('@app/pages/CourseCreatorPage'));
+const CourseCreatorPage = React.lazy(() => import('@app/pages/CourseCreatorPage'));
 const CoursePage = React.lazy(() => import('@app/pages/CoursePage'));
 
 const DataTablesPage = React.lazy(() => import('@app/pages/DataTablesPage'));
@@ -59,6 +59,9 @@ export const DASHBOARD_PATH = '/';
 
 const NftDashboard = withLoading(NftDashboardPage);
 const AdvancedForm = withLoading(AdvancedFormsPage);
+
+const CourseCreator = withLoading(CourseCreatorPage);
+const Course = withLoading(CoursePage);
 
 // UI Components
 const Buttons = withLoading(ButtonsPage);
@@ -127,9 +130,9 @@ export const AppRouter: React.FC = () => {
             <Route path="notifications" element={<Notifications />} />
           </Route>
           <Route path='course/:courseId' >
-            <Route path='lessons' element={<CoursePage />} />
-            <Route path='students' element={<CoursePage />} />
-            <Route path='lesson/:lessonId' element={<CoursePage />} />
+            <Route path='lessons' element={<Course />} />
+            <Route path='students' element={<Course />} />
+            <Route path='lesson/:lessonId' element={<Course />} />
           </Route>
           <Route path="ui-components">
             <Route path="button" element={<Buttons />} />
@@ -163,7 +166,9 @@ export const AppRouter: React.FC = () => {
         </Route>
         <Route path="/auth" element={<AuthLayoutFallback />}>
           <Route path="login" element={<LoginPage />} />
-          <Route path="sign-up" element={<SignUpPage />} />
+          <Route path="sign-up">
+            <Route path="teacher" element={<SignUpPage />} />
+          </Route>
           <Route
             path="lock"
             element={

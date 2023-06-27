@@ -37,7 +37,7 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
       {
         title: 'common.signUp',
         key: 'singUp',
-        url: '/auth/sign-up',
+        url: '/auth/sign-up/teacher',
       },
       {
         title: 'common.lock',

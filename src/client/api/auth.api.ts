@@ -1,9 +1,15 @@
 import { httpApi } from '@app/api/http.api';
+import { TypeWorkStatus } from '@app/constants/enums/enums';
 import { UserModel } from '@app/domain/UserModel';
 
 export interface AuthData {
   email: string;
   password: string;
+}
+
+export interface StudentSignUpRequest extends SignUpRequest {
+  course_id?: number,
+  lesson_id?: number
 }
 
 export interface SignUpRequest {
@@ -37,11 +43,30 @@ export interface LoginResponse {
   user: UserModel;
 }
 
+export interface User {
+  id: number,
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  role: string;
+}
+
+export interface StudentInfo extends User {
+  status: TypeWorkStatus
+} 
+
 export const login = (loginPayload: LoginRequest): Promise<LoginResponse> =>
   httpApi.post<LoginResponse>('authentication', { ...loginPayload }).then(({ data }) => data);
 
 export const signUp = (signUpData: SignUpRequest): Promise<undefined> =>
   httpApi.post<undefined>('users', { ...signUpData }).then(({ data }) => data);
+
+export const studentSignUpToLessons = (signUpData: StudentSignUpRequest): Promise<undefined> =>
+  httpApi.post<undefined>('course/users', { ...signUpData }).then(({ data }) => data);
+
+export const studentSignUpToLesson = (signUpData: StudentSignUpRequest): Promise<undefined> =>
+  httpApi.post<undefined>('lesson/users', { ...signUpData }).then(({ data }) => data);
 
 export const resetPassword = (resetPasswordPayload: ResetPasswordRequest): Promise<undefined> =>
   httpApi.post<undefined>('forgotPassword', { ...resetPasswordPayload }).then(({ data }) => data);

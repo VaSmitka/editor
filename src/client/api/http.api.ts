@@ -3,6 +3,13 @@ import { AxiosError } from 'axios';
 import { ApiError } from '@app/api/ApiError';
 import { readToken } from '@app/services/localStorage.service';
 
+export interface Response<T> {
+  total: number,
+  limit: number,
+  skip: number,
+  data: T[]
+}
+
 export const httpApi = axios.create({
   baseURL: import.meta.env.VITE_REACT_APP_BASE_URL,
 });

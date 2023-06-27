@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { BasicTableRow, getBasicTableData, Pagination, Tag } from '@app/api/table.api.ts';
+import { BasicTableRow, Pagination, StudentTableRow, Tag } from '@app/api/table.api.ts';
 import { BaseTable } from '@app/components/common/BaseTable/BaseTable';
 import { ColumnsType } from 'antd/es/table';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
@@ -12,9 +12,18 @@ import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
 import { Lesson } from '@app/api/lessons.api';
 import { PageType } from '@app/pages/CoursePage';
+import { useAppDispatch } from '@app/hooks/reduxHooks';
+import { doGetLessonStudents, doGetLessonsByCourseId } from '@app/store/slices/lessonSlice';
+import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
+import { PlusOutlined } from '@ant-design/icons';
+import { doGetCourseStudents } from '@app/store/slices/courseSlice';
+import { useNavigate } from 'react-router-dom';
 
 interface CourseTableProps {
-  type: PageType | undefined
+  courseId: string | undefined,
+  lessonId: string | undefined,
+  type: PageType | undefined,
+  setModalOpen: any
 }
 
 const initialPagination: Pagination = {
@@ -22,33 +31,74 @@ const initialPagination: Pagination = {
   pageSize: 5,
 };
 
-export const CourseTable: React.FC<CourseTableProps> = ({type}) => {
+export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, type, setModalOpen }) => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { isMounted } = useMounted();
+  
   const [tableData, setTableData] = useState<{ data: BasicTableRow[]; pagination: Pagination; loading: boolean }>({
     data: [],
     pagination: initialPagination,
     loading: false,
   });
-  const { t } = useTranslation();
-  const { isMounted } = useMounted();
-
-  const fetch = useCallback(
-    (pagination: Pagination) => {
+  
+  const fetch = () => {
       setTableData((tableData) => ({ ...tableData, loading: true }));
-      getBasicTableData(pagination).then((res: { data: any; pagination: any; }) => {
-        if (isMounted.current) {
-          setTableData({ data: res.data, pagination: res.pagination, loading: false });
+      
+      // PageType.STUDENTS - get course students
+      if (type === PageType.STUDENTS) {
+        dispatch(doGetCourseStudents(courseId!))
+          .unwrap()
+          .then((res) => {
+              if (isMounted.current) {
+                setTableData({ data: res.data, pagination: res.pagination, loading: false });
+              }
+          })
+          .catch((err: { message: any; }) => {
+              notificationController.error({ message: err.message });
+              setTableData(oldData => ({...oldData, loading: false}));
+          });
+      }
+
+
+      // PageType.LESSON - get course students
+      if (type === PageType.LESSON && lessonId) {
+        dispatch(doGetLessonStudents(lessonId!))
+          .unwrap()
+          .then((res) => {
+              if (isMounted.current) {
+                setTableData({ data: res.data, pagination: res.pagination, loading: false });
+              }
+          })
+          .catch((err: { message: any; }) => {
+              notificationController.error({ message: err.message });
+              setTableData(oldData => ({...oldData, loading: false}));
+          });
         }
-      });
-    },
-    [isMounted],
-  );
+
+      // PageType.LESSONS - get course lessons
+      if (type === PageType.LESSONS) {
+        dispatch(doGetLessonsByCourseId(courseId!))
+          .unwrap()
+          .then((res) => {
+              if (isMounted.current) {
+                setTableData({ data: res.data, pagination: res.pagination, loading: false });
+              }
+          })
+          .catch((err: { message: any; }) => {
+              notificationController.error({ message: err.message });
+              setTableData(oldData => ({...oldData, loading: false}));
+          });
+        }
+  };
 
   useEffect(() => {
-    fetch(initialPagination);
-  }, [fetch]);
+    fetch();
+  }, [type, lessonId]);
 
-  const handleTableChange = (pagination: Pagination) => {
-    fetch(pagination);
+  const handleTableChange = () => {
+    fetch();
   };
 
   const handleDeleteRow = (rowId: number) => {
@@ -62,97 +112,72 @@ export const CourseTable: React.FC<CourseTableProps> = ({type}) => {
     });
   };
 
-  const columns: ColumnsType<BasicTableRow> = [
+  const studentColumns: ColumnsType<StudentTableRow> = [
     {
       title: t('common.name'),
       dataIndex: 'name',
-      render: (text: string) => <span>{text}</span>,
-      filterMode: 'tree',
-      filterSearch: true,
-      filters: [
-        {
-          text: t('common.firstName'),
-          value: 'firstName',
-          children: [
-            {
-              text: 'Joe',
-              value: 'Joe',
-            },
-            {
-              text: 'Pavel',
-              value: 'Pavel',
-            },
-            {
-              text: 'Jim',
-              value: 'Jim',
-            },
-            {
-              text: 'Josh',
-              value: 'Josh',
-            },
-          ],
-        },
-        {
-          text: t('common.lastName'),
-          value: 'lastName',
-          children: [
-            {
-              text: 'Green',
-              value: 'Green',
-            },
-            {
-              text: 'Black',
-              value: 'Black',
-            },
-            {
-              text: 'Brown',
-              value: 'Brown',
-            },
-          ],
-        },
-      ],
-      onFilter: (value: string | number | boolean, record: BasicTableRow) => record.name.includes(value.toString()),
+      render: (_text, record) => (
+        <span>{record.firstName} {record.lastName}</span>
+      )
     },
     {
-      title: t('common.age'),
-      dataIndex: 'age',
-      sorter: (a: BasicTableRow, b: BasicTableRow) => a.age - b.age,
-      showSorterTooltip: false,
+      title: 'Email',
+      dataIndex: 'email',
     },
     {
-      title: t('common.address'),
-      dataIndex: 'address',
-    },
-    {
-      title: t('common.tags'),
-      key: 'tags',
-      dataIndex: 'tags',
-      render: (tags: Tag[]) => (
-        <BaseRow gutter={[10, 10]}>
-          {tags.map((tag: Tag) => {
-            return (
-              <BaseCol key={tag.value}>
-                <div>{tag.value.toUpperCase()}</div>
-              </BaseCol>
-            );
-          })}
-        </BaseRow>
-      ),
+      title: 'Status',
+      dataIndex: 'status',
     },
     {
       title: t('tables.actions'),
       dataIndex: 'actions',
       width: '15%',
-      render: (text: string, record: { name: string; key: number }) => {
+      render: (_text: string, record: { id: number }) => {
         return (
           <BaseSpace>
             <BaseButton
               type="ghost"
               onClick={() => {
-                notificationController.info({ message: t('tables.inviteMessage', { name: record.name }) });
+                // notificationController.info({ message: t('tables.inviteMessage', { name: record.name }) });
+                console.log('jdeme na to')
               }}
             >
-              {t('tables.invite')}
+              {type === PageType.LESSON ? 'Show' : 'Edit' }
+            </BaseButton>
+            <BaseButton type="default" danger onClick={() => handleDeleteRow(record.id)}>
+              {t('tables.delete')}
+            </BaseButton>
+          </BaseSpace>
+        );
+      },
+    },
+  ];
+
+  const lessonColumns: ColumnsType<BasicTableRow> = [
+    {
+      title: 'Název',
+      dataIndex: 'name',
+      render: (text: string) => <span>{text}</span>,
+    },
+    {
+      title: 'Popis',
+      dataIndex: 'description',
+    },
+    {
+      title: t('tables.actions'),
+      dataIndex: 'actions',
+      width: '15%',
+      render: (_text: string, record: { name: string; key: number }) => {
+        return (
+          <BaseSpace>
+            <BaseButton
+              type="ghost"
+              onClick={() => {
+                // notificationController.info({ message: t('tables.inviteMessage', { name: record.name }) });
+                console.log('jdeme na to')
+              }}
+            >
+              Edit
             </BaseButton>
             <BaseButton type="default" danger onClick={() => handleDeleteRow(record.key)}>
               {t('tables.delete')}
@@ -163,15 +188,28 @@ export const CourseTable: React.FC<CourseTableProps> = ({type}) => {
     },
   ];
 
+  const addNew = (pageType?: PageType) => {
+    if (pageType === PageType.LESSON || pageType === PageType.STUDENTS) {
+      setModalOpen(true)
+    }
+  }
+
   return (
-    <BaseTable
-      columns={columns}
-      dataSource={tableData.data}
-      pagination={tableData.pagination}
-      loading={tableData.loading}
-      onChange={handleTableChange}
-      scroll={{ x: 800 }}
-      bordered
-    />
+    <>
+      <BaseTable
+        columns={type === PageType.LESSONS ? lessonColumns : studentColumns}
+        dataSource={tableData.data}
+        pagination={false}
+        loading={tableData.loading}
+        onChange={handleTableChange}
+        scroll={{ x: 800 }}
+        bordered
+      />
+      <BaseButtonsForm.Item>
+        <BaseButton type="dashed" onClick={() => addNew(type)} icon={<PlusOutlined />}>
+            { type === PageType.LESSONS ? 'Add lesson' : 'Add student'}
+          </BaseButton>
+      </BaseButtonsForm.Item>
+    </>
   );
 };

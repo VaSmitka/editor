@@ -128,7 +128,7 @@ export const components: Component[] = [
   {
     name: 'Sign up',
     title: 'common.signup',
-    url: `/auth/sign-up`,
+    url: `/auth/sign-up/teacher`,
     categories: ['auth'],
     keywords: ['auth', 'sign up', 'signup'],
   },

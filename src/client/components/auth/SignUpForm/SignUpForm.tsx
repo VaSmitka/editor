@@ -10,7 +10,7 @@ import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import * as S from './SignUpForm.styles';
 import { SignUpRequest } from '@app/api/auth.api';
 
-interface SignUpFormData {
+export interface SignUpFormData {
   firstName: string;
   lastName: string;
   email: string;

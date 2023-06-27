@@ -1,5 +1,6 @@
-import { httpApi } from '@app/api/http.api';
+import { Response, httpApi } from '@app/api/http.api';
 import { Lesson } from './lessons.api';
+import { StudentInfo } from './auth.api';
 
 export interface Course {
     id: number,
@@ -27,13 +28,13 @@ export interface CourseCreatorData {
 export const getCourses = (): Promise<Course[]> =>
   httpApi.get('courses').then(({ data }) => data.data);
 
-export const getCourse = (id: number): Promise<void> =>
+export const getCourse = (id: string): Promise<void> =>
   httpApi.get(`courses/${id}`).then((data) => data.data);
 
-export const getCourseStudents = (id: string): Promise<void> =>
-  httpApi.get(`courses/${id}/students`).then((data) => console.log(data));
+export const getCourseStudents = (id: string): Promise<any> =>
+  httpApi.get(`course/users?course_id=${id}`).then((data) => data.data);
 
-export const getCoursesByCreator = (userId: number): Promise<any> =>
+export const getCoursesByCreator = (userId: string): Promise<any> =>
   httpApi.get(`courses?creator=${userId}`).then(({ data }) => data.data);
 
 export const buildCourse = (data:CourseCreatorData): Promise<any> =>

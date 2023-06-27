@@ -66,8 +66,8 @@ const MedicalDashboardPage: React.FC = () => {
 
   return (
     <>
-      <PageTitle>NFT Dashboard</PageTitle>
-      {isDesktop ? desktopLayout : mobileAndTabletLayout}
+      <PageTitle>Dashboard</PageTitle>
+      {/*isDesktop ? desktopLayout : mobileAndTabletLayout*/}
     </>
   );
 };

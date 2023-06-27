@@ -47,7 +47,7 @@ export const CreatorForm: React.FC = () => {
   useEffect(() => {
     if (fromData?.template) {
       setIsLoading(true);
-      dispatch(doGetLessonsByCourseId(fromData.template))
+      dispatch(doGetLessonsByCourseId(fromData.template.toString()))
         .unwrap()
         .then((result: Lesson[]) => {
           form.setFieldValue('lessons', result)

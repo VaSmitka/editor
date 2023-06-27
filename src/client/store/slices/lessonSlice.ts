@@ -1,4 +1,4 @@
-import { getCourseLessonsData, getLesson } from '@app/api/lessons.api';
+import { getLessonsDataByCourseId, getLesson, getLessonStudents } from '@app/api/lessons.api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export interface LessonSlice {
@@ -8,16 +8,23 @@ const initialState: LessonSlice = {
 };
 
 
-export const doGetLesson = createAsyncThunk('course/getOne', async (id: number) =>
+export const doGetLesson = createAsyncThunk('lesson/getOne', async (id: string) =>
     getLesson(id).then((res: any) => {
     console.log('Get lesson', res)
     return res;
   }),
 );
 
-export const doGetLessonsByCourseId = createAsyncThunk('course/getAll', async (courseId: number) =>
-    getCourseLessonsData(courseId, {}).then((res: any) => {
+export const doGetLessonsByCourseId = createAsyncThunk('lesson/getAll', async (courseId: string) =>
+  getLessonsDataByCourseId(courseId, {}).then((res: any) => {
     console.log('Get lessons by course id', res)
+    return res;
+  }),
+);
+
+export const doGetLessonStudents = createAsyncThunk('lesson/students', async (lessonId: string) =>
+  getLessonStudents(lessonId).then((res: any) => {
+    console.log('Get lesson students by lesson id', res)
     return res;
   }),
 );
