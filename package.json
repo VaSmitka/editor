@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "client:dev": "vite",
+    "server:dev": "cd src/server && yarn dev",
     "build": "tsc && vite build",
     "lint": "eslint \"*/**/*.{js,ts,tsx}\" --fix",
     "lint:styles": "stylelint '*/**/*.{js,ts,tsx}'",
@@ -66,7 +67,8 @@
     "workbox-range-requests": "^7.0.0",
     "workbox-routing": "^7.0.0",
     "workbox-strategies": "^7.0.0",
-    "workbox-streams": "^7.0.0"
+    "workbox-streams": "^7.0.0",
+    "ws": "^8.13.0"
   },
   "devDependencies": {
     "@types/codemirror": "^5.60.8",

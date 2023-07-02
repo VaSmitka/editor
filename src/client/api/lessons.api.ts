@@ -17,6 +17,8 @@ export interface LessonsResponse {
     data: Lesson[]
 }
 
+export interface LessonTableRow extends Lesson {}
+
 export const getLesson = (id: string): Promise<Lesson> =>
   httpApi.get(`lessons/${id}`).then(({ data }) => data);
 

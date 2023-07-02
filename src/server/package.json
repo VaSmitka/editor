@@ -52,13 +52,15 @@
     "@feathersjs/feathers": "^5.0.6",
     "@feathersjs/knex": "^5.0.6",
     "@feathersjs/schema": "^5.0.6",
-    "@feathersjs/socketio": "^5.0.6",
     "@feathersjs/transport-commons": "^5.0.6",
     "@feathersjs/typebox": "^5.0.6",
+    "@teamwork/websocket-json-stream": "^2.0.0",
     "compression": "^1.7.4",
     "knex": "^2.4.2",
+    "sharedb": "^4.0.0",
     "sqlite3": "^5.1.6",
-    "winston": "^3.9.0"
+    "winston": "^3.9.0",
+    "ws": "^8.13.0"
   },
   "devDependencies": {
     "@feathersjs/cli": "5.0.6",
@@ -66,6 +68,8 @@
     "@types/jest": "^29.5.2",
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.3.1",
+    "@types/sharedb": "^3.3.2",
+    "@types/ws": "^8.5.5",
     "axios": "^1.4.0",
     "cross-env": "^7.0.3",
     "mocha": "^10.2.0",

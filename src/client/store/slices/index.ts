@@ -13,5 +13,5 @@ export default {
   theme: themeReducer,
   pwa: pwaReducer,
   course: courseReducer,
-  lesson: lessonReducer
+  lesson: lessonReducer,
 };

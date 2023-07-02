@@ -10,7 +10,7 @@ import { useMounted } from '@app/hooks/useMounted';
 import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
-import { Lesson } from '@app/api/lessons.api';
+import { Lesson, LessonTableRow } from '@app/api/lessons.api';
 import { PageType } from '@app/pages/CoursePage';
 import { useAppDispatch } from '@app/hooks/reduxHooks';
 import { doGetLessonStudents, doGetLessonsByCourseId } from '@app/store/slices/lessonSlice';
@@ -157,7 +157,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
     },
   ];
 
-  const lessonColumns: ColumnsType<BasicTableRow> = [
+  const lessonColumns: ColumnsType<LessonTableRow> = [
     {
       title: 'Název',
       dataIndex: 'name',
@@ -171,19 +171,20 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
       title: t('tables.actions'),
       dataIndex: 'actions',
       width: '15%',
-      render: (_text: string, record: { name: string; key: number }) => {
+      render: (_text: string, record: {id: number}) => {
         return (
           <BaseSpace>
             <BaseButton
               type="ghost"
               onClick={() => {
+                console.log(record)
                 // notificationController.info({ message: t('tables.inviteMessage', { name: record.name }) });
-                navigate(`/course/${courseId}/lesson/${lessonId}/edit`)
+                navigate(`/lesson/${record.id}`)
               }}
             >
               Edit
             </BaseButton>
-            <BaseButton type="default" danger onClick={() => handleDeleteRow(record.key)}>
+            <BaseButton type="default" danger onClick={() => handleDeleteRow(record.id)}>
               {t('tables.delete')}
             </BaseButton>
           </BaseSpace>
@@ -211,8 +212,8 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
       />
       <BaseButtonsForm.Item>
         <BaseButton type="dashed" onClick={() => addNew(type)} icon={<PlusOutlined />}>
-            { type === PageType.LESSONS ? 'Add lesson' : 'Add student'}
-          </BaseButton>
+          { type === PageType.LESSONS ? 'Add lesson' : 'Add student'}
+        </BaseButton>
       </BaseButtonsForm.Item>
     </>
   );
