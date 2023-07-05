@@ -232,7 +232,7 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
         children: elm.lessons.map((les) => ({
           title: les.name,
           key: `lesson-${les.id}`,
-          url: `/lesson/${les.id}`,
+          url: `/student/${userId}/lesson/${les.id}`,
         })),
       }));
     } else {

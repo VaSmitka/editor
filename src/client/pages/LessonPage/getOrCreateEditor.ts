@@ -60,7 +60,11 @@ export const getOrCreateEditor = ({ fileId, shareDBDoc, localPresence, docPresen
   }
 
   let editor = editorCache.get(fileId);
+
+  console.log(editor)
+
   if (!editor) {
+
     // Cache miss --> mint a new editor.
     editor = new EditorView({
       state: EditorState.create({

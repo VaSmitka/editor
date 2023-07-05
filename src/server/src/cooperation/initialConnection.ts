@@ -1,14 +1,18 @@
 import fs from 'fs'
 import { json1Presence, shareDBBackend } from '../app'
 import { computeInitialDocument } from './computeInitialDocument'
+import { createNeededFiles } from './fileService'
 
-export const initialConnection = () => {
+export const initialConnection = (collectionId:string) => {
   // The time in milliseconds by which auto-saving is debounced.
   const autoSaveDebounceTimeMS = 800
+  const lessonPath = `/public/studentDirectory/${collectionId}`
+
+  createNeededFiles(lessonPath);
 
   const initialDocument = computeInitialDocument({
     // Use the current working directory to look for files.
-    fullPath: process.cwd() + '/public/studentDirectory'
+    fullPath: process.cwd() + lessonPath
   })
 
   // Create the initial "document",
@@ -17,7 +21,8 @@ export const initialConnection = () => {
   // @ts-ignore
   const agentsCount = shareDBConnection.agent?.backend.agentsCount
   console.log('agentsCount', agentsCount)
-  const shareDBDoc = shareDBConnection.get('documents', '1')
+
+  const shareDBDoc = shareDBConnection.get(collectionId, '1')
   shareDBDoc.create(initialDocument, json1Presence.type.uri)
 
   // The state of the document when files were last auto-saved.
@@ -35,7 +40,7 @@ export const initialConnection = () => {
 
       // Handle changing of text content.
       if (previous?.text && current?.text && previous.text !== current.text) {
-        fs.writeFileSync(`./public/studentDirectory/${current.name}`, current.text)
+        fs.writeFileSync(`.${lessonPath}/${current.name}`, current.text)
       }
     }
     previousDocument = currentDocument
@@ -53,7 +58,7 @@ export const initialConnection = () => {
   })
 
   return {
-    collection: 'documents',
+    collection: collectionId,
     documentId: '1'
   }
 }

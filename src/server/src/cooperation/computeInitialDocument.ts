@@ -57,10 +57,10 @@ export const computeInitialDocument = ({ fullPath }: { fullPath: string }) => {
   })
 
   if (debugDirectories) {
-    // console.log('files:');
-    // console.log(files);
-    // console.log('initialDocument:');
-    // console.log(JSON.stringify(initialDocument, null, 2));
+    console.log('files:');
+    console.log(files);
+    console.log('initialDocument:');
+    console.log(JSON.stringify(initialDocument, null, 2));
   }
   return initialDocument
 }

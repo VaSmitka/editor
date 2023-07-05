@@ -29,19 +29,10 @@ export class LessenTaskService<ServiceParams extends LessenTaskParams = LessenTa
     return []
   }
 
-  async get(lessonId: Id, params?: ServiceParams): Promise<LessenTask> {
-    const studentId = params?.query.student_id
+  async get(collectionId: Id, _params?: ServiceParams): Promise<LessenTask> {
+    const connectionData = initialConnection(collectionId.toString())
 
-    if (studentId) {
-      const connectionData = initialConnection()
-
-      return { ...connectionData }
-    }
-
-    return {
-      id: 0,
-      text: `A new message with ID: ${lessonId}!`
-    }
+    return { ...connectionData }
   }
 
   async create(data: LessenTaskData, params?: ServiceParams): Promise<LessenTask>

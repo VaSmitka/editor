@@ -14,8 +14,8 @@ export const doGetLesson = createAsyncThunk('lesson/getOne', async (id: string) 
 
 export const doGetLessonTask = createAsyncThunk(
   'lesson/task',
-  async ({ lessonId, studentId }: { lessonId: string; studentId: number }) =>
-    getLessonTask(lessonId, studentId).then((res: any) => {
+  async ({ collectionId }: { collectionId: string }) =>
+    getLessonTask(collectionId).then((res: any) => {
       console.log('Get lesson task', res);
       return res;
     }),

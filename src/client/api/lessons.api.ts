@@ -21,8 +21,8 @@ export type LessonTableRow = Lesson;
 
 export const getLesson = (id: string): Promise<Lesson> => httpApi.get(`lessons/${id}`).then(({ data }) => data);
 
-export const getLessonTask = (lessonId: string, studentId: number): Promise<Lesson> =>
-  httpApi.get(`lesson/task/${lessonId}?student_id=${studentId}`).then(({ data }) => data);
+export const getLessonTask = (collectionId: string | undefined): Promise<Lesson> =>
+  httpApi.get(`lesson/task/${collectionId}`).then(({ data }) => data);
 
 export const getLessonsDataByCourseId = (courseId: string, _pagination: Pagination): Promise<LessonsResponse> =>
   httpApi.get(`lessons?course_id=${courseId}`).then(({ data }) => data);

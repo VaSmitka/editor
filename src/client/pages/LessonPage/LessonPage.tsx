@@ -36,13 +36,14 @@ const LessonPage: React.FC = () => {
   // const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { pathname } = useLocation();
-  const { lessonId } = useParams();
+  const { studentId, lessonId } = useParams();
   const user = useAppSelector((state) => state.user.user);
 
   const [pageData, setPageData] = useState<Lesson>();
-  // const [isLoading, setIsLoading] = useState(false);
+  const [, setIsLoading] = useState(false);
 
   const initialized = useRef(false);
+  const [oldPathname, setPathname] = useState<string>(pathname)
 
   // The ShareDB document.
   const [shareDBDoc, setShareDBDoc] = useState(null);
@@ -64,34 +65,31 @@ const LessonPage: React.FC = () => {
     jsFileId: '',
   });
 
-  useEffect(() => {
+  useEffect(() => {      
+    dispatch(doGetLesson(lessonId!))
+      .unwrap()
+      .then((result) => {
+        setPageData(result);
+      })
+      .catch((err: { message: any }) => {
+        notificationController.error({ message: err.message });
+      });
+
     // Since there is only ever a single document,
     // these things are pretty arbitrary.
     //  * `collection` - the ShareDB collection to use
     //  * `id` - the id of the ShareDB document to use
-    const collection = 'documents';
+    const collectionId = `${studentId || 'edit'}-${lessonId}`;
     const id = '1';
 
-    if (!initialized.current) {
+    if (!initialized.current || pathname !== oldPathname) {
       initialized.current = true;
-      // setIsLoading(true);
-
-      dispatch(doGetLesson(lessonId!))
-        .unwrap()
-        .then((result) => {
-          console.log('result', result);
-
-          setPageData(result);
-
-          // setIsLoading(false);
-        })
-        .catch((err: { message: any }) => {
-          notificationController.error({ message: err.message });
-          // setIsLoading(false);
-        });
+      setIsLoading(true);
+      setPathname(pathname);
+      console.log('init code')
 
       // Initialize the ShareDB document.
-      const shareDBDoc = connection.get(collection, id);
+      const shareDBDoc = connection.get(collectionId, id);
 
       // Subscribe to the document to get updates.
       // This callback gets called once only.
@@ -100,7 +98,7 @@ const LessonPage: React.FC = () => {
         setShareDBDoc(shareDBDoc);
 
         if (!shareDBDoc.type) {
-          initialShareDb();
+          initialShareDb(collectionId);
         } else {
           actualizeDataStructure(shareDBDoc);
         }
@@ -117,7 +115,7 @@ const LessonPage: React.FC = () => {
 
         // Set up presence.
         // See https://github.com/share/sharedb/blob/master/examples/rich-text-presence/client.js#L53
-        const docPresence = shareDBDoc.connection.getDocPresence(collection, id);
+        const docPresence = shareDBDoc.connection.getDocPresence(collectionId, id);
 
         // Subscribe to receive remote presence updates.
         docPresence.subscribe(function (error: any) {
@@ -129,20 +127,26 @@ const LessonPage: React.FC = () => {
 
         // Store docPresence so child components can listen for changes.
         setDocPresence(docPresence);
+
+        shareDBDoc
       });
+    }
+
+    return () => {
+
     }
   }, [pathname]);
 
-  const initialShareDb = () => {
-    dispatch(doGetLessonTask({ lessonId: lessonId!, studentId: user!.id }))
+  const initialShareDb = (collectionId:string) => {
+    dispatch(doGetLessonTask({ collectionId }))
       .unwrap()
       .then((result) => {
         console.log('result', result);
-        // setIsLoading(false);
+        setIsLoading(false);
       })
       .catch((err: { message: any }) => {
         notificationController.error({ message: err.message });
-        // setIsLoading(false);
+        setIsLoading(false);
       });
   };
 

@@ -21,10 +21,10 @@ export const CodeEditor = ({ activeFileId, shareDBDoc, localPresence, docPresenc
       localPresence,
       docPresence,
     });
-    if (ref.current) ref.current.appendChild(editor.dom);
+    if (ref.current) ref.current.replaceChildren(editor.dom);
 
     return () => {
-      if (ref.current) ref.current.removeChild(editor.dom);
+      if (ref.current) ref.current.innerHTML = '';
     };
   }, [shareDBDoc, activeFileId]);
 

@@ -139,7 +139,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
               onClick={() => {
                 // notificationController.info({ message: t('tables.inviteMessage', { name: record.name }) });
                 if (type === PageType.LESSON) {
-                  navigate(`/lesson/${lessonId}`);
+                  navigate(`/student/${record.id}/lesson/${lessonId}`);
                 } else {
                   console.log('jdeme na to');
                 }

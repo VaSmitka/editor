@@ -136,6 +136,7 @@ export const AppRouter: React.FC = () => {
             <Route path="students" element={<Course />} />
             <Route path="lesson/:lessonId" element={<Course />} />
           </Route>
+          <Route path="student/:studentId/lesson/:lessonId" element={<Lesson />} />
           <Route path="lesson/:lessonId" element={<Lesson />} />
           <Route path="ui-components">
             <Route path="button" element={<Buttons />} />
