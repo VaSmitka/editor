@@ -28,8 +28,8 @@ export const Step1: React.FC = () => {
         dependencies={['password']}
         rules={[
           { required: true, message: t('common.confirmPasswordError') },
-          ({ getFieldValue }) => ({
-            validator(_, value) {
+          ({ getFieldValue }: {getFieldValue:any}) => ({
+            validator(_: any, value: any) {
               if (!value || getFieldValue('password') === value) {
                 return Promise.resolve();
               }

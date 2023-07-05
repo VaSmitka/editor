@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BaseTable } from '@app/components/common/BaseTable/BaseTable';
 import { BasicTableRow } from '@app/api/table.api.ts';
 import { LessonsCell } from './LessonsCell';
@@ -15,7 +15,7 @@ interface LessonsTableProps {
 }
 
 export const LessonsTable: React.FC<LessonsTableProps> = ({ fields, add, remove }) => {
-  const [loading, setLoading] = useState<boolean>(false);
+  // const [loading, setLoading] = useState<boolean>(false);
   const { t } = useTranslation();
 
   const columns = [
@@ -35,7 +35,7 @@ export const LessonsTable: React.FC<LessonsTableProps> = ({ fields, add, remove 
       title: t('tables.actions'),
       dataIndex: 'actions',
       width: '15%',
-      render: (...a: any) => {
+      render: (..._a: any) => {
         return (
           <BaseButton type="default" danger onClick={() => remove()}>
             {t('tables.delete')}
@@ -72,7 +72,7 @@ export const LessonsTable: React.FC<LessonsTableProps> = ({ fields, add, remove 
         columns={mergedColumns}
         pagination={false}
         rowClassName="editable-row"
-        loading={loading}
+        loading={false}
         scroll={{ x: 800 }}
       />
       <BaseButtonsForm.Item>

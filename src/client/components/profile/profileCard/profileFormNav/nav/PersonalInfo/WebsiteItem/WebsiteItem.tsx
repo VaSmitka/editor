@@ -15,7 +15,7 @@ export const WebsiteItem: React.FC<WebsiteItemProps> = () => {
 
   return (
     <BaseButtonsForm.Item shouldUpdate>
-      {({ getFieldValue }) => {
+      {({ getFieldValue }: {getFieldValue:any}) => {
         const website = getFieldValue('website');
 
         return (

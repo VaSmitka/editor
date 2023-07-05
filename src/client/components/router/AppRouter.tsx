@@ -14,7 +14,7 @@ import MainLayout from '@app/components/layouts/main/MainLayout/MainLayout';
 import ProfileLayout from '@app/components/profile/ProfileLayout';
 import RequireAuth from '@app/components/router/RequireAuth';
 import { withLoading } from '@app/hocs/withLoading.hoc';
-import NftDashboardPage from '@app/pages/DashboardPages/NftDashboardPage';
+import DefaultDashboardPage from '@app/pages/DashboardPages/DefaultDashboardPage';
 
 const CourseCreatorPage = React.lazy(() => import('@app/pages/CourseCreatorPage'));
 const CoursePage = React.lazy(() => import('@app/pages/CoursePage'));
@@ -58,7 +58,7 @@ const Logout = React.lazy(() => import('./Logout'));
 
 export const DASHBOARD_PATH = '/';
 
-const NftDashboard = withLoading(NftDashboardPage);
+const DefaultDashboard = withLoading(DefaultDashboardPage);
 const AdvancedForm = withLoading(AdvancedFormsPage);
 
 const CourseCreator = withLoading(CourseCreatorPage);
@@ -118,7 +118,7 @@ export const AppRouter: React.FC = () => {
     <BrowserRouter>
       <Routes>
         <Route path={DASHBOARD_PATH} element={protectedLayout}>
-          <Route index element={<NftDashboard />} />
+          <Route index element={<DefaultDashboard />} />
           <Route path="cource-creator" element={<CourseCreator />} />
           <Route path="forms">
             <Route path="advanced-forms" element={<AdvancedForm />} />

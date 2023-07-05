@@ -5,7 +5,7 @@ interface Step3Props {
   formValues?: CourseCreatorData;
 }
 
-export const Step3: React.FC<Step3Props> = ({ formValues }) => {
+export const Step3: React.FC<Step3Props> = ({}) => {
   return (
     <S.Details key="3">
       {/*formValues

@@ -5,10 +5,12 @@ import { markdown } from '@codemirror/lang-markdown';
 import { html } from '@codemirror/lang-html';
 import { css } from '@codemirror/lang-css';
 import { oneDark } from '@codemirror/theme-one-dark';
+// @ts-ignore
 import { json1Sync } from 'codemirror-ot';
 import { json1Presence, textUnicode } from '../../../ot';
 import { json1PresenceBroadcast } from './json1PresenceBroadcast';
 import { json1PresenceDisplay } from './json1PresenceDisplay';
+import { EditorProps } from './CodeEditor';
 
 // Singleton cache of CodeMirror instances
 // These are created, but never destroyed.
@@ -18,7 +20,7 @@ import { json1PresenceDisplay } from './json1PresenceDisplay';
 const editorCache = new Map();
 
 // Gets or creates a CodeMirror editor for the given file id.
-export const getOrCreateEditor = ({ fileId, shareDBDoc, localPresence, docPresence }) => {
+export const getOrCreateEditor = ({ fileId, shareDBDoc, localPresence, docPresence }: EditorProps) => {
   const data = shareDBDoc.data;
 
   const fileExtension = data[fileId].name.split('.').pop();

@@ -1,14 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 // import { useTranslation } from 'react-i18next';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import { notificationController } from '@app/controllers/notificationController';
 import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
 import { doGetLesson, doGetLessonTask } from '@app/store/slices/lessonSlice';
 import { Lesson } from '@app/api/lessons.api';
 import { BaseTabs } from '@app/components/common/BaseTabs/BaseTabs';
-import { useTranslation } from 'react-i18next';
 import * as S from './LessonPage.styles';
 import { CodeEditor } from './CodeEditor';
 import { randomId } from '../../../randomId';
@@ -33,15 +32,15 @@ const socket = new WebSocket('ws://localhost:3030/ws');
 const connection = new Connection(socket);
 
 const LessonPage: React.FC = () => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
+  // const { t } = useTranslation();
+  // const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { pathname } = useLocation();
   const { lessonId } = useParams();
   const user = useAppSelector((state) => state.user.user);
 
   const [pageData, setPageData] = useState<Lesson>();
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
 
   const initialized = useRef(false);
 
@@ -75,7 +74,7 @@ const LessonPage: React.FC = () => {
 
     if (!initialized.current) {
       initialized.current = true;
-      setIsLoading(true);
+      // setIsLoading(true);
 
       dispatch(doGetLesson(lessonId!))
         .unwrap()
@@ -84,11 +83,11 @@ const LessonPage: React.FC = () => {
 
           setPageData(result);
 
-          setIsLoading(false);
+          // setIsLoading(false);
         })
         .catch((err: { message: any }) => {
           notificationController.error({ message: err.message });
-          setIsLoading(false);
+          // setIsLoading(false);
         });
 
       // Initialize the ShareDB document.
@@ -139,11 +138,11 @@ const LessonPage: React.FC = () => {
       .unwrap()
       .then((result) => {
         console.log('result', result);
-        setIsLoading(false);
+        // setIsLoading(false);
       })
       .catch((err: { message: any }) => {
         notificationController.error({ message: err.message });
-        setIsLoading(false);
+        // setIsLoading(false);
       });
   };
 

@@ -24,7 +24,7 @@ export const BaseHashTag: React.FC<BaseHashTagProps> = ({ title, color, bgColor,
       #{title}
       {!!removeTag && (
         <S.RemoveTagWrapper
-          onClick={(e) => {
+          onClick={(e:any) => {
             removeTag();
             e.stopPropagation();
           }}

@@ -2,7 +2,7 @@ import { ViewPlugin, EditorView, WidgetType, Decoration } from '@codemirror/view
 import { Annotation, RangeSet } from '@codemirror/state';
 
 interface FncProps {
-  path: string;
+  path: any;
   docPresence: any;
 }
 
@@ -17,17 +17,18 @@ interface FncProps {
 export const json1PresenceDisplay = ({ path, docPresence }: FncProps) => [
   ViewPlugin.fromClass(
     class {
-      constructor(view) {
+      decorations: any;
+      constructor(view: { dispatch: (arg0: { annotations: Annotation<unknown>[]; }) => void; }) {
         // Initialize decorations to empty array so CodeMirror doesn't crash.
         this.decorations = RangeSet.of([]);
 
         // Mutable state local to this closure representing aggregated presence.
         //  * Keys are presence ids
         //  * Values are presence objects as defined by ot-json1-presence
-        const presenceState = {};
+        const presenceState:any = {};
 
         // Receive remote presence changes.
-        docPresence.on('receive', (id, presence) => {
+        docPresence.on('receive', (id: string | number, presence: any) => {
           // If presence === null, the user has disconnected / exited
           // We also check if the presence is for the current file or not.
           if (presence && pathMatches(path, presence)) {
@@ -41,7 +42,7 @@ export const json1PresenceDisplay = ({ path, docPresence }: FncProps) => [
           this.decorations = Decoration.set(
             Object.keys(presenceState).map((id) => {
               const presence = presenceState[id];
-              const { start, end } = presence;
+              const { start } = presence;
               const from = start[start.length - 1];
               // TODO support selection ranges (first attempt introduced layout errors)
               //const to = end[end.length - 1];
@@ -86,7 +87,7 @@ const presenceAnnotation = Annotation.define();
 //  * If true is returned, the presence is in this file.
 //  * If false is returned, the presence is in another file.
 // Assumption: start and end path are the same except the cursor position.
-const pathMatches = (path: string, presence) => {
+const pathMatches = (path: string, presence: any) => {
   for (let i = 0; i < path.length; i++) {
     if (path[i] !== presence.start[i]) {
       return false;
@@ -97,12 +98,13 @@ const pathMatches = (path: string, presence) => {
 
 // Displays a single remote presence cursor.
 class PresenceWidget extends WidgetType {
-  constructor(id: number) {
+  id: string;
+  constructor(id: string) {
     super();
     this.id = id;
   }
 
-  eq(other) {
+  eq(other:any) {
     return other.id === this.id;
   }
 

@@ -5,7 +5,6 @@ import * as S from './SiderMenu.styles';
 import { sidebarNavigation, SidebarNavigationItem } from '../sidebarNavigation';
 import { doGetCoursesByCreator, doGetCoursesByStudent } from '@app/store/slices/courseSlice';
 import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
-import { Lesson } from '@app/api/lessons.api';
 import { notificationController } from '@app/controllers/notificationController';
 import { CourseCreatorData } from '@app/api/course.api';
 import { BlockOutlined, ProfileOutlined } from '@ant-design/icons';
@@ -271,6 +270,3 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
 };
 
 export default SiderMenu;
-function goGetCoursesByStudent(userId: string): any {
-  throw new Error('Function not implemented.');
-}

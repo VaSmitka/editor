@@ -10,12 +10,11 @@ import * as S from '@app/components/tables/Tables/Tables.styles';
 import { notificationController } from '@app/controllers/notificationController';
 import { CourseTable } from '@app/components/tables/CourseTable/CourseTable';
 import { useAppDispatch } from '@app/hooks/reduxHooks';
-import { doGetLesson, doGetLessonsByCourseId } from '@app/store/slices/lessonSlice';
+import { doGetLesson } from '@app/store/slices/lessonSlice';
 import { Lesson } from '@app/api/lessons.api';
 import { doGetCourse } from '@app/store/slices/courseSlice';
 import { Course } from '@app/api/course.api';
 import { BaseModal } from '@app/components/common/BaseModal/BaseModal';
-import RegisterStudentPage from './RegisterStudentModal';
 import RegisterStudentModal from './RegisterStudentModal';
 
 enum ButtonType {
@@ -37,13 +36,12 @@ const CoursePage: React.FC = () => {
   const { courseId, lessonId } = useParams();
 
   const [pageType, setPageType] = useState<PageType>();
-  const [pageData, setPageData] = useState<Lesson[]>();
   const [info, setInfo] = useState<Course | Lesson>();
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
-    setIsLoading(true);
+    // setIsLoading(true);
     const pageType = detectPage();
 
     if (pageType !== PageType.LESSON) {
@@ -51,22 +49,22 @@ const CoursePage: React.FC = () => {
         .unwrap()
         .then((result) => {
           setInfo(result);
-          setIsLoading(false);
+          // setIsLoading(false);
         })
         .catch((err: { message: any }) => {
           notificationController.error({ message: err.message });
-          setIsLoading(false);
+          // setIsLoading(false);
         });
     } else {
       dispatch(doGetLesson(lessonId!))
         .unwrap()
         .then((result) => {
           setInfo(result);
-          setIsLoading(false);
+          // setIsLoading(false);
         })
         .catch((err: { message: any }) => {
           notificationController.error({ message: err.message });
-          setIsLoading(false);
+          // setIsLoading(false);
         });
     }
 

@@ -56,7 +56,7 @@ export const SearchDropdown: React.FC<SearchOverlayProps> = ({
                 onClick={() => setFilterOpen(!isFilterOpen)}
               />
             }
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event:any) => setQuery(event.target.value)}
             enterButton={null}
             addonAfter={null}
           />

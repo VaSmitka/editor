@@ -7,7 +7,7 @@ import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
-import { StudentSignUpRequest } from '@app/api/auth.api';
+import { Role, StudentSignUpRequest } from '@app/api/auth.api';
 import { useAppDispatch } from '@app/hooks/reduxHooks';
 import { PageType } from './CoursePage';
 import { doStudentSignUpToLesson, doStudentSignUpToLessons } from '@app/store/slices/authSlice';
@@ -29,7 +29,7 @@ const RegisterStudentModal: React.FC<RegisterStudentModalProps> = ({ courseId, l
 
     const request: StudentSignUpRequest = {
       ...data,
-      role: 'student',
+      role: Role.student,
       course_id: parseInt(courseId!),
       lesson_id: parseInt(lessonId || '-1'), // -1 as invalide value
     };
@@ -113,8 +113,8 @@ const RegisterStudentModal: React.FC<RegisterStudentModalProps> = ({ courseId, l
           dependencies={['password']}
           rules={[
             { required: true, message: t('common.requiredField') },
-            ({ getFieldValue }) => ({
-              validator(_, value) {
+            ({ getFieldValue }: {getFieldValue:any}) => ({
+              validator(_: any, value: any) {
                 if (!value || getFieldValue('password') === value) {
                   return Promise.resolve();
                 }

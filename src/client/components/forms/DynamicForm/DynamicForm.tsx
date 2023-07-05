@@ -62,9 +62,9 @@ export const DynamicForm: React.FC = () => {
         <BaseSelect options={areas} onChange={handleChange} />
       </BaseButtonsForm.Item>
       <BaseButtonsForm.List name="sights">
-        {(fields, { add, remove }) => (
+        {(fields:any, { add, remove }:{add:any,remove:any}) => (
           <>
-            {fields.map((field) => (
+            {fields.map((field:any) => (
               <BaseRow key={field.key} wrap={false} gutter={[10, 10]} align="middle" justify="space-between">
                 <BaseCol span={12}>
                   <BaseButtonsForm.Item

@@ -45,7 +45,7 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({ data, isOpen, childr
   return (
     <>
       <S.FilterWrapper isOpen={isOpen}>
-        <S.CheckboxGroup onChange={(checkedValues) => setSelectedFilter(checkedValues as CategoryType[])}>
+        <S.CheckboxGroup onChange={(checkedValues:any) => setSelectedFilter(checkedValues as CategoryType[])}>
           <BaseRow>{filterElements}</BaseRow>
         </S.CheckboxGroup>
       </S.FilterWrapper>

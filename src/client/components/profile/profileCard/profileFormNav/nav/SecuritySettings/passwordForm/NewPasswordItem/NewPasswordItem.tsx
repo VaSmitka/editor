@@ -21,8 +21,8 @@ export const NewPasswordItem: React.FC = () => {
           pattern: passwordPattern,
           message: t('profile.nav.securitySettings.notValidPassword'),
         },
-        ({ getFieldValue }) => ({
-          validator(_, value) {
+        ({ getFieldValue }: {getFieldValue:any}) => ({
+          validator(_: any, value: any) {
             if (!value || getFieldValue('password') !== value) {
               return Promise.resolve();
             }

@@ -1,6 +1,5 @@
-import { Response, httpApi } from '@app/api/http.api';
+import { httpApi } from '@app/api/http.api';
 import { Lesson } from './lessons.api';
-import { StudentInfo } from './auth.api';
 
 export interface Course {
   id: number;

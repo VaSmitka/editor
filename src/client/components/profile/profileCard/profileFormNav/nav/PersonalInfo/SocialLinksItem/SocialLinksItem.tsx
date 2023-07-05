@@ -18,7 +18,7 @@ export const SocialLinksItem: React.FC = () => {
       <BaseRow gutter={[20, 0]}>
         <BaseCol xs={24} md={12}>
           <BaseButtonsForm.Item shouldUpdate>
-            {({ getFieldValue }) => {
+            {({ getFieldValue }: {getFieldValue:any}) => {
               const twitter = getFieldValue('twitter');
 
               return (
@@ -33,7 +33,7 @@ export const SocialLinksItem: React.FC = () => {
         </BaseCol>
         <BaseCol xs={24} md={12}>
           <BaseButtonsForm.Item shouldUpdate>
-            {({ getFieldValue }) => {
+            {({ getFieldValue }: {getFieldValue:any}) => {
               const linkedin = getFieldValue('linkedin');
 
               return (
@@ -56,7 +56,7 @@ export const SocialLinksItem: React.FC = () => {
         </BaseCol>
         <BaseCol xs={24} md={12}>
           <BaseButtonsForm.Item shouldUpdate>
-            {({ getFieldValue }) => {
+            {({ getFieldValue }: { getFieldValue:any}) => {
               const facebook = getFieldValue('facebook');
 
               return (

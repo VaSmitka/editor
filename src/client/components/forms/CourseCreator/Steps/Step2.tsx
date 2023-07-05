@@ -2,12 +2,13 @@ import * as S from '../CreatorForm.styles';
 import React from 'react';
 import { LessonsTable } from '@app/components/tables/LessonsTable/LessonsTable';
 import { BaseFormList } from '@app/components/common/forms/components/BaseFormList/BaseFormList';
+import { FormListFieldData } from 'antd';
 
 export const Step2: React.FC = () => {
   return (
     <S.FormContent>
       <BaseFormList name="lessons">
-        {(fields, { add, remove }) => <LessonsTable fields={fields} add={add} remove={remove} />}
+        {(fields: FormListFieldData[], { add, remove }: any) => <LessonsTable fields={fields} add={add} remove={remove} />}
       </BaseFormList>
     </S.FormContent>
   );

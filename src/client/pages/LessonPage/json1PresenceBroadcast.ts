@@ -1,7 +1,12 @@
 import { EditorView } from 'codemirror';
 
+interface json1PresenceBroadcastProps {
+  path: any, 
+  localPresence: any
+}
+
 // Deals with broadcasting changes in cursor location and selection.
-export const json1PresenceBroadcast = ({ path, localPresence }) =>
+export const json1PresenceBroadcast = ({ path, localPresence }:json1PresenceBroadcastProps) =>
   // See https://discuss.codemirror.net/t/codemirror-6-proper-way-to-listen-for-changes/2395/10
   EditorView.updateListener.of((viewUpdate) => {
     // If this update modified the cursor / selection,
@@ -19,7 +24,7 @@ export const json1PresenceBroadcast = ({ path, localPresence }) =>
 
       // Broadcast presence to remote clients!
       // See https://github.com/share/sharedb/blob/master/examples/rich-text-presence/client.js#L71
-      localPresence.submit(presence, (error) => {
+      localPresence.submit(presence, (error: any) => {
         if (error) throw error;
       });
     }

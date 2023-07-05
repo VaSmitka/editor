@@ -16,8 +16,8 @@ export const ConfirmItemPassword: React.FC = () => {
           required: true,
           message: t('profile.nav.securitySettings.requiredPassword'),
         },
-        ({ getFieldValue }) => ({
-          validator(_, value) {
+        ({ getFieldValue }: {getFieldValue:any}) => ({
+          validator(_: any, value: any) {
             if (!value || getFieldValue('newPassword') === value) {
               return Promise.resolve();
             }
