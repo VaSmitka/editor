@@ -34,11 +34,11 @@ export class UserHasCourseService<ServiceParams extends Params = UserHasCoursePa
 
         const lessonsIds = await trx.select('id').from('lessons').where({course_id: course_id});
 
-        for (let id of lessonsIds) {
+        for (let idObj of lessonsIds) {
           await trx.insert({
             status: ExerciseStatus[0],
             student_id: ids[0].id,
-            lesson_id: id
+            lesson_id: idObj.id
           }).into('lesson-users');
         }
       })
@@ -56,6 +56,15 @@ export class UserHasCourseService<ServiceParams extends Params = UserHasCoursePa
     
     if (query?.course_id) {
       response.data = await this.Model.from('course-users').join('users', 'course-users.student_id', '=', 'users.id').where({course_id: query.course_id});
+    } else if (query?.student_id) {
+      const courses = await this.Model.from('course-users').join('courses', 'course-users.course_id', '=', 'courses.id').where({student_id: query.student_id});
+    
+      for (let course of courses) {
+        const lessons = await this.Model.from('lessons').where({course_id: course.id});
+        course.lessons = lessons;
+      }
+
+      response.data = courses;
     } else {
       response.data = await this.Model.from('course-users');
     }

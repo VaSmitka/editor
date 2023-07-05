@@ -1,31 +1,20 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 // import { useTranslation } from 'react-i18next';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
-import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 import { notificationController } from '@app/controllers/notificationController';
-import { CourseTable } from '@app/components/tables/CourseTable/CourseTable';
 import { useAppDispatch } from '@app/hooks/reduxHooks';
-import { doGetLesson, doGetLessonsByCourseId } from '@app/store/slices/lessonSlice';
+import { doGetLesson } from '@app/store/slices/lessonSlice';
 import { Lesson } from '@app/api/lessons.api';
-import { doGetCourse } from '@app/store/slices/courseSlice';
-import { Course } from '@app/api/course.api';
-import { BaseModal } from '@app/components/common/BaseModal/BaseModal';
-import RegisterStudentPage from '../RegisterStudentModal';
-import RegisterStudentModal from '../RegisterStudentModal';
-import { BaseFormTitle } from '@app/components/common/forms/components/BaseFormTitle/BaseFormTitle';
 import { BaseTabs } from '@app/components/common/BaseTabs/BaseTabs';
 import { useTranslation } from 'react-i18next';
 import * as S from './LessonPage.styles';
 import { CodeEditor } from './CodeEditor';
 import { randomId } from '../../../randomId';
-import { diff } from './diff';
 import { json1Presence } from '../../../ot';
 // @ts-ignore
 import ShareDBClient from 'sharedb-client-browser/dist/sharedb-client-umd.cjs';
-import { BaseCard } from '@app/components/common/BaseCard/BaseCard';
 
 interface FilesData {
     htmlFileId: string,

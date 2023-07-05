@@ -8,6 +8,7 @@ import type { HookContext } from '../../../declarations'
 import { dataValidator, queryValidator } from '../../../validators'
 
 import {ExerciseStatus} from '../../../utils/consts'
+import { passwordHash } from '@feathersjs/authentication-local'
 
 // Main data model schema
 export const userHasCourseSchema = Type.Object(
@@ -26,12 +27,25 @@ export const userHasCourseResolver = resolve<UserHasCourse, HookContext>({})
 export const userHasCourseExternalResolver = resolve<UserHasCourse, HookContext>({})
 
 // Schema for creating new entries
-export const userHasCourseDataSchema = Type.Pick(userHasCourseSchema, ['course_id'], {
+export const userHasCourseDataSchemaProperties = Type.Pick(userHasCourseSchema, ['course_id'], {
   $id: 'UserHasCourseData', additionalProperties: true
 })
+export const userHasCourseDataSchema = Type.Intersect(
+  [
+    userHasCourseDataSchemaProperties,
+    Type.Object({
+      password: Type.String()
+    }, { additionalProperties: true })
+  ],
+  { additionalProperties: true }
+)
+
 export type UserHasCourseData = Static<typeof userHasCourseDataSchema>
 export const userHasCourseDataValidator = getValidator(userHasCourseDataSchema, dataValidator)
-export const userHasCourseDataResolver = resolve<UserHasCourse, HookContext>({})
+export const userHasCourseDataResolver = resolve<UserHasCourseData, HookContext>({
+    password: passwordHash({ strategy: 'local' })
+})
+
 
 // Schema for updating existing entries
 export const userHasCoursePatchSchema = Type.Partial(userHasCourseSchema, {

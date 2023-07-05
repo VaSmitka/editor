@@ -211,9 +211,11 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
         bordered
       />
       <BaseButtonsForm.Item>
-        <BaseButton type="dashed" onClick={() => addNew(type)} icon={<PlusOutlined />}>
-          { type === PageType.LESSONS ? 'Add lesson' : 'Add student'}
-        </BaseButton>
+      {
+        type !== PageType.LESSON && <BaseButton type="dashed" onClick={() => addNew(type)} icon={<PlusOutlined />}>
+            { type === PageType.LESSONS ? 'Add lesson' : 'Add student'}
+          </BaseButton>
+      }
       </BaseButtonsForm.Item>
     </>
   );

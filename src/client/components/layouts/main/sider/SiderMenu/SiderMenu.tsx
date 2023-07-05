@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import * as S from './SiderMenu.styles';
 import { sidebarNavigation, SidebarNavigationItem } from '../sidebarNavigation';
-import { doGetCoursesByCreator } from '@app/store/slices/courseSlice';
+import { doGetCoursesByCreator, doGetCoursesByStudent } from '@app/store/slices/courseSlice';
 import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
 import { Lesson } from '@app/api/lessons.api';
 import { notificationController } from '@app/controllers/notificationController';
@@ -26,6 +26,7 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
   const location = useLocation();
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user.user);
+  const userId = user!.id.toString();
   const [sidebarNavigation, setSidebarNavigation] = useState<any[]>([]);
   const currentMenuItem = sidebarNavFlat.find(({ url }) => url === location.pathname);
   const defaultSelectedKeys = currentMenuItem ? [currentMenuItem.key] : [];
@@ -36,7 +37,9 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
   const defaultOpenKeys = openedSubmenu ? [openedSubmenu.key] : [];
 
   useEffect(() => {
-    dispatch(doGetCoursesByCreator(user!.id.toString()))
+    dispatch(
+      (user?.role === Role.teacher) ? doGetCoursesByCreator(userId) : doGetCoursesByStudent(userId)
+    )
     .unwrap()
     .then((result: CourseCreatorData[]) => {
       setSidebarNavigation(generateMenuByRole(result, user!.role));
@@ -251,3 +254,7 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
 };
 
 export default SiderMenu;
+function goGetCoursesByStudent(userId: string): any {
+  throw new Error('Function not implemented.');
+}
+

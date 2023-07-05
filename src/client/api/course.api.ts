@@ -37,5 +37,8 @@ export const getCourseStudents = (id: string): Promise<any> =>
 export const getCoursesByCreator = (userId: string): Promise<any> =>
   httpApi.get(`courses?creator=${userId}`).then(({ data }) => data.data);
 
+export const getCoursesByStudent = (userId: string): Promise<any> => 
+  httpApi.get(`course/users?student_id=${userId}`).then(({ data }) => data.data);
+
 export const buildCourse = (data:CourseCreatorData): Promise<any> =>
   httpApi.post<CourseCreatorData>('courses', data).then((data) => data.data);
