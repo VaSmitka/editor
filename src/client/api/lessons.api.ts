@@ -22,6 +22,9 @@ export interface LessonTableRow extends Lesson {}
 export const getLesson = (id: string): Promise<Lesson> =>
   httpApi.get(`lessons/${id}`).then(({ data }) => data);
 
+export const getLessonTask = (lessonId: string, studentId: number): Promise<Lesson> =>
+  httpApi.get(`lesson/task/${lessonId}?student_id=${studentId}`).then(({ data }) => data);
+
 export const getLessonsDataByCourseId = (courseId: string, pagination: Pagination): Promise<LessonsResponse> =>
   httpApi.get(`lessons?course_id=${courseId}`).then(({ data }) => data);
 

@@ -1,3 +1,4 @@
+import { lessenTask } from './lesson/task/task'
 import { userHasCourse } from './course/users/users'
 import { userHasLesson } from './lesson/users/users'
 import { lessons } from './lessons/lessons'
@@ -7,6 +8,7 @@ import { user } from './users/users'
 import type { Application } from '../declarations'
 
 export const services = (app: Application) => {
+  app.configure(lessenTask)
   app.configure(userHasCourse)
   app.configure(userHasLesson)
   app.configure(lessons)

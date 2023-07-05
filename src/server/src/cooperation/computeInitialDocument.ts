@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import { enableDirectories, debugDirectories } from './featureFlags';
+// Feature flag for directories, disabled until it's fully working.
+export const enableDirectories = true;
+export const debugDirectories = true;
 
 const randomId = () => Math.floor(Math.random() * 10000000000) + '';
 
@@ -60,10 +62,10 @@ export const computeInitialDocument = ({ fullPath }: {fullPath: string}) => {
   });
 
   if (debugDirectories) {
-    console.log('files:');
-    console.log(files);
-    console.log('initialDocument:');
-    console.log(JSON.stringify(initialDocument, null, 2));
+    // console.log('files:');
+    // console.log(files);
+    // console.log('initialDocument:');
+    // console.log(JSON.stringify(initialDocument, null, 2));
   }
   return initialDocument;
 };

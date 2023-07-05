@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 // import { useTranslation } from 'react-i18next';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import { notificationController } from '@app/controllers/notificationController';
-import { useAppDispatch } from '@app/hooks/reduxHooks';
-import { doGetLesson } from '@app/store/slices/lessonSlice';
+import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
+import { doGetLesson, doGetLessonTask } from '@app/store/slices/lessonSlice';
 import { Lesson } from '@app/api/lessons.api';
 import { BaseTabs } from '@app/components/common/BaseTabs/BaseTabs';
 import { useTranslation } from 'react-i18next';
@@ -38,29 +38,13 @@ const LessonPage: React.FC = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const { pathname } = useLocation();
-    let { courseId, lessonId } = useParams();
+    let { lessonId } = useParams();
+    const user = useAppSelector((state) => state.user.user);
 
     const [pageData, setPageData] = useState<Lesson>();
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        setIsLoading(true);
-        
-        dispatch(doGetLesson(lessonId!))
-        .unwrap()
-        .then((result) => {
-            console.log(result)
-            setPageData(result);
-            setIsLoading(false);
-        })
-        .catch((err: { message: any; }) => {
-            notificationController.error({ message: err.message });
-            setIsLoading(false);
-        });
-        
-
-    }, [pathname])
-
+    const initialized = useRef(false)
 
     // The ShareDB document.
     const [shareDBDoc, setShareDBDoc] = useState(null);
@@ -82,7 +66,6 @@ const LessonPage: React.FC = () => {
         jsFileId: ''
     });
 
-    // Set up the connection to ShareDB.
     useEffect(() => {
         // Since there is only ever a single document,
         // these things are pretty arbitrary.
@@ -91,71 +74,102 @@ const LessonPage: React.FC = () => {
         const collection = 'documents';
         const id = '1';
 
-        // Initialize the ShareDB document.
-        const shareDBDoc = connection.get(collection, id);
 
-        // Subscribe to the document to get updates.
-        // This callback gets called once only.
-        shareDBDoc.subscribe(() => {
-            // Expose ShareDB doc to downstream logic.
-            setShareDBDoc(shareDBDoc);
+        if (!initialized.current) {
+            initialized.current = true
+            setIsLoading(true);
 
-            const fileStructure = {
-                htmlFileId: '',
-                cssFileId: '',
-                jsFileId: ''
-            }
+            dispatch(doGetLesson(lessonId!))
+                .unwrap()
+                .then((result) => {
+                    console.log('result', result)
+                    
+                    setPageData(result);
 
-            for (const [key, value] of Object.entries(shareDBDoc.data)) {
-                // @ts-ignore
-                if (value.name.includes('html')) fileStructure.htmlFileId = key;
-                // @ts-ignore
-                if (value.name.includes('css')) fileStructure.cssFileId = key;
-                // @ts-ignore
-                if (value.name.includes('js')) fileStructure.jsFileId = key;
-            }
+                    setIsLoading(false);
+                })
+                .catch((err: { message: any; }) => {
+                    notificationController.error({ message: err.message });
+                    setIsLoading(false);
+                });
+            
+            // Initialize the ShareDB document.
+            const shareDBDoc = connection.get(collection, id);
 
+            // Subscribe to the document to get updates.
+            // This callback gets called once only.
+            shareDBDoc.subscribe(() => {
+                // Expose ShareDB doc to downstream logic.
+                setShareDBDoc(shareDBDoc);
 
-            // Set initial data.
-            setData(fileStructure);
-
-            // Listen for all changes and update `data`.
-            // This decouples rendering logic from ShareDB.
-            // This callback gets called on each change.
-            shareDBDoc.on('op', (op: any) => {
-                for (const [key, value] of Object.entries(shareDBDoc.data)) {
-                    // @ts-ignore
-                    if (value.name.includes('html')) fileStructure.htmlFileId = key;
-                    // @ts-ignore
-                    if (value.name.includes('css')) fileStructure.cssFileId = key;
-                    // @ts-ignore
-                    if (value.name.includes('js')) fileStructure.jsFileId = key;
+                if (!shareDBDoc.type) {
+                    initialShareDb(shareDBDoc);
+                } else {
+                    actualizeDataStructure(shareDBDoc);
                 }
-    
-    
-                // Set initial data.
-                setData(fileStructure);
+
+                // Listen for all changes and update `data`.
+                // This decouples rendering logic from ShareDB.
+                // This callback gets called on each change.
+                shareDBDoc.on('create', (op: any) => {
+                    actualizeDataStructure(shareDBDoc);
+                });
+                shareDBDoc.on('op', (op: any) => {
+                    actualizeDataStructure(shareDBDoc);
+                });
+
+                // Set up presence.
+                // See https://github.com/share/sharedb/blob/master/examples/rich-text-presence/client.js#L53
+                const docPresence = shareDBDoc.connection.getDocPresence(collection, id);
+
+                // Subscribe to receive remote presence updates.
+                docPresence.subscribe(function (error: any) {
+                    if (error) throw error;
+                });
+
+                // Set up our local presence for broadcasting this client's presence.
+                setLocalPresence(docPresence.create(randomId()));
+
+                // Store docPresence so child components can listen for changes.
+                setDocPresence(docPresence);
             });
+        }        
+    }, [pathname])
 
-            // Set up presence.
-            // See https://github.com/share/sharedb/blob/master/examples/rich-text-presence/client.js#L53
-            const docPresence = shareDBDoc.connection.getDocPresence(collection, id);
-
-            // Subscribe to receive remote presence updates.
-            docPresence.subscribe(function (error: any) {
-                if (error) throw error;
+    const initialShareDb = () => {
+        dispatch(doGetLessonTask({lessonId: lessonId!, studentId: user!.id}))
+            .unwrap()
+            .then((result) => {
+                console.log('result', result)
+                setIsLoading(false);
+            })
+            .catch((err: { message: any; }) => {
+                notificationController.error({ message: err.message });
+                setIsLoading(false);
             });
+    }
 
-            // Set up our local presence for broadcasting this client's presence.
-            setLocalPresence(docPresence.create(randomId()));
+    const actualizeDataStructure = (shareDBDoc: any) => {
+        
+        const fileStructure = {
+            htmlFileId: '',
+            cssFileId: '',
+            jsFileId: ''
+        }
 
-            // Store docPresence so child components can listen for changes.
-            setDocPresence(docPresence);
-        });
+        for (const [key, value] of Object.entries(shareDBDoc.data)) {
+            // @ts-ignore
+            if (value.name.includes('html')) fileStructure.htmlFileId = key;
+            // @ts-ignore
+            if (value.name.includes('css')) fileStructure.cssFileId = key;
+            // @ts-ignore
+            if (value.name.includes('js')) fileStructure.jsFileId = key;
+        }
 
-        // TODO unsubscribe from presence
-        // TODO unsubscribe from doc
-    }, []);
+
+        // Set initial data.
+        setData(fileStructure);
+    }
 
     const commonTabs = useMemo(
         () => [

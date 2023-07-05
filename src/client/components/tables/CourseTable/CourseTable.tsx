@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { BasicTableRow, Pagination, StudentTableRow, Tag } from '@app/api/table.api.ts';
+import React, { useEffect, useState } from 'react';
+import { BasicTableRow, Pagination, StudentTableRow } from '@app/api/table.api.ts';
 import { BaseTable } from '@app/components/common/BaseTable/BaseTable';
 import { ColumnsType } from 'antd/es/table';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
@@ -7,10 +7,8 @@ import { useTranslation } from 'react-i18next';
 // import { defineColorByPriority } from '@app/utils/utils';
 import { notificationController } from '@app/controllers/notificationController';
 import { useMounted } from '@app/hooks/useMounted';
-import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
-import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
-import { Lesson, LessonTableRow } from '@app/api/lessons.api';
+import { LessonTableRow } from '@app/api/lessons.api';
 import { PageType } from '@app/pages/CoursePage';
 import { useAppDispatch } from '@app/hooks/reduxHooks';
 import { doGetLessonStudents, doGetLessonsByCourseId } from '@app/store/slices/lessonSlice';
@@ -171,7 +169,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
       title: t('tables.actions'),
       dataIndex: 'actions',
       width: '15%',
-      render: (_text: string, record: {id: number}) => {
+      render: (_text: string, record: {id?: number}) => {
         return (
           <BaseSpace>
             <BaseButton
@@ -184,7 +182,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
             >
               Edit
             </BaseButton>
-            <BaseButton type="default" danger onClick={() => handleDeleteRow(record.id)}>
+            <BaseButton type="default" danger onClick={() => handleDeleteRow(record.id!)}>
               {t('tables.delete')}
             </BaseButton>
           </BaseSpace>
