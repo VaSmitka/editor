@@ -17,5 +17,6 @@
   ],
   "exclude": [
     "test",
+    "public",
   ]
 }

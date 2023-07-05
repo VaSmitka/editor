@@ -8,7 +8,7 @@ import { doSignUp } from '@app/store/slices/authSlice';
 import { notificationController } from '@app/controllers/notificationController';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import * as S from './SignUpForm.styles';
-import { SignUpRequest } from '@app/api/auth.api';
+import { Role, SignUpRequest } from '@app/api/auth.api';
 
 export interface SignUpFormData {
   firstName: string;
@@ -20,7 +20,7 @@ export interface SignUpFormData {
 }
 
 type SingUpProps = {
-  role: string;
+  role: Role;
 }
 
 const initValues = {

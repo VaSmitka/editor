@@ -9,6 +9,7 @@ import { Lesson } from '@app/api/lessons.api';
 import { notificationController } from '@app/controllers/notificationController';
 import { CourseCreatorData } from '@app/api/course.api';
 import { BlockOutlined, ProfileOutlined } from '@ant-design/icons';
+import { Role } from '@app/api/auth.api';
 
 interface SiderContentProps {
   setCollapsed: (isCollapsed: boolean) => void;
@@ -16,20 +17,39 @@ interface SiderContentProps {
 
 const sidebarNavFlat = sidebarNavigation.reduce(
   (result: SidebarNavigationItem[], current) =>
-    result.concat(current.children && current.children.length > 0 ? current.children : current),
+  result.concat(current.children && current.children.length > 0 ? current.children : current),
   [],
 );
-
+  
 const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {  
+  const { t } = useTranslation();
+  const location = useLocation();
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user.user);
   const [sidebarNavigation, setSidebarNavigation] = useState<any[]>([]);
+  const currentMenuItem = sidebarNavFlat.find(({ url }) => url === location.pathname);
+  const defaultSelectedKeys = currentMenuItem ? [currentMenuItem.key] : [];
+
+  const openedSubmenu = sidebarNavigation.find(({ children }) =>
+    children?.some((menu: { url: string; }) => menu.url === location.pathname),
+  );
+  const defaultOpenKeys = openedSubmenu ? [openedSubmenu.key] : [];
 
   useEffect(() => {
     dispatch(doGetCoursesByCreator(user!.id.toString()))
     .unwrap()
     .then((result: CourseCreatorData[]) => {
-      const items = result.map(elm => ({
+      setSidebarNavigation(generateMenuByRole(result, user!.role));
+    })
+    .catch((err: { message: any; }) => {
+      notificationController.error({ message: err.message });
+    });
+  }, [])
+
+  const generateMenuByRole = (result: CourseCreatorData[], role: Role): any[] => {
+    console.log('user', role)
+    if (role === Role.teacher) {
+      return result.map(elm => ({
         title: elm.name,
         key: `course-${elm.id}`,
         icon: <ProfileOutlined />,
@@ -185,24 +205,22 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
           ],
         }
       ])
-      setSidebarNavigation(items);
-    })
-    .catch((err: { message: any; }) => {
-      notificationController.error({ message: err.message });
-    });
-  }, [])
-
-
-  const { t } = useTranslation();
-  const location = useLocation();
-
-  const currentMenuItem = sidebarNavFlat.find(({ url }) => url === location.pathname);
-  const defaultSelectedKeys = currentMenuItem ? [currentMenuItem.key] : [];
-
-  const openedSubmenu = sidebarNavigation.find(({ children }) =>
-    children?.some(({ url }) => url === location.pathname),
-  );
-  const defaultOpenKeys = openedSubmenu ? [openedSubmenu.key] : [];
+    } else if (role === Role.student) {
+      return result.map(elm => ({
+        title: elm.name,
+        key: `course-${elm.id}`,
+        icon: <ProfileOutlined />,
+        children: elm.lessons.map(les => ({
+          title: les.name,
+          key: `lesson-${les.id}`,
+          url: `/lesson/${les.id}`,
+        }))
+      })) 
+    } else {
+      console.error('unknown role', role)
+      return []
+    }
+  }
 
   return (
     <S.Menu

@@ -2,6 +2,11 @@ import { httpApi } from '@app/api/http.api';
 import { TypeWorkStatus } from '@app/constants/enums/enums';
 import { UserModel } from '@app/domain/UserModel';
 
+export enum Role {
+  teacher = 'teacher',
+  student = 'student'
+}
+
 export interface AuthData {
   email: string;
   password: string;
@@ -17,7 +22,7 @@ export interface SignUpRequest {
   lastName: string;
   email: string;
   password: string;
-  role: string;
+  role: Role;
 }
 
 export interface ResetPasswordRequest {

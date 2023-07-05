@@ -24,5 +24,6 @@
     }
   },
   "include": ["./src/client"],
+  "exclude": ["./public"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

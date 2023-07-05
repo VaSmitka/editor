@@ -19,10 +19,10 @@ export const CodeEditor = ({
       localPresence,
       docPresence,
     });
-    ref.current!.appendChild(editor.dom);
+    if (ref.current) ref.current.appendChild(editor.dom);
 
     return () => {
-      ref.current!.removeChild(editor.dom);
+      if (ref.current) ref.current.removeChild(editor.dom);
     };
   }, [shareDBDoc, activeFileId]);
 

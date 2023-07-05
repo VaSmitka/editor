@@ -49,8 +49,8 @@ export const CreatorForm: React.FC = () => {
       setIsLoading(true);
       dispatch(doGetLessonsByCourseId(fromData.template.toString()))
         .unwrap()
-        .then((result: Lesson[]) => {
-          form.setFieldValue('lessons', result)
+        .then((result: {data: Lesson[]}) => {
+          form.setFieldValue('lessons', result.data)
           setIsLoading(false);
         })
         .catch((err: { message: any; }) => {
@@ -78,7 +78,9 @@ export const CreatorForm: React.FC = () => {
   };
 
   const onDone = () => {
-    const {name, description, lessons, template} = fromData!;
+    let {name, description, lessons, template} = fromData!;
+
+    lessons = lessons.map(({name, description}) => ({name, description}))
 
     const request = {
       name,

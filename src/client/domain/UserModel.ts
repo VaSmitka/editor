@@ -1,3 +1,5 @@
+import { Role } from "@app/api/auth.api";
+
 export interface UserModel {
   id: number;
   firstName: string;
@@ -8,5 +10,6 @@ export interface UserModel {
     name: string;
     verified: boolean;
   };
+  role: Role,
   lang: 'en';
 }

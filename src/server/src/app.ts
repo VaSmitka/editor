@@ -35,7 +35,7 @@ const autoSaveDebounceTimeMS = 800;
 
 const initialDocument = computeInitialDocument({
   // Use the current working directory to look for files.
-  fullPath: process.cwd() + '/studentDirectory',
+  fullPath: process.cwd() + '/public/studentDirectory',
 });
 
 // Register our custom OT type,
@@ -49,7 +49,6 @@ export const shareDBBackend = new ShareDB({
   presence: true,
   doNotForwardSendPresenceErrorsToClient: true,
 });
-
 
 // Create the initial "document",
 // which is a representation of files on disk.
@@ -70,27 +69,9 @@ const save = () => {
     const previous = previousDocument[key];
     const current = currentDocument[key];
 
-    // If this file was neither created nor deleted...
-    if (previous && current) {
-      // Handle changing of text content.
-      if (previous.text !== current.text) {
-        fs.writeFileSync(current.name, current.text);
-      }
-
-      // Handle renaming files.
-      if (previous.name !== current.name) {
-        fs.renameSync(previous.name, current.name);
-      }
-    }
-
-    // handle deleting files.
-    if (previous && !current) {
-      fs.unlinkSync(previous.name);
-    }
-
-    // Handle creating files.
-    if (!previous && current) {
-      fs.writeFileSync(current.name, current.text);
+    // Handle changing of text content.
+    if (previous.text !== current.text) {
+      fs.writeFileSync(`public/studentDirectory/${current.name}`, current.text);
     }
   }
   previousDocument = currentDocument;
@@ -117,7 +98,6 @@ app.use(json())
 app.use(urlencoded({ extended: true }))
 // Host the public folder
 app.use('/', serveStatic(app.get('public')))
-app.use('/studentDirectory', serveStatic('/studentDirectory'))
 
 // Configure services and real-time functionality
 app.configure(rest())

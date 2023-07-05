@@ -7,7 +7,7 @@ export interface Pagination {
   }
 
 export interface Lesson {
-    id: number,
+    id?: number,
     name: string,
     description: string,
     creator?: number

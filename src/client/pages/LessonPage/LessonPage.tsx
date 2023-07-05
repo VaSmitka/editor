@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 // import { useTranslation } from 'react-i18next';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -25,15 +25,12 @@ import { diff } from './diff';
 import { json1Presence } from '../../../ot';
 // @ts-ignore
 import ShareDBClient from 'sharedb-client-browser/dist/sharedb-client-umd.cjs';
+import { BaseCard } from '@app/components/common/BaseCard/BaseCard';
 
-interface ServerToClientEvents {
-    noArg: () => void;
-    basicEmit: (a: number, b: string, c: Buffer) => void;
-    withAck: (d: string, callback: (e: number) => void) => void;
-  }
-  
-interface ClientToServerEvents {
-    hello: () => void;
+interface FilesData {
+    htmlFileId: string,
+    cssFileId: string,
+    jsFileId: string
 }
 
 // Register our custom JSON1 OT type that supports presence.
@@ -90,22 +87,11 @@ const LessonPage: React.FC = () => {
 
     // The `doc.data` part of the ShareDB document,
     // updated on each change to decouple rendering from ShareDB.
-    const [data, setData] = useState(null);
-
-    // True if the file menu is open.
-    const [isFileMenuOpen, setIsFileMenuOpen] = useState(false);
-
-    // The id of the currently open file tab.
-    const [activeFileId, setActiveFileId] = useState<string>('');
-
-    // The ordered list of tabs.
-    const [tabList, setTabList] = useState([]);
-
-    // The current theme.
-    const [theme, setTheme] = useState('OneDark');
-
-    // True to show the settings modal.
-    const [settings, setSettings] = useState(false);
+    const [data, setData] = useState<FilesData>({
+        htmlFileId: '',
+        cssFileId: '',
+        jsFileId: ''
+    });
 
     // Set up the connection to ShareDB.
     useEffect(() => {
@@ -125,16 +111,41 @@ const LessonPage: React.FC = () => {
             // Expose ShareDB doc to downstream logic.
             setShareDBDoc(shareDBDoc);
 
+            const fileStructure = {
+                htmlFileId: '',
+                cssFileId: '',
+                jsFileId: ''
+            }
+
+            for (const [key, value] of Object.entries(shareDBDoc.data)) {
+                // @ts-ignore
+                if (value.name.includes('html')) fileStructure.htmlFileId = key;
+                // @ts-ignore
+                if (value.name.includes('css')) fileStructure.cssFileId = key;
+                // @ts-ignore
+                if (value.name.includes('js')) fileStructure.jsFileId = key;
+            }
+
+
             // Set initial data.
-            const fileIds = Object.keys(shareDBDoc.data);
-            setData(shareDBDoc.data);
-            setActiveFileId(fileIds[0]);
+            setData(fileStructure);
 
             // Listen for all changes and update `data`.
             // This decouples rendering logic from ShareDB.
             // This callback gets called on each change.
             shareDBDoc.on('op', (op: any) => {
-                setData(shareDBDoc.data);
+                for (const [key, value] of Object.entries(shareDBDoc.data)) {
+                    // @ts-ignore
+                    if (value.name.includes('html')) fileStructure.htmlFileId = key;
+                    // @ts-ignore
+                    if (value.name.includes('css')) fileStructure.cssFileId = key;
+                    // @ts-ignore
+                    if (value.name.includes('js')) fileStructure.jsFileId = key;
+                }
+    
+    
+                // Set initial data.
+                setData(fileStructure);
             });
 
             // Set up presence.
@@ -157,19 +168,54 @@ const LessonPage: React.FC = () => {
         // TODO unsubscribe from doc
     }, []);
 
+    const commonTabs = useMemo(
+        () => [
+          {
+            key: '1',
+            label: 'HTML',
+            children: <>{data && data.htmlFileId ? (
+                <CodeEditor
+                    shareDBDoc={shareDBDoc}
+                    localPresence={localPresence}
+                    docPresence={docPresence}
+                    activeFileId={data.htmlFileId}
+                />
+            ) : null}</>,
+          },
+          {
+            key: '2',
+            label: 'CSS',
+            children: <>{data && data.cssFileId ? (
+                <CodeEditor
+                    shareDBDoc={shareDBDoc}
+                    localPresence={localPresence}
+                    docPresence={docPresence}
+                    activeFileId={data.cssFileId}
+                />
+            ) : null}</>,
+          },
+          {
+            key: '3',
+            label: 'JS',
+            children: <>{data && data.jsFileId ? (
+                <CodeEditor
+                    shareDBDoc={shareDBDoc}
+                    localPresence={localPresence}
+                    docPresence={docPresence}
+                    activeFileId={data.jsFileId}
+                />
+            ) : null}</>,
+          },
+        ],
+        [data],
+      );
+
     return (
         <>
             <PageTitle>{`Lesson ${pageData?.name}`}</PageTitle>
             <S.Title>{pageData?.name}</S.Title>
             <BaseCol>
-            {data && activeFileId ? (
-                <CodeEditor
-                    shareDBDoc={shareDBDoc}
-                    localPresence={localPresence}
-                    docPresence={docPresence}
-                    activeFileId={activeFileId}
-                />
-            ) : null}
+                <BaseTabs defaultActiveKey="1" items={commonTabs} />
             </BaseCol>
         </>
     );
