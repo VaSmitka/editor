@@ -27,10 +27,10 @@ export const LoginForm: React.FC = () => {
   const [isLoading, setLoading] = useState(false);
 
   const handleSubmit = (values: LoginFormData) => {
-    const request:LoginRequest = {
+    const request: LoginRequest = {
       ...values,
-      strategy: 'local'
-    }
+      strategy: 'local',
+    };
 
     setLoading(true);
     dispatch(doLogin(request))

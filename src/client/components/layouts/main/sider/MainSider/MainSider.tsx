@@ -20,14 +20,7 @@ const MainSider: React.FC<MainSiderProps> = ({ isCollapsed, setCollapsed, ...pro
 
   return (
     <>
-      <S.Sider
-        trigger={null}
-        collapsed={isCollapsed}
-        collapsedWidth={80}
-        collapsible={false}
-        width={260}
-        {...props}
-      >
+      <S.Sider trigger={null} collapsed={isCollapsed} collapsedWidth={80} collapsible={false} width={260} {...props}>
         <SiderLogo isSiderCollapsed={isCollapsed} toggleSider={toggleSider} />
         <S.SiderContent>
           <SiderMenu setCollapsed={setCollapsed} />

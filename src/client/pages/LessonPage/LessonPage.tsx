@@ -17,9 +17,9 @@ import { json1Presence } from '../../../ot';
 import ShareDBClient from 'sharedb-client-browser/dist/sharedb-client-umd.cjs';
 
 interface FilesData {
-    htmlFileId: string,
-    cssFileId: string,
-    jsFileId: string
+  htmlFileId: string;
+  cssFileId: string;
+  jsFileId: string;
 }
 
 // Register our custom JSON1 OT type that supports presence.
@@ -32,196 +32,204 @@ const { Connection } = ShareDBClient;
 const socket = new WebSocket('ws://localhost:3030/ws');
 const connection = new Connection(socket);
 
-
 const LessonPage: React.FC = () => {
-    const { t } = useTranslation();
-    const navigate = useNavigate();
-    const dispatch = useAppDispatch();
-    const { pathname } = useLocation();
-    let { lessonId } = useParams();
-    const user = useAppSelector((state) => state.user.user);
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { pathname } = useLocation();
+  const { lessonId } = useParams();
+  const user = useAppSelector((state) => state.user.user);
 
-    const [pageData, setPageData] = useState<Lesson>();
-    const [isLoading, setIsLoading] = useState(false);
+  const [pageData, setPageData] = useState<Lesson>();
+  const [isLoading, setIsLoading] = useState(false);
 
-    const initialized = useRef(false)
+  const initialized = useRef(false);
 
-    // The ShareDB document.
-    const [shareDBDoc, setShareDBDoc] = useState(null);
+  // The ShareDB document.
+  const [shareDBDoc, setShareDBDoc] = useState(null);
 
-    // Local ShareDB presence, for broadcasting our cursor position
-    // so other clients can see it.
-    // See https://share.github.io/sharedb/api/local-presence
-    const [localPresence, setLocalPresence] = useState(null);
+  // Local ShareDB presence, for broadcasting our cursor position
+  // so other clients can see it.
+  // See https://share.github.io/sharedb/api/local-presence
+  const [localPresence, setLocalPresence] = useState(null);
 
-    // The document-level presence object, which emits
-    // changes in remote presence.
-    const [docPresence, setDocPresence] = useState(null);
+  // The document-level presence object, which emits
+  // changes in remote presence.
+  const [docPresence, setDocPresence] = useState(null);
 
-    // The `doc.data` part of the ShareDB document,
-    // updated on each change to decouple rendering from ShareDB.
-    const [data, setData] = useState<FilesData>({
-        htmlFileId: '',
-        cssFileId: '',
-        jsFileId: ''
-    });
+  // The `doc.data` part of the ShareDB document,
+  // updated on each change to decouple rendering from ShareDB.
+  const [data, setData] = useState<FilesData>({
+    htmlFileId: '',
+    cssFileId: '',
+    jsFileId: '',
+  });
 
-    useEffect(() => {
-        // Since there is only ever a single document,
-        // these things are pretty arbitrary.
-        //  * `collection` - the ShareDB collection to use
-        //  * `id` - the id of the ShareDB document to use
-        const collection = 'documents';
-        const id = '1';
+  useEffect(() => {
+    // Since there is only ever a single document,
+    // these things are pretty arbitrary.
+    //  * `collection` - the ShareDB collection to use
+    //  * `id` - the id of the ShareDB document to use
+    const collection = 'documents';
+    const id = '1';
 
+    if (!initialized.current) {
+      initialized.current = true;
+      setIsLoading(true);
 
-        if (!initialized.current) {
-            initialized.current = true
-            setIsLoading(true);
+      dispatch(doGetLesson(lessonId!))
+        .unwrap()
+        .then((result) => {
+          console.log('result', result);
 
-            dispatch(doGetLesson(lessonId!))
-                .unwrap()
-                .then((result) => {
-                    console.log('result', result)
-                    
-                    setPageData(result);
+          setPageData(result);
 
-                    setIsLoading(false);
-                })
-                .catch((err: { message: any; }) => {
-                    notificationController.error({ message: err.message });
-                    setIsLoading(false);
-                });
-            
-            // Initialize the ShareDB document.
-            const shareDBDoc = connection.get(collection, id);
+          setIsLoading(false);
+        })
+        .catch((err: { message: any }) => {
+          notificationController.error({ message: err.message });
+          setIsLoading(false);
+        });
 
-            // Subscribe to the document to get updates.
-            // This callback gets called once only.
-            shareDBDoc.subscribe(() => {
-                // Expose ShareDB doc to downstream logic.
-                setShareDBDoc(shareDBDoc);
+      // Initialize the ShareDB document.
+      const shareDBDoc = connection.get(collection, id);
 
-                if (!shareDBDoc.type) {
-                    initialShareDb(shareDBDoc);
-                } else {
-                    actualizeDataStructure(shareDBDoc);
-                }
+      // Subscribe to the document to get updates.
+      // This callback gets called once only.
+      shareDBDoc.subscribe(() => {
+        // Expose ShareDB doc to downstream logic.
+        setShareDBDoc(shareDBDoc);
 
-                // Listen for all changes and update `data`.
-                // This decouples rendering logic from ShareDB.
-                // This callback gets called on each change.
-                shareDBDoc.on('create', (op: any) => {
-                    actualizeDataStructure(shareDBDoc);
-                });
-                shareDBDoc.on('op', (op: any) => {
-                    actualizeDataStructure(shareDBDoc);
-                });
-
-                // Set up presence.
-                // See https://github.com/share/sharedb/blob/master/examples/rich-text-presence/client.js#L53
-                const docPresence = shareDBDoc.connection.getDocPresence(collection, id);
-
-                // Subscribe to receive remote presence updates.
-                docPresence.subscribe(function (error: any) {
-                    if (error) throw error;
-                });
-
-                // Set up our local presence for broadcasting this client's presence.
-                setLocalPresence(docPresence.create(randomId()));
-
-                // Store docPresence so child components can listen for changes.
-                setDocPresence(docPresence);
-            });
-        }        
-    }, [pathname])
-
-    const initialShareDb = () => {
-        dispatch(doGetLessonTask({lessonId: lessonId!, studentId: user!.id}))
-            .unwrap()
-            .then((result) => {
-                console.log('result', result)
-                setIsLoading(false);
-            })
-            .catch((err: { message: any; }) => {
-                notificationController.error({ message: err.message });
-                setIsLoading(false);
-            });
-    }
-
-    const actualizeDataStructure = (shareDBDoc: any) => {
-        
-        const fileStructure = {
-            htmlFileId: '',
-            cssFileId: '',
-            jsFileId: ''
+        if (!shareDBDoc.type) {
+          initialShareDb();
+        } else {
+          actualizeDataStructure(shareDBDoc);
         }
 
-        for (const [key, value] of Object.entries(shareDBDoc.data)) {
-            // @ts-ignore
-            if (value.name.includes('html')) fileStructure.htmlFileId = key;
-            // @ts-ignore
-            if (value.name.includes('css')) fileStructure.cssFileId = key;
-            // @ts-ignore
-            if (value.name.includes('js')) fileStructure.jsFileId = key;
-        }
+        // Listen for all changes and update `data`.
+        // This decouples rendering logic from ShareDB.
+        // This callback gets called on each change.
+        shareDBDoc.on('create', (_op: any) => {
+          actualizeDataStructure(shareDBDoc);
+        });
+        shareDBDoc.on('op', (_op: any) => {
+          actualizeDataStructure(shareDBDoc);
+        });
 
+        // Set up presence.
+        // See https://github.com/share/sharedb/blob/master/examples/rich-text-presence/client.js#L53
+        const docPresence = shareDBDoc.connection.getDocPresence(collection, id);
 
-        // Set initial data.
-        setData(fileStructure);
+        // Subscribe to receive remote presence updates.
+        docPresence.subscribe(function (error: any) {
+          if (error) throw error;
+        });
+
+        // Set up our local presence for broadcasting this client's presence.
+        setLocalPresence(docPresence.create(randomId()));
+
+        // Store docPresence so child components can listen for changes.
+        setDocPresence(docPresence);
+      });
+    }
+  }, [pathname]);
+
+  const initialShareDb = () => {
+    dispatch(doGetLessonTask({ lessonId: lessonId!, studentId: user!.id }))
+      .unwrap()
+      .then((result) => {
+        console.log('result', result);
+        setIsLoading(false);
+      })
+      .catch((err: { message: any }) => {
+        notificationController.error({ message: err.message });
+        setIsLoading(false);
+      });
+  };
+
+  const actualizeDataStructure = (shareDBDoc: any) => {
+    const fileStructure = {
+      htmlFileId: '',
+      cssFileId: '',
+      jsFileId: '',
+    };
+
+    for (const [key, value] of Object.entries(shareDBDoc.data)) {
+      // @ts-ignore
+      if (value.name.includes('html')) fileStructure.htmlFileId = key;
+      // @ts-ignore
+      if (value.name.includes('css')) fileStructure.cssFileId = key;
+      // @ts-ignore
+      if (value.name.includes('js')) fileStructure.jsFileId = key;
     }
 
-    const commonTabs = useMemo(
-        () => [
-          {
-            key: '1',
-            label: 'HTML',
-            children: <>{data && data.htmlFileId ? (
-                <CodeEditor
-                    shareDBDoc={shareDBDoc}
-                    localPresence={localPresence}
-                    docPresence={docPresence}
-                    activeFileId={data.htmlFileId}
-                />
-            ) : null}</>,
-          },
-          {
-            key: '2',
-            label: 'CSS',
-            children: <>{data && data.cssFileId ? (
-                <CodeEditor
-                    shareDBDoc={shareDBDoc}
-                    localPresence={localPresence}
-                    docPresence={docPresence}
-                    activeFileId={data.cssFileId}
-                />
-            ) : null}</>,
-          },
-          {
-            key: '3',
-            label: 'JS',
-            children: <>{data && data.jsFileId ? (
-                <CodeEditor
-                    shareDBDoc={shareDBDoc}
-                    localPresence={localPresence}
-                    docPresence={docPresence}
-                    activeFileId={data.jsFileId}
-                />
-            ) : null}</>,
-          },
-        ],
-        [data],
-      );
+    // Set initial data.
+    setData(fileStructure);
+  };
 
-    return (
-        <>
-            <PageTitle>{`Lesson ${pageData?.name}`}</PageTitle>
-            <S.Title>{pageData?.name}</S.Title>
-            <BaseCol>
-                <BaseTabs defaultActiveKey="1" items={commonTabs} />
-            </BaseCol>
-        </>
-    );
+  const commonTabs = useMemo(
+    () => [
+      {
+        key: '1',
+        label: 'HTML',
+        children: (
+          <>
+            {data && data.htmlFileId ? (
+              <CodeEditor
+                shareDBDoc={shareDBDoc}
+                localPresence={localPresence}
+                docPresence={docPresence}
+                activeFileId={data.htmlFileId}
+              />
+            ) : null}
+          </>
+        ),
+      },
+      {
+        key: '2',
+        label: 'CSS',
+        children: (
+          <>
+            {data && data.cssFileId ? (
+              <CodeEditor
+                shareDBDoc={shareDBDoc}
+                localPresence={localPresence}
+                docPresence={docPresence}
+                activeFileId={data.cssFileId}
+              />
+            ) : null}
+          </>
+        ),
+      },
+      {
+        key: '3',
+        label: 'JS',
+        children: (
+          <>
+            {data && data.jsFileId ? (
+              <CodeEditor
+                shareDBDoc={shareDBDoc}
+                localPresence={localPresence}
+                docPresence={docPresence}
+                activeFileId={data.jsFileId}
+              />
+            ) : null}
+          </>
+        ),
+      },
+    ],
+    [data],
+  );
+
+  return (
+    <>
+      <PageTitle>{`Lesson ${pageData?.name}`}</PageTitle>
+      <S.Title>{pageData?.name}</S.Title>
+      <BaseCol>
+        <BaseTabs defaultActiveKey="1" items={commonTabs} />
+      </BaseCol>
+    </>
+  );
 };
 
 export default LessonPage;

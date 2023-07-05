@@ -15,9 +15,9 @@ export const GitHubButton: React.FC = (props) => {
       target="_blank"
       $isDark={theme === 'dark'}
       style={{
-        padding: '11.4px 11px', 
-        height: '50px', 
-        border: '1px solid var(--border-base-color)'
+        padding: '11.4px 11px',
+        height: '50px',
+        border: '1px solid var(--border-base-color)',
       }}
       {...props}
     >

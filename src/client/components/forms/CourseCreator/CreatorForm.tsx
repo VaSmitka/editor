@@ -15,7 +15,6 @@ import { doGetCourses, doCreateCourse } from '@app/store/slices/courseSlice';
 import { Lesson } from '@app/api/lessons.api';
 import { doGetLessonsByCourseId } from '@app/store/slices/lessonSlice';
 
-
 export const CreatorForm: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -24,7 +23,7 @@ export const CreatorForm: React.FC = () => {
   const user = useAppSelector((state) => state.user.user);
 
   const [form] = BaseForm.useForm();
-  
+
   const [fromData, setFormData] = useState<CourseCreatorData>();
   const [current, setCurrent] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +37,7 @@ export const CreatorForm: React.FC = () => {
         setCourses(result);
         setIsLoading(false);
       })
-      .catch((err: { message: any; }) => {
+      .catch((err: { message: any }) => {
         notificationController.error({ message: err.message });
         setIsLoading(false);
       });
@@ -49,16 +48,15 @@ export const CreatorForm: React.FC = () => {
       setIsLoading(true);
       dispatch(doGetLessonsByCourseId(fromData.template.toString()))
         .unwrap()
-        .then((result: {data: Lesson[]}) => {
-          form.setFieldValue('lessons', result.data)
+        .then((result: { data: Lesson[] }) => {
+          form.setFieldValue('lessons', result.data);
           setIsLoading(false);
         })
-        .catch((err: { message: any; }) => {
+        .catch((err: { message: any }) => {
           notificationController.error({ message: err.message });
           setIsLoading(false);
         });
     }
-
   }, [fromData?.template]);
 
   const next = () => {
@@ -73,33 +71,33 @@ export const CreatorForm: React.FC = () => {
 
   // kazdy step je rerender
   const onFinishPart = (values: any) => {
-    setFormData((oldValues) => ({...oldValues, ...values}))
-    next()
+    setFormData((oldValues) => ({ ...oldValues, ...values }));
+    next();
   };
 
   const onDone = () => {
-    let {name, description, lessons, template} = fromData!;
+    let { name, description, lessons, template } = fromData!;
 
-    lessons = lessons.map(({name, description}) => ({name, description}))
+    lessons = lessons.map(({ name, description }) => ({ name, description }));
 
     const request = {
       name,
       description,
       template,
       lessons,
-      creator: user!.id
-    }
+      creator: user!.id,
+    };
 
-    console.log(request)
+    console.log(request);
     setIsLoading(true);
     dispatch(doCreateCourse(request))
       .unwrap()
       .then(() => navigate('/'))
-      .catch((err: { message: any; }) => {
+      .catch((err: { message: any }) => {
         notificationController.error({ message: err.message });
         setIsLoading(false);
       });
-  }
+  };
 
   const steps = [
     {
@@ -110,21 +108,17 @@ export const CreatorForm: React.FC = () => {
     },
     {
       title: t('forms.stepFormLabels.confirm'),
-    }
+    },
   ];
 
   const formFieldsUi = [
     <Step1 key="1" courses={courses} />,
     <Step2 key="2" />,
-    <Step3 key="3" formValues={fromData} />
+    <Step3 key="3" formValues={fromData} />,
   ];
 
   return (
-    <BaseForm
-      name="creatorForm"
-      form={form}
-      onFinish={onFinishPart}
-    >
+    <BaseForm name="creatorForm" form={form} onFinish={onFinishPart}>
       <Steps size="small" current={current} items={steps} />
       <div>{formFieldsUi[current]}</div>
 

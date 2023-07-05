@@ -11,7 +11,7 @@ interface LessonsCellProps extends React.HTMLAttributes<HTMLElement> {
   inputType: string;
   record: BasicTableRow;
   index: number;
-  remove: any,
+  remove: any;
   children: React.ReactNode;
 }
 
@@ -52,11 +52,7 @@ export const LessonsCell: React.FC<LessonsCellProps> = ({
     } else {
       return children;
     }
-  }
+  };
 
-  return (
-    <td {...restProps}>
-      {getContent()}
-    </td>
-  );
+  return <td {...restProps}>{getContent()}</td>;
 };

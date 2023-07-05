@@ -9,7 +9,7 @@ import { ExerciseStatus } from '../../../utils/consts'
 
 export type { UserHasLesson, UserHasLessonData, UserHasLessonPatch, UserHasLessonQuery }
 
-export interface UserHasLessonParams extends KnexAdapterParams<UserHasLessonQuery> {}
+export type UserHasLessonParams = KnexAdapterParams<UserHasLessonQuery>
 
 // By default calls the standard Knex adapter service methods but can be customized with your own functionality.
 export class UserHasLessonService<ServiceParams extends Params = UserHasLessonParams> extends KnexService<
@@ -19,35 +19,39 @@ export class UserHasLessonService<ServiceParams extends Params = UserHasLessonPa
   UserHasLessonPatch
 > {
   async create(data: any, params: Params): Promise<any> {
-    const {course_id, lesson_id, ...user} = data;
+    const { course_id, lesson_id, ...user } = data
 
     try {
-      await this.Model.transaction(async trx => {
+      await this.Model.transaction(async (trx) => {
         const ids = await trx.insert(user, 'id').into('users')
-        await trx.insert({
-          status: ExerciseStatus[0],
-          student_id: ids[0].id,
-          lesson_id,
-        }).into('lesson-users');
+        await trx
+          .insert({
+            status: ExerciseStatus[0],
+            student_id: ids[0].id,
+            lesson_id
+          })
+          .into('lesson-users')
       })
     } catch (error) {
       // If we get here, that means that neither the 'Old Books' catalogues insert,
       // nor any of the books inserts will have taken place.
-      console.error(error);
+      console.error(error)
     }
 
-    return { status: 'OK'}
+    return { status: 'OK' }
   }
 
-  async find({query}: UserHasLessonParams & { paginate: false; }): Promise<any> {
-    const response: {data?: any} = {}
-    
+  async find({ query }: UserHasLessonParams & { paginate: false }): Promise<any> {
+    const response: { data?: any } = {}
+
     if (query?.lesson_id) {
-      response.data = await this.Model.from('lesson-users').join('users', 'lesson-users.student_id', '=', 'users.id').where({lesson_id: query.lesson_id});
+      response.data = await this.Model.from('lesson-users')
+        .join('users', 'lesson-users.student_id', '=', 'users.id')
+        .where({ lesson_id: query.lesson_id })
     } else {
-      response.data = await this.Model.from('lesson-users');
+      response.data = await this.Model.from('lesson-users')
     }
-    return response;
+    return response
   }
 }
 

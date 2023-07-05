@@ -28,7 +28,7 @@ export const EditableTable: React.FC = () => {
   const fetch = useCallback(
     (pagination: Pagination) => {
       setTableData((tableData) => ({ ...tableData, loading: true }));
-      getEditableTableData(pagination).then((res: { data: any; pagination: any; }) => {
+      getEditableTableData(pagination).then((res: { data: any; pagination: any }) => {
         if (isMounted.current) {
           setTableData({ data: res.data, pagination: res.pagination, loading: false });
         }
@@ -108,7 +108,7 @@ export const EditableTable: React.FC = () => {
       width: '15%',
       render: (text: string, record: BasicTableRow) => {
         const editable = isEditing(record);
-        console.log(text, record)
+        console.log(text, record);
         return (
           <BaseSpace>
             {editable ? (

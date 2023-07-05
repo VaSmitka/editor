@@ -6,18 +6,17 @@ import { CodeEditor } from './CodeEditor';
 import { diff } from './diff';
 import './style.css';
 
-
 type FileData = {
   [key: number]: {
-    name: string,
-    text: string,
-  }
-}
+    name: string;
+    text: string;
+  };
+};
 
 type ShareDBDoc = {
-  data: FileData,
-  submitOp: any
-}
+  data: FileData;
+  submitOp: any;
+};
 
 // Register our custom JSON1 OT type that supports presence.
 // See https://github.com/vizhub-core/json1-presence
@@ -126,7 +125,7 @@ function App() {
         }
       }
     },
-    [tabList, activeFileId]
+    [tabList, activeFileId],
   );
 
   const handleCloseTabClick = useCallback(
@@ -135,7 +134,7 @@ function App() {
       event.stopPropagation();
       closeTab(fileIdToRemove);
     },
-    [closeTab]
+    [closeTab],
   );
 
   const handleFileClick = useCallback(
@@ -145,7 +144,7 @@ function App() {
         setTabList([...tabList, fileId]);
       }
     },
-    [tabList]
+    [tabList],
   );
 
   const createFile = useCallback(() => {
@@ -175,18 +174,13 @@ function App() {
         {tabList.map((fileId) => (
           <div
             key={fileId}
-            className={
-              tabValid ? `tab${fileId === activeFileId ? ' active' : ''}` : undefined
-            }
+            className={tabValid ? `tab${fileId === activeFileId ? ' active' : ''}` : undefined}
             onClick={() => {
               setActiveFileId(fileId);
             }}
           >
             {tabValid ? fileNameSplit(data[fileId].name) : ''}
-            <div
-              className={activeFileId ? 'bx bx-x tab-close' : ''}
-              onClick={handleCloseTabClick(fileId)}
-            ></div>
+            <div className={activeFileId ? 'bx bx-x tab-close' : ''} onClick={handleCloseTabClick(fileId)}></div>
           </div>
         ))}
       </div>

@@ -1,7 +1,6 @@
 import { CourseCreatorData } from '@app/api/course.api';
 import * as S from '../CreatorForm.styles';
 
-
 interface Step3Props {
   formValues?: CourseCreatorData;
 }

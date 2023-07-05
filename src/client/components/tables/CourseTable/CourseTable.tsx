@@ -18,10 +18,10 @@ import { doGetCourseStudents } from '@app/store/slices/courseSlice';
 import { useNavigate } from 'react-router-dom';
 
 interface CourseTableProps {
-  courseId: string | undefined,
-  lessonId: string | undefined,
-  type: PageType | undefined,
-  setModalOpen: any
+  courseId: string | undefined;
+  lessonId: string | undefined;
+  type: PageType | undefined;
+  setModalOpen: any;
 }
 
 const initialPagination: Pagination = {
@@ -34,61 +34,60 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isMounted } = useMounted();
-  
+
   const [tableData, setTableData] = useState<{ data: BasicTableRow[]; pagination: Pagination; loading: boolean }>({
     data: [],
     pagination: initialPagination,
     loading: false,
   });
-  
+
   const fetch = () => {
-      setTableData((tableData) => ({ ...tableData, loading: true }));
-      
-      // PageType.STUDENTS - get course students
-      if (type === PageType.STUDENTS) {
-        dispatch(doGetCourseStudents(courseId!))
-          .unwrap()
-          .then((res) => {
-              if (isMounted.current) {
-                setTableData({ data: res.data, pagination: res.pagination, loading: false });
-              }
-          })
-          .catch((err: { message: any; }) => {
-              notificationController.error({ message: err.message });
-              setTableData(oldData => ({...oldData, loading: false}));
-          });
-      }
+    setTableData((tableData) => ({ ...tableData, loading: true }));
 
+    // PageType.STUDENTS - get course students
+    if (type === PageType.STUDENTS) {
+      dispatch(doGetCourseStudents(courseId!))
+        .unwrap()
+        .then((res) => {
+          if (isMounted.current) {
+            setTableData({ data: res.data, pagination: res.pagination, loading: false });
+          }
+        })
+        .catch((err: { message: any }) => {
+          notificationController.error({ message: err.message });
+          setTableData((oldData) => ({ ...oldData, loading: false }));
+        });
+    }
 
-      // PageType.LESSON - get course students
-      if (type === PageType.LESSON && lessonId) {
-        dispatch(doGetLessonStudents(lessonId!))
-          .unwrap()
-          .then((res) => {
-              if (isMounted.current) {
-                setTableData({ data: res.data, pagination: res.pagination, loading: false });
-              }
-          })
-          .catch((err: { message: any; }) => {
-              notificationController.error({ message: err.message });
-              setTableData(oldData => ({...oldData, loading: false}));
-          });
-        }
+    // PageType.LESSON - get course students
+    if (type === PageType.LESSON && lessonId) {
+      dispatch(doGetLessonStudents(lessonId!))
+        .unwrap()
+        .then((res) => {
+          if (isMounted.current) {
+            setTableData({ data: res.data, pagination: res.pagination, loading: false });
+          }
+        })
+        .catch((err: { message: any }) => {
+          notificationController.error({ message: err.message });
+          setTableData((oldData) => ({ ...oldData, loading: false }));
+        });
+    }
 
-      // PageType.LESSONS - get course lessons
-      if (type === PageType.LESSONS) {
-        dispatch(doGetLessonsByCourseId(courseId!))
-          .unwrap()
-          .then((res) => {
-              if (isMounted.current) {
-                setTableData({ data: res.data, pagination: res.pagination, loading: false });
-              }
-          })
-          .catch((err: { message: any; }) => {
-              notificationController.error({ message: err.message });
-              setTableData(oldData => ({...oldData, loading: false}));
-          });
-        }
+    // PageType.LESSONS - get course lessons
+    if (type === PageType.LESSONS) {
+      dispatch(doGetLessonsByCourseId(courseId!))
+        .unwrap()
+        .then((res) => {
+          if (isMounted.current) {
+            setTableData({ data: res.data, pagination: res.pagination, loading: false });
+          }
+        })
+        .catch((err: { message: any }) => {
+          notificationController.error({ message: err.message });
+          setTableData((oldData) => ({ ...oldData, loading: false }));
+        });
+    }
   };
 
   useEffect(() => {
@@ -115,8 +114,10 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
       title: t('common.name'),
       dataIndex: 'name',
       render: (_text, record) => (
-        <span>{record.firstName} {record.lastName}</span>
-      )
+        <span>
+          {record.firstName} {record.lastName}
+        </span>
+      ),
     },
     {
       title: 'Email',
@@ -138,13 +139,13 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
               onClick={() => {
                 // notificationController.info({ message: t('tables.inviteMessage', { name: record.name }) });
                 if (type === PageType.LESSON) {
-                  navigate(`/lesson/${lessonId}`)
+                  navigate(`/lesson/${lessonId}`);
                 } else {
-                  console.log('jdeme na to')
+                  console.log('jdeme na to');
                 }
               }}
             >
-              {type === PageType.LESSON ? 'Show' : 'Edit' }
+              {type === PageType.LESSON ? 'Show' : 'Edit'}
             </BaseButton>
             <BaseButton type="default" danger onClick={() => handleDeleteRow(record.id)}>
               {t('tables.delete')}
@@ -169,15 +170,15 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
       title: t('tables.actions'),
       dataIndex: 'actions',
       width: '15%',
-      render: (_text: string, record: {id?: number}) => {
+      render: (_text: string, record: { id?: number }) => {
         return (
           <BaseSpace>
             <BaseButton
               type="ghost"
               onClick={() => {
-                console.log(record)
+                console.log(record);
                 // notificationController.info({ message: t('tables.inviteMessage', { name: record.name }) });
-                navigate(`/lesson/${record.id}`)
+                navigate(`/lesson/${record.id}`);
               }}
             >
               Edit
@@ -193,9 +194,9 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
 
   const addNew = (pageType?: PageType) => {
     if (pageType === PageType.LESSON || pageType === PageType.STUDENTS) {
-      setModalOpen(true)
+      setModalOpen(true);
     }
-  }
+  };
 
   return (
     <>
@@ -209,11 +210,11 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
         bordered
       />
       <BaseButtonsForm.Item>
-      {
-        type !== PageType.LESSON && <BaseButton type="dashed" onClick={() => addNew(type)} icon={<PlusOutlined />}>
-            { type === PageType.LESSONS ? 'Add lesson' : 'Add student'}
+        {type !== PageType.LESSON && (
+          <BaseButton type="dashed" onClick={() => addNew(type)} icon={<PlusOutlined />}>
+            {type === PageType.LESSONS ? 'Add lesson' : 'Add student'}
           </BaseButton>
-      }
+        )}
       </BaseButtonsForm.Item>
     </>
   );

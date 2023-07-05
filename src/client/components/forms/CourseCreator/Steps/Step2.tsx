@@ -4,11 +4,10 @@ import { LessonsTable } from '@app/components/tables/LessonsTable/LessonsTable';
 import { BaseFormList } from '@app/components/common/forms/components/BaseFormList/BaseFormList';
 
 export const Step2: React.FC = () => {
-
   return (
     <S.FormContent>
       <BaseFormList name="lessons">
-        {(fields, { add, remove }) => <LessonsTable fields={fields} add={add} remove={remove}/>}
+        {(fields, { add, remove }) => <LessonsTable fields={fields} add={add} remove={remove} />}
       </BaseFormList>
     </S.FormContent>
   );

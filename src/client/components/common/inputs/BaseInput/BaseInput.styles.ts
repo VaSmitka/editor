@@ -32,4 +32,4 @@ export const Input = styled(AntInput)`
 
 export const TextArea = styled(AntInput.TextArea)`
   border: 1px solid var(--border-base-color);
-`
+`;

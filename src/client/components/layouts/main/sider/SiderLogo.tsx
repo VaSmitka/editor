@@ -10,7 +10,6 @@ interface SiderLogoProps {
   toggleSider: () => void;
 }
 export const SiderLogo: React.FC<SiderLogoProps> = ({ isSiderCollapsed, toggleSider }) => {
-
   const theme = useAppSelector((state) => state.theme.theme);
 
   const img = theme === 'dark' ? logoDark : logo;

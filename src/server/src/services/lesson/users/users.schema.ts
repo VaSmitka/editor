@@ -7,7 +7,7 @@ import type { Static } from '@feathersjs/typebox'
 import type { HookContext } from '../../../declarations'
 import { dataValidator, queryValidator } from '../../../validators'
 
-import {ExerciseStatus} from '../../../utils/consts'
+import { ExerciseStatus } from '../../../utils/consts'
 import { passwordHash } from '@feathersjs/authentication-local'
 
 // Main data model schema
@@ -28,14 +28,18 @@ export const userHasLessonExternalResolver = resolve<UserHasLesson, HookContext>
 
 // Schema for creating new entries
 export const userHasLessonDataSchemaProperties = Type.Pick(userHasLessonSchema, ['lesson_id'], {
-  $id: 'UserHasLessonData', additionalProperties: true
+  $id: 'UserHasLessonData',
+  additionalProperties: true
 })
 export const userHasLessonDataSchema = Type.Intersect(
   [
     userHasLessonDataSchemaProperties,
-    Type.Object({
-      password: Type.String()
-    }, { additionalProperties: true })
+    Type.Object(
+      {
+        password: Type.String()
+      },
+      { additionalProperties: true }
+    )
   ],
   { additionalProperties: true }
 )
@@ -43,7 +47,7 @@ export const userHasLessonDataSchema = Type.Intersect(
 export type UserHasLessonData = Static<typeof userHasLessonDataSchema>
 export const userHasLessonDataValidator = getValidator(userHasLessonDataSchema, dataValidator)
 export const userHasLessonDataResolver = resolve<UserHasLessonData, HookContext>({
-    password: passwordHash({ strategy: 'local' })
+  password: passwordHash({ strategy: 'local' })
 })
 
 // Schema for updating existing entries
@@ -55,7 +59,12 @@ export const userHasLessonPatchValidator = getValidator(userHasLessonPatchSchema
 export const userHasLessonPatchResolver = resolve<UserHasLesson, HookContext>({})
 
 // Schema for allowed query properties
-export const userHasLessonQueryProperties = Type.Pick(userHasLessonSchema, ['id', 'status', 'student_id', 'lesson_id'])
+export const userHasLessonQueryProperties = Type.Pick(userHasLessonSchema, [
+  'id',
+  'status',
+  'student_id',
+  'lesson_id'
+])
 export const userHasLessonQuerySchema = Type.Intersect(
   [
     querySyntax(userHasLessonQueryProperties),

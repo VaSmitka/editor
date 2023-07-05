@@ -20,7 +20,7 @@ export interface TotalEarning {
 }
 
 export const getTotalEarning = (id: number, currency: CurrencyTypeEnum): Promise<TotalEarning> => {
-  console.log(id, currency)
+  console.log(id, currency);
   return new Promise((res) => {
     setTimeout(() => {
       res({

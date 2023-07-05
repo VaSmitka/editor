@@ -15,7 +15,6 @@ import { getDefaultAntdStyles } from './styles/themes/default-styles';
 // import './styles/themes/main.css';
 
 const App: React.FC = () => {
-  
   const theme = useAppSelector((state) => state.theme.theme);
   const token = getDefaultAntdStyles(theme);
 
@@ -34,7 +33,7 @@ const App: React.FC = () => {
           locale={enUS}
           theme={{
             token,
-            algorithm: thm.darkAlgorithm
+            algorithm: thm.darkAlgorithm,
           }}
         >
           <AppRouter />

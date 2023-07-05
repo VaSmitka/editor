@@ -18,12 +18,7 @@ import { json1PresenceDisplay } from './json1PresenceDisplay';
 const editorCache = new Map();
 
 // Gets or creates a CodeMirror editor for the given file id.
-export const getOrCreateEditor = ({
-  fileId,
-  shareDBDoc,
-  localPresence,
-  docPresence,
-}) => {
+export const getOrCreateEditor = ({ fileId, shareDBDoc, localPresence, docPresence }) => {
   const data = shareDBDoc.data;
 
   const fileExtension = data[fileId].name.split('.').pop();
@@ -52,12 +47,7 @@ export const getOrCreateEditor = ({
     oneDark,
   ];
 
-  if (
-    fileExtension === 'js' ||
-    fileExtension === 'json' ||
-    fileExtension == 'jsx' ||
-    fileExtension == 'ts'
-  ) {
+  if (fileExtension === 'js' || fileExtension === 'json' || fileExtension == 'jsx' || fileExtension == 'ts') {
     extensions.push(javascript());
   } else if (fileExtension === 'html') {
     extensions.push(html());

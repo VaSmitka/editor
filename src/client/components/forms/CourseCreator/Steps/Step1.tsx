@@ -13,11 +13,7 @@ export const Step1: React.FC<Step1Props> = ({ courses }) => {
   // const { t } = useTranslation();
   return (
     <S.FormContent>
-      <BaseForm.Item
-        name="name"
-        label="Name"
-        rules={[{ required: true, message: 'Name is required' }]}
-      >
+      <BaseForm.Item name="name" label="Name" rules={[{ required: true, message: 'Name is required' }]}>
         <BaseInput />
       </BaseForm.Item>
       <BaseForm.Item
@@ -25,16 +21,13 @@ export const Step1: React.FC<Step1Props> = ({ courses }) => {
         label="Description"
         rules={[{ required: true, message: 'Description is required' }]}
       >
-        <BaseInput.TextArea rows={4}/>
+        <BaseInput.TextArea rows={4} />
       </BaseForm.Item>
-      <BaseForm.Item
-        name="template"
-        label="Template"
-      >
+      <BaseForm.Item name="template" label="Template">
         <BaseSelect placeholder="Choose template">
-          {
-            courses.map(({id, name}) => <Option value={id}>{name}</Option>)
-          }
+          {courses.map(({ id, name }) => (
+            <Option value={id}>{name}</Option>
+          ))}
         </BaseSelect>
       </BaseForm.Item>
     </S.FormContent>

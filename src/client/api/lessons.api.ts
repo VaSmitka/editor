@@ -1,26 +1,25 @@
 import { httpApi } from '@app/api/http.api';
 
 export interface Pagination {
-    current?: number;
-    pageSize?: number;
-    total?: number;
-  }
+  current?: number;
+  pageSize?: number;
+  total?: number;
+}
 
 export interface Lesson {
-    id?: number,
-    name: string,
-    description: string,
-    creator?: number
+  id?: number;
+  name: string;
+  description: string;
+  creator?: number;
 }
 
 export interface LessonsResponse {
-    data: Lesson[]
+  data: Lesson[];
 }
 
-export interface LessonTableRow extends Lesson {}
+export type LessonTableRow = Lesson;
 
-export const getLesson = (id: string): Promise<Lesson> =>
-  httpApi.get(`lessons/${id}`).then(({ data }) => data);
+export const getLesson = (id: string): Promise<Lesson> => httpApi.get(`lessons/${id}`).then(({ data }) => data);
 
 export const getLessonTask = (lessonId: string, studentId: number): Promise<Lesson> =>
   httpApi.get(`lesson/task/${lessonId}?student_id=${studentId}`).then(({ data }) => data);

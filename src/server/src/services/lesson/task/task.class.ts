@@ -16,27 +16,26 @@ export interface LessenTaskServiceOptions {
 }
 
 export interface LessenTaskParams extends Params<LessenTaskQuery> {
-  student_id: string,
+  student_id: string
 }
 
 // This is a skeleton for a custom service class. Remove or add the methods you need here
 export class LessenTaskService<ServiceParams extends LessenTaskParams = LessenTaskParams>
   implements ServiceInterface<LessenTask, LessenTaskData, ServiceParams, LessenTaskPatch>
 {
-  constructor(public options: LessenTaskServiceOptions) {
-  }
+  constructor(public options: LessenTaskServiceOptions) {}
 
   async find(_params?: ServiceParams): Promise<LessenTask[]> {
     return []
   }
 
   async get(lessonId: Id, params?: ServiceParams): Promise<LessenTask> {
-    const studentId = params?.query.student_id;
+    const studentId = params?.query.student_id
 
     if (studentId) {
-      const connectionData = initialConnection();
+      const connectionData = initialConnection()
 
-      return {...connectionData};
+      return { ...connectionData }
     }
 
     return {

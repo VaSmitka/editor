@@ -14,14 +14,14 @@ export interface SignUpFormData {
   firstName: string;
   lastName: string;
   email: string;
-  password: string;  
+  password: string;
   confirmPassword: string;
   termOfUse: boolean;
 }
 
 type SingUpProps = {
   role: Role;
-}
+};
 
 const initValues = {
   firstName: 'Chris',
@@ -32,7 +32,7 @@ const initValues = {
   termOfUse: true,
 };
 
-export const SignUpForm: React.FC<SingUpProps> = ({role} : SingUpProps ) => {
+export const SignUpForm: React.FC<SingUpProps> = ({ role }: SingUpProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [isLoading, setLoading] = useState(false);
@@ -40,13 +40,13 @@ export const SignUpForm: React.FC<SingUpProps> = ({role} : SingUpProps ) => {
   const { t } = useTranslation();
 
   const handleSubmit = (values: SignUpFormData) => {
-    const {confirmPassword, termOfUse, ...data} = values;
-    
+    const { confirmPassword, termOfUse, ...data } = values;
+
     const request: SignUpRequest = {
       ...data,
-      role
-    }
-    console.log(request)
+      role,
+    };
+    console.log(request);
 
     setLoading(true);
     dispatch(doSignUp(request))

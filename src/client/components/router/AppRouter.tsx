@@ -119,7 +119,7 @@ export const AppRouter: React.FC = () => {
       <Routes>
         <Route path={DASHBOARD_PATH} element={protectedLayout}>
           <Route index element={<NftDashboard />} />
-          <Route path='cource-creator' element={<CourseCreator />} />
+          <Route path="cource-creator" element={<CourseCreator />} />
           <Route path="forms">
             <Route path="advanced-forms" element={<AdvancedForm />} />
           </Route>
@@ -131,12 +131,12 @@ export const AppRouter: React.FC = () => {
             <Route path="security-settings" element={<SecuritySettings />} />
             <Route path="notifications" element={<Notifications />} />
           </Route>
-          <Route path='course/:courseId' >
-            <Route path='lessons' element={<Course />} />
-            <Route path='students' element={<Course />} />
-            <Route path='lesson/:lessonId' element={<Course />} />
+          <Route path="course/:courseId">
+            <Route path="lessons" element={<Course />} />
+            <Route path="students" element={<Course />} />
+            <Route path="lesson/:lessonId" element={<Course />} />
           </Route>
-          <Route path='lesson/:lessonId' element={<Lesson />}/>
+          <Route path="lesson/:lessonId" element={<Lesson />} />
           <Route path="ui-components">
             <Route path="button" element={<Buttons />} />
             <Route path="spinner" element={<Spinners />} />

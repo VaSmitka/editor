@@ -5,7 +5,7 @@ import translationEN from './locales/en/translation.json';
 
 declare module 'i18next' {
   interface CustomTypeOptions {
-    returnNull: false
+    returnNull: false;
   }
 }
 

@@ -1,1 +1,1 @@
-export const ExerciseStatus = ['CREATED', 'DRAFTED', 'FINISHED'] 
+export const ExerciseStatus = ['CREATED', 'DRAFTED', 'FINISHED']

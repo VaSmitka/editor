@@ -4,7 +4,7 @@ import { UserModel } from '@app/domain/UserModel';
 
 export enum Role {
   teacher = 'teacher',
-  student = 'student'
+  student = 'student',
 }
 
 export interface AuthData {
@@ -13,8 +13,8 @@ export interface AuthData {
 }
 
 export interface StudentSignUpRequest extends SignUpRequest {
-  course_id?: number,
-  lesson_id?: number
+  course_id?: number;
+  lesson_id?: number;
 }
 
 export interface SignUpRequest {
@@ -40,7 +40,7 @@ export interface NewPasswordData {
 export interface LoginRequest {
   email: string;
   password: string;
-  strategy: string; 
+  strategy: string;
 }
 
 export interface LoginResponse {
@@ -49,7 +49,7 @@ export interface LoginResponse {
 }
 
 export interface User {
-  id: number,
+  id: number;
   firstName: string;
   lastName: string;
   email: string;
@@ -58,8 +58,8 @@ export interface User {
 }
 
 export interface StudentInfo extends User {
-  status: TypeWorkStatus
-} 
+  status: TypeWorkStatus;
+}
 
 export const login = (loginPayload: LoginRequest): Promise<LoginResponse> =>
   httpApi.post<LoginResponse>('authentication', { ...loginPayload }).then(({ data }) => data);

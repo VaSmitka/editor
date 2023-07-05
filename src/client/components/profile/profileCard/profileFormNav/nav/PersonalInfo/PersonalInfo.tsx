@@ -154,7 +154,6 @@ export const PersonalInfo: React.FC = () => {
           <BaseCol xs={24} md={12}>
             <ZipcodeItem />
           </BaseCol>
-
         </BaseRow>
       </BaseButtonsForm>
     </BaseCard>

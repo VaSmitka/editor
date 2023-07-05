@@ -18,7 +18,6 @@ const MedicalDashboardPage: React.FC = () => {
     <BaseRow>
       <S.LeftSideCol xl={16} xxl={17} id="desktop-content">
         <BaseRow gutter={[60, 60]}>
-
           <BaseCol span={24}>
             <RecentlyAddedNft />
           </BaseCol>
@@ -49,7 +48,6 @@ const MedicalDashboardPage: React.FC = () => {
 
   const mobileAndTabletLayout = (
     <BaseRow gutter={[20, 24]}>
-
       <BaseCol span={24}>
         <RecentlyAddedNft />
       </BaseCol>

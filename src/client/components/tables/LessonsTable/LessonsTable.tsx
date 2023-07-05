@@ -9,12 +9,12 @@ import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/Ba
 import { PlusOutlined } from '@ant-design/icons';
 
 interface LessonsTableProps {
-  fields: FormListFieldData[],
-  add: any
-  remove: any
+  fields: FormListFieldData[];
+  add: any;
+  remove: any;
 }
 
-export const LessonsTable: React.FC<LessonsTableProps> = ({fields, add, remove}) => {
+export const LessonsTable: React.FC<LessonsTableProps> = ({ fields, add, remove }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const { t } = useTranslation();
 
@@ -40,8 +40,8 @@ export const LessonsTable: React.FC<LessonsTableProps> = ({fields, add, remove})
           <BaseButton type="default" danger onClick={() => remove()}>
             {t('tables.delete')}
           </BaseButton>
-        )
-        }
+        );
+      },
     },
   ];
 
@@ -54,7 +54,7 @@ export const LessonsTable: React.FC<LessonsTableProps> = ({fields, add, remove})
         dataIndex: col.dataIndex,
         title: col.title,
         editing: col.dataIndex !== 'actions',
-        remove: remove
+        remove: remove,
       }),
     };
   });
@@ -77,8 +77,8 @@ export const LessonsTable: React.FC<LessonsTableProps> = ({fields, add, remove})
       />
       <BaseButtonsForm.Item>
         <BaseButton type="dashed" block onClick={() => add()} icon={<PlusOutlined />}>
-            Add lesson
-          </BaseButton>
+          Add lesson
+        </BaseButton>
       </BaseButtonsForm.Item>
     </>
   );

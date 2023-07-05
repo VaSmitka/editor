@@ -26,7 +26,7 @@ const initialState: AuthSlice = {
 };
 
 export const doLogin = createAsyncThunk('auth/login', async (loginPayload: LoginRequest, { dispatch }) =>
-  login(loginPayload).then((res: { user: any; accessToken: string; }) => {
+  login(loginPayload).then((res: { user: any; accessToken: string }) => {
     dispatch(setUser(res.user));
     persistToken(res.accessToken);
 
@@ -38,12 +38,14 @@ export const doSignUp = createAsyncThunk('auth/doSignUp', async (signUpPayload: 
   signUp(signUpPayload),
 );
 
-export const doStudentSignUpToLessons = createAsyncThunk('auth/doStudentSignUpToLessons', async (signUpPayload: StudentSignUpRequest) =>
-  studentSignUpToLessons(signUpPayload),
+export const doStudentSignUpToLessons = createAsyncThunk(
+  'auth/doStudentSignUpToLessons',
+  async (signUpPayload: StudentSignUpRequest) => studentSignUpToLessons(signUpPayload),
 );
 
-export const doStudentSignUpToLesson = createAsyncThunk('auth/doStudentSignUpToLesson', async (signUpPayload: StudentSignUpRequest) =>
-  studentSignUpToLesson(signUpPayload),
+export const doStudentSignUpToLesson = createAsyncThunk(
+  'auth/doStudentSignUpToLesson',
+  async (signUpPayload: StudentSignUpRequest) => studentSignUpToLesson(signUpPayload),
 );
 
 export const doResetPassword = createAsyncThunk(
@@ -61,7 +63,7 @@ export const doSetNewPassword = createAsyncThunk('auth/doSetNewPassword', async 
 );
 
 export const doLogout = createAsyncThunk('auth/doLogout', (payload, { dispatch }) => {
-  console.log(payload)
+  console.log(payload);
   deleteToken();
   deleteUser();
   dispatch(setUser(null));

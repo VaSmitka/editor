@@ -19,112 +19,122 @@ import RegisterStudentPage from './RegisterStudentModal';
 import RegisterStudentModal from './RegisterStudentModal';
 
 enum ButtonType {
-    ACTIVE = "primary",
-    NONACTIVE = "text",
+  ACTIVE = 'primary',
+  NONACTIVE = 'text',
 }
 
 export enum PageType {
-    LESSONS="LESSONS",
-    STUDENTS="STUDENTS",
-    LESSON="LESSON",
-    UNKNOWN="UNKNOWN"
+  LESSONS = 'LESSONS',
+  STUDENTS = 'STUDENTS',
+  LESSON = 'LESSON',
+  UNKNOWN = 'UNKNOWN',
 }
 
 const CoursePage: React.FC = () => {
-    const navigate = useNavigate();
-    const dispatch = useAppDispatch();
-    const { pathname } = useLocation();
-    let { courseId, lessonId } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { pathname } = useLocation();
+  const { courseId, lessonId } = useParams();
 
-    const [pageType, setPageType] = useState<PageType>();
-    const [pageData, setPageData] = useState<Lesson[]>();
-    const [info, setInfo] = useState<Course| Lesson>()
-    const [isLoading, setIsLoading] = useState(false);
-    const [isOpen, setModalOpen] = useState(false);
+  const [pageType, setPageType] = useState<PageType>();
+  const [pageData, setPageData] = useState<Lesson[]>();
+  const [info, setInfo] = useState<Course | Lesson>();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setModalOpen] = useState(false);
 
-    useEffect(() => {
-        setIsLoading(true);
-        const pageType = detectPage();
-        
-        if (pageType !== PageType.LESSON) {
-            dispatch(doGetCourse(courseId!))
-            .unwrap()
-            .then((result) => {
-                setInfo(result);
-                setIsLoading(false);
-            })
-            .catch((err: { message: any; }) => {
-                notificationController.error({ message: err.message });
-                setIsLoading(false);
-            });
-        } else {
-            dispatch(doGetLesson(lessonId!))
-            .unwrap()
-            .then((result) => {
-                setInfo(result);
-                setIsLoading(false);
-            })
-            .catch((err: { message: any; }) => {
-                notificationController.error({ message: err.message });
-                setIsLoading(false);
-            });
-        }
+  useEffect(() => {
+    setIsLoading(true);
+    const pageType = detectPage();
 
-        setPageType(pageType);
-    }, [pathname])
-
-    // const { t } = useTranslation();
-    // primary - active
-
-    const detectPage = (): PageType => {
-        if (lessonId) return PageType.LESSON;
-        if (pathname.includes('lessons')) return PageType.LESSONS;
-        if (pathname.includes('students')) return PageType.STUDENTS;
-        console.error('UNKNOWN PageType', pathname);
-        return PageType.UNKNOWN;
+    if (pageType !== PageType.LESSON) {
+      dispatch(doGetCourse(courseId!))
+        .unwrap()
+        .then((result) => {
+          setInfo(result);
+          setIsLoading(false);
+        })
+        .catch((err: { message: any }) => {
+          notificationController.error({ message: err.message });
+          setIsLoading(false);
+        });
+    } else {
+      dispatch(doGetLesson(lessonId!))
+        .unwrap()
+        .then((result) => {
+          setInfo(result);
+          setIsLoading(false);
+        })
+        .catch((err: { message: any }) => {
+          notificationController.error({ message: err.message });
+          setIsLoading(false);
+        });
     }
 
-    const getBtnType = (btnTo: PageType): ButtonType => {
-        return (btnTo === pageType ) ? ButtonType.ACTIVE : ButtonType.NONACTIVE; 
-    }
+    setPageType(pageType);
+  }, [pathname]);
 
-    return (
-        <>
-            <PageTitle>Course</PageTitle>
-            {
-                pageType !== PageType.LESSON && <BaseRow gutter={{ xs: 10, md: 15, xl: 30 }}>
-                    <BaseCol  xs={24} md={12}>
-                        <BaseButton type={getBtnType(PageType.LESSONS)} onClick={() => navigate(`/course/${courseId}/lessons`)} size="large">
-                            <OrderedListOutlined />Lectures
-                        </BaseButton>
-                    </BaseCol>
+  // const { t } = useTranslation();
+  // primary - active
 
-                    <BaseCol xs={24} md={12}>
-                        <BaseButton type={getBtnType(PageType.STUDENTS)} onClick={() => navigate(`/course/${courseId}/students`)} size="large">
-                            <UserOutlined />Students
-                        </BaseButton>
-                    </BaseCol>
-                </BaseRow>
-            }
-            
-            <S.TablesWrapper>
-                <S.Card id="basic-table" title={info?.name} padding="1.25rem 1.25rem 0">
-                    <CourseTable courseId={courseId} lessonId={lessonId} type={pageType} setModalOpen={setModalOpen}/>
-                </S.Card>
-            </S.TablesWrapper>
+  const detectPage = (): PageType => {
+    if (lessonId) return PageType.LESSON;
+    if (pathname.includes('lessons')) return PageType.LESSONS;
+    if (pathname.includes('students')) return PageType.STUDENTS;
+    console.error('UNKNOWN PageType', pathname);
+    return PageType.UNKNOWN;
+  };
 
-            <BaseModal 
-                title="Register Student"
-                centered
-                open={isOpen}
-                onCancel={() => setModalOpen(false)}
-                size="medium"
-                footer={false}
+  const getBtnType = (btnTo: PageType): ButtonType => {
+    return btnTo === pageType ? ButtonType.ACTIVE : ButtonType.NONACTIVE;
+  };
+
+  return (
+    <>
+      <PageTitle>Course</PageTitle>
+      {pageType !== PageType.LESSON && (
+        <BaseRow gutter={{ xs: 10, md: 15, xl: 30 }}>
+          <BaseCol xs={24} md={12}>
+            <BaseButton
+              type={getBtnType(PageType.LESSONS)}
+              onClick={() => navigate(`/course/${courseId}/lessons`)}
+              size="large"
             >
-                <RegisterStudentModal courseId={courseId} lessonId={lessonId} type={pageType} setModalOpen={setModalOpen}/>
-            </BaseModal>
-        </>
-    );
+              <OrderedListOutlined />
+              Lectures
+            </BaseButton>
+          </BaseCol>
+
+          <BaseCol xs={24} md={12}>
+            <BaseButton
+              type={getBtnType(PageType.STUDENTS)}
+              onClick={() => navigate(`/course/${courseId}/students`)}
+              size="large"
+            >
+              <UserOutlined />
+              Students
+            </BaseButton>
+          </BaseCol>
+        </BaseRow>
+      )}
+
+      <S.TablesWrapper>
+        <S.Card id="basic-table" title={info?.name} padding="1.25rem 1.25rem 0">
+          <CourseTable courseId={courseId} lessonId={lessonId} type={pageType} setModalOpen={setModalOpen} />
+        </S.Card>
+      </S.TablesWrapper>
+
+      <BaseModal
+        title="Register Student"
+        centered
+        open={isOpen}
+        onCancel={() => setModalOpen(false)}
+        size="medium"
+        footer={false}
+      >
+        <RegisterStudentModal courseId={courseId} lessonId={lessonId} type={pageType} setModalOpen={setModalOpen} />
+      </BaseModal>
+    </>
+  );
 };
 
 export default CoursePage;

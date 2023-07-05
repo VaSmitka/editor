@@ -20,11 +20,11 @@ export interface Pagination {
 }
 
 export interface StudentTableRow {
-  id: number,
-  status: string,
-  firstName: string,
-  lastName: string,
-  role: string,
+  id: number;
+  status: string;
+  firstName: string;
+  lastName: string;
+  role: string;
 }
 
 export interface BasicTableData {

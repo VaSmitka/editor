@@ -1,13 +1,8 @@
-import {useLayoutEffect, createRef } from 'react';
+import { useLayoutEffect, createRef } from 'react';
 import { getOrCreateEditor } from './getOrCreateEditor';
 import { createReducer } from '@reduxjs/toolkit';
 
-export const CodeEditor = ({
-  activeFileId,
-  shareDBDoc,
-  localPresence,
-  docPresence,
-}) => {
+export const CodeEditor = ({ activeFileId, shareDBDoc, localPresence, docPresence }) => {
   const ref = createRef<HTMLDivElement>();
 
   // useEffect was buggy in that sometimes ref.current was undefined.

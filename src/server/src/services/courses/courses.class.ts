@@ -11,11 +11,11 @@ import { Lesson } from '../lessons/lessons.class'
 export type { Courses, CoursesData, CoursesPatch, CoursesQuery }
 
 export interface CoursesCreateData {
-  id: number,
-  name: string,
-  description: string,
-  creator: number,
-  template: number,
+  id: number
+  name: string
+  description: string
+  creator: number
+  template: number
   lessons: Lesson[]
 }
 export interface CoursesParams extends KnexAdapterParams<CoursesQuery> {
@@ -32,48 +32,50 @@ export class CoursesService<ServiceParams extends Params = CoursesParams> extend
   CoursesPatch
 > {
   async create(data: any, params: Params) {
-    const {lessons, ...course} = data;
-    let resData = course;
+    const { lessons, ...course } = data
+    const resData = course
 
     try {
-      await this.Model.transaction(async trx => {
+      await this.Model.transaction(async (trx) => {
         const ids = await trx.insert(course, 'id').into('courses')
-    
-        resData.id = ids[0].id;
-        lessons.forEach(((elm: { course_id: number, creator: number }) => {
-          elm.course_id = resData.id;
-          elm.creator = course.creator;
-        }));
-        resData.lessons = await trx.insert(lessons, ['id', 'name', 'description', 'creator', 'course_id']).into('lessons');
+
+        resData.id = ids[0].id
+        lessons.forEach((elm: { course_id: number; creator: number }) => {
+          elm.course_id = resData.id
+          elm.creator = course.creator
+        })
+        resData.lessons = await trx
+          .insert(lessons, ['id', 'name', 'description', 'creator', 'course_id'])
+          .into('lessons')
 
         console.log('data', resData)
       })
     } catch (error) {
       // If we get here, that means that neither the 'Old Books' catalogues insert,
       // nor any of the books inserts will have taken place.
-      console.error(error);
+      console.error(error)
     }
 
-    return resData;
+    return resData
   }
 
-  async find({query}: CoursesParams & { paginate: false; }): Promise<any> {
-    const response: {data?: any} = {}
-    
+  async find({ query }: CoursesParams & { paginate: false }): Promise<any> {
+    const response: { data?: any } = {}
+
     if (query?.creator) {
-      const courses = await this.Model.from('courses').where({creator: query.creator});
-    
-      for (let course of courses) {
-        const lessons = await this.Model.from('lessons').where({course_id: course.id});
-        course.lessons = lessons;
+      const courses = await this.Model.from('courses').where({ creator: query.creator })
+
+      for (const course of courses) {
+        const lessons = await this.Model.from('lessons').where({ course_id: course.id })
+        course.lessons = lessons
       }
 
-      response.data = courses;
+      response.data = courses
     } else {
-      response.data = await this.Model.from('courses');
+      response.data = await this.Model.from('courses')
     }
 
-    return response;
+    return response
   }
 }
 

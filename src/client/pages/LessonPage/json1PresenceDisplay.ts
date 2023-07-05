@@ -1,14 +1,9 @@
-import {
-  ViewPlugin,
-  EditorView,
-  WidgetType,
-  Decoration,
-} from '@codemirror/view';
+import { ViewPlugin, EditorView, WidgetType, Decoration } from '@codemirror/view';
 import { Annotation, RangeSet } from '@codemirror/state';
 
 interface FncProps {
-  path: string,
-  docPresence: any
+  path: string;
+  docPresence: any;
 }
 
 // Deals with receiving the broadcasted presence cursor locations
@@ -63,7 +58,7 @@ export const json1PresenceDisplay = ({ path, docPresence }: FncProps) => [
             }),
             // Without this argument, we get the following error:
             // Uncaught Error: Ranges must be added sorted by `from` position and `startSide`
-            true
+            true,
           );
 
           // Somehow this triggers re-rendering of the Decorations.
@@ -79,7 +74,7 @@ export const json1PresenceDisplay = ({ path, docPresence }: FncProps) => [
     },
     {
       decorations: (v) => v.decorations,
-    }
+    },
   ),
   presenceTheme,
 ];

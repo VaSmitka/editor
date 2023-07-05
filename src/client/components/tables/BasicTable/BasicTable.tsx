@@ -28,7 +28,7 @@ export const BasicTable: React.FC = () => {
   const fetch = useCallback(
     (pagination: Pagination) => {
       setTableData((tableData) => ({ ...tableData, loading: true }));
-      getBasicTableData(pagination).then((res: { data: any; pagination: any; }) => {
+      getBasicTableData(pagination).then((res: { data: any; pagination: any }) => {
         if (isMounted.current) {
           setTableData({ data: res.data, pagination: res.pagination, loading: false });
         }
@@ -138,7 +138,7 @@ export const BasicTable: React.FC = () => {
       dataIndex: 'actions',
       width: '15%',
       render: (text: string, record: { name: string; key: number }) => {
-        console.log(text)
+        console.log(text);
         return (
           <BaseSpace>
             <BaseButton

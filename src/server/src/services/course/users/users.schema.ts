@@ -7,7 +7,7 @@ import type { Static } from '@feathersjs/typebox'
 import type { HookContext } from '../../../declarations'
 import { dataValidator, queryValidator } from '../../../validators'
 
-import {ExerciseStatus} from '../../../utils/consts'
+import { ExerciseStatus } from '../../../utils/consts'
 import { passwordHash } from '@feathersjs/authentication-local'
 
 // Main data model schema
@@ -28,14 +28,18 @@ export const userHasCourseExternalResolver = resolve<UserHasCourse, HookContext>
 
 // Schema for creating new entries
 export const userHasCourseDataSchemaProperties = Type.Pick(userHasCourseSchema, ['course_id'], {
-  $id: 'UserHasCourseData', additionalProperties: true
+  $id: 'UserHasCourseData',
+  additionalProperties: true
 })
 export const userHasCourseDataSchema = Type.Intersect(
   [
     userHasCourseDataSchemaProperties,
-    Type.Object({
-      password: Type.String()
-    }, { additionalProperties: true })
+    Type.Object(
+      {
+        password: Type.String()
+      },
+      { additionalProperties: true }
+    )
   ],
   { additionalProperties: true }
 )
@@ -43,9 +47,8 @@ export const userHasCourseDataSchema = Type.Intersect(
 export type UserHasCourseData = Static<typeof userHasCourseDataSchema>
 export const userHasCourseDataValidator = getValidator(userHasCourseDataSchema, dataValidator)
 export const userHasCourseDataResolver = resolve<UserHasCourseData, HookContext>({
-    password: passwordHash({ strategy: 'local' })
+  password: passwordHash({ strategy: 'local' })
 })
-
 
 // Schema for updating existing entries
 export const userHasCoursePatchSchema = Type.Partial(userHasCourseSchema, {
@@ -56,7 +59,12 @@ export const userHasCoursePatchValidator = getValidator(userHasCoursePatchSchema
 export const userHasCoursePatchResolver = resolve<UserHasCourse, HookContext>({})
 
 // Schema for allowed query properties
-export const userHasCourseQueryProperties = Type.Pick(userHasCourseSchema, ['id', 'status', 'student_id', 'course_id'])
+export const userHasCourseQueryProperties = Type.Pick(userHasCourseSchema, [
+  'id',
+  'status',
+  'student_id',
+  'course_id'
+])
 export const userHasCourseQuerySchema = Type.Intersect(
   [
     querySyntax(userHasCourseQueryProperties),

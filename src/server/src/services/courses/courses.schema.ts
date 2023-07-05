@@ -13,7 +13,7 @@ export const coursesSchema = Type.Object(
     name: Type.String(),
     description: Type.String(),
     creator: Type.Number(),
-    template: Type.Number(),
+    template: Type.Number()
   },
   { $id: 'Courses', additionalProperties: true }
 )

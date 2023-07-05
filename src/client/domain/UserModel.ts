@@ -1,4 +1,4 @@
-import { Role } from "@app/api/auth.api";
+import { Role } from '@app/api/auth.api';
 
 export interface UserModel {
   id: number;
@@ -10,6 +10,6 @@ export interface UserModel {
     name: string;
     verified: boolean;
   };
-  role: Role,
+  role: Role;
   lang: 'en';
 }

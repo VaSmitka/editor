@@ -31,10 +31,10 @@ export const getMarkAreaData = (data: string[] | number[]): MarkArea[][] => {
       {
         xAxis: 2 * i + 1,
       },
-    ])
+    ]);
   }
   return arr;
-}
+};
 
 export const capitalize = (word: string): string => `${word[0].toUpperCase()}${word.slice(1)}`;
 
