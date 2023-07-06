@@ -10,7 +10,7 @@ export const checkFilesOnPath = (path:string):string[] => {
 export const createNeededFiles = (path:string) => {
     const filesToCreate = checkFilesOnPath(path);
 
-    if (!fs.existsSync(path)){
+    if (!fs.existsSync(`.${path}`)){
         fs.mkdirSync(`.${path}`);
     }
 
