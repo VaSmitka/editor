@@ -4,6 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "i:client": "yarn install",
+    "i:server": "cd src/server && yarn install",
+    "i:all": "yarn install && cd src/server && yarn install",
     "client:dev": "vite",
     "server:dev": "cd src/server && yarn dev",
     "build": "tsc && vite build",
