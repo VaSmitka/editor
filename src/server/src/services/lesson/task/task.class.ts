@@ -35,7 +35,7 @@ export class LessenTaskService<ServiceParams extends LessenTaskParams = LessenTa
   async get(collectionId: Id, _params?: ServiceParams): Promise<LessenTask> {
     const connectionData = initialConnection(collectionId.toString())
 
-    return { ...connectionData }
+    return connectionData
   }
 
   async create(data: LessenTaskData, params?: ServiceParams): Promise<LessenTask>

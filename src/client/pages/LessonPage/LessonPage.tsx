@@ -15,6 +15,7 @@ import { json1Presence } from '../../../ot';
 // @ts-ignore
 import ShareDBClient from 'sharedb-client-browser/dist/sharedb-client-umd.cjs';
 import { Loading } from '@app/components/common/Loading/Loading';
+import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 
 interface FilesData {
   htmlFileId: string;
@@ -66,14 +67,14 @@ const LessonPage: React.FC = () => {
     jsFileId: '',
   });
 
-  useEffect(() => {  
-    // Since there is only ever a single document,
-    // these things are pretty arbitrary.
-    //  * `collection` - the ShareDB collection to use
-    //  * `id` - the id of the ShareDB document to use
-    const collectionId = `${studentId || 'edit'}-${lessonId}`;
-    const id = '1';
+  // Since there is only ever a single document,
+  // these things are pretty arbitrary.
+  //  * `collection` - the ShareDB collection to use
+  //  * `id` - the id of the ShareDB document to use
+  const collectionId = `${studentId || 'edit'}-${lessonId}`;
+  const id = '1';
 
+  useEffect(() => {  
     dispatch(doGetLesson(lessonId!))
       .unwrap()
       .then((result) => {
@@ -134,16 +135,7 @@ const LessonPage: React.FC = () => {
     }
 
     return () => {
-      dispatch(doGetLessonTaskCommit({ collectionId }))
-        .unwrap()
-        .then((result) => {
-          console.log('commit result', result);
-          setIsLoading(false);
-        })
-        .catch((err: { message: any }) => {
-          notificationController.error({ message: err.message });
-          setIsLoading(false);
-        });
+      commitLesson(collectionId);
     }
   }, [pathname]);
 
@@ -159,6 +151,21 @@ const LessonPage: React.FC = () => {
         setIsLoading(false);
       });
   };
+
+  const commitLesson = (collectionId: string) => {
+    if (user?.id && pageData?.name) {
+      dispatch(doGetLessonTaskCommit({ collectionId, userId: user?.id, lessonName: pageData?.name }))
+        .unwrap()
+        .then((result) => {
+          console.log('commit result', result);
+          setIsLoading(false);
+        })
+        .catch((err: { message: any }) => {
+          notificationController.error({ message: err.message });
+          setIsLoading(false);
+        });
+    }
+  }
 
   const actualizeDataStructure = (shareDBDoc: any) => {
     const fileStructure = {
@@ -240,6 +247,7 @@ const LessonPage: React.FC = () => {
     <>
       <PageTitle>{`Lesson ${pageData?.name}`}</PageTitle>
       <S.Title>{pageData?.name}</S.Title>
+      <BaseButton onClick={() => commitLesson(collectionId)}>Save to Github</BaseButton>
       <BaseCol>
         <BaseTabs defaultActiveKey="1" items={commonTabs} />
       </BaseCol>

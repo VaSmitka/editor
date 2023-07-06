@@ -27,7 +27,14 @@ export const initialConnection = async (collectionId:string) => {
   let files = await getFilesFromBranchFolder(`${neededName}:lesson-${idParts[1]}`);
 
   if (!files) {
-    files = await getFilesFromBranchFolder(`${neededName}:${emptyTemplateFolder}`);
+    if (neededName === 'lector') {
+      files = await getFilesFromBranchFolder(`${neededName}:${emptyTemplateFolder}`);
+    } else {
+      files = await getFilesFromBranchFolder(`lector:lesson-${idParts[1]}`);
+      
+      // lesson isnt ready
+      if (!files) return { error: {message: "not ready yet"}}
+    }
   }
 
   // console.log(collectionId, neededBranch, githubBranch, files)
