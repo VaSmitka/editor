@@ -24,7 +24,6 @@ import ShareDB from 'sharedb'
 // Localized to one file so it's easy to change it in future.
 // @ts-ignore
 import OTJSON1Presence from 'sharedb-client-browser/dist/ot-json1-presence-umd.cjs'
-import { getGithubBasics } from './cooperation/githubAdapter'
 const { json1Presence, textUnicode } = OTJSON1Presence
 export { json1Presence, textUnicode }
 
@@ -74,7 +73,5 @@ app.hooks({
   setup: [],
   teardown: []
 })
-
-getGithubBasics()
 
 export { app }
