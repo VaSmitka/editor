@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 // import { useTranslation } from 'react-i18next';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { useLocation, useParams } from 'react-router-dom';
-import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import { notificationController } from '@app/controllers/notificationController';
 import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
 import { doGetLesson, doGetLessonTask, doGetLessonTaskCommit } from '@app/store/slices/lessonSlice';
@@ -33,6 +32,8 @@ const { Connection } = ShareDBClient;
 const socket = new WebSocket('ws://localhost:3030/ws');
 const connection = new Connection(socket);
 
+const previewBaseUrl = `${import.meta.env.VITE_REACT_APP_BASE_URL}/studentDirectory/`
+
 const LessonPage: React.FC = () => {
   // const { t } = useTranslation();
   // const navigate = useNavigate();
@@ -46,6 +47,8 @@ const LessonPage: React.FC = () => {
 
   const initialized = useRef(false);
   const [oldPathname, setPathname] = useState<string>(pathname)
+
+  const [iframeKey, setiframeKey] = useState(0)
 
   // The ShareDB document.
   const [shareDBDoc, setShareDBDoc] = useState(null);
@@ -112,6 +115,8 @@ const LessonPage: React.FC = () => {
           actualizeDataStructure(shareDBDoc);
         });
         shareDBDoc.on('op', (_op: any) => {
+          // no real time because on backend files are saving each 800 ms
+          // refreshPreview()
           actualizeDataStructure(shareDBDoc);
         });
 
@@ -129,8 +134,6 @@ const LessonPage: React.FC = () => {
 
         // Store docPresence so child components can listen for changes.
         setDocPresence(docPresence);
-
-        shareDBDoc
       });
     }
 
@@ -185,6 +188,7 @@ const LessonPage: React.FC = () => {
 
     // Set initial data.
     setData(fileStructure);
+    setIsLoading(false);
   };
 
   const commonTabs = useMemo(
@@ -241,6 +245,10 @@ const LessonPage: React.FC = () => {
     [data],
   );
 
+  const refreshPreview = () => {
+    setiframeKey(oldValue => oldValue + 1)
+  }
+
   return loading ? (
       <Loading />
     ) : (
@@ -248,9 +256,12 @@ const LessonPage: React.FC = () => {
       <PageTitle>{`Lesson ${pageData?.name}`}</PageTitle>
       <S.Title>{pageData?.name}</S.Title>
       <BaseButton onClick={() => commitLesson(collectionId)}>Save to Github</BaseButton>
-      <BaseCol>
+      <S.Col>
         <BaseTabs defaultActiveKey="1" items={commonTabs} />
-      </BaseCol>
+      </S.Col>
+      <S.Title>Preview</S.Title>
+      <BaseButton onClick={() => refreshPreview()}>Refresh</BaseButton>
+      <S.IFrame key={iframeKey} src={`${previewBaseUrl}${collectionId}/`}/>
     </>
   );
 };
