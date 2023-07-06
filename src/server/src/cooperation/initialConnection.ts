@@ -4,6 +4,8 @@ import { computeInitialDocument } from './computeInitialDocument'
 import { createNeededFiles } from './fileService'
 import { createBranch, getBranchOid, getFilesFromBranchFolder } from './githubAdapter'
 
+// https://nodejs.dev/en/learn/reading-files-with-nodejs/
+
 export const initialConnection = async (collectionId:string) => {
   // The time in milliseconds by which auto-saving is debounced.
   const autoSaveDebounceTimeMS = 800

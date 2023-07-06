@@ -5,7 +5,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import { notificationController } from '@app/controllers/notificationController';
 import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
-import { doGetLesson, doGetLessonTask } from '@app/store/slices/lessonSlice';
+import { doGetLesson, doGetLessonTask, doGetLessonTaskCommit } from '@app/store/slices/lessonSlice';
 import { Lesson } from '@app/api/lessons.api';
 import { BaseTabs } from '@app/components/common/BaseTabs/BaseTabs';
 import * as S from './LessonPage.styles';
@@ -14,6 +14,7 @@ import { randomId } from '../../../randomId';
 import { json1Presence } from '../../../ot';
 // @ts-ignore
 import ShareDBClient from 'sharedb-client-browser/dist/sharedb-client-umd.cjs';
+import { Loading } from '@app/components/common/Loading/Loading';
 
 interface FilesData {
   htmlFileId: string;
@@ -40,7 +41,7 @@ const LessonPage: React.FC = () => {
   const user = useAppSelector((state) => state.user.user);
 
   const [pageData, setPageData] = useState<Lesson>();
-  const [, setIsLoading] = useState(false);
+  const [loading, setIsLoading] = useState(false);
 
   const initialized = useRef(false);
   const [oldPathname, setPathname] = useState<string>(pathname)
@@ -65,7 +66,14 @@ const LessonPage: React.FC = () => {
     jsFileId: '',
   });
 
-  useEffect(() => {      
+  useEffect(() => {  
+    // Since there is only ever a single document,
+    // these things are pretty arbitrary.
+    //  * `collection` - the ShareDB collection to use
+    //  * `id` - the id of the ShareDB document to use
+    const collectionId = `${studentId || 'edit'}-${lessonId}`;
+    const id = '1';
+
     dispatch(doGetLesson(lessonId!))
       .unwrap()
       .then((result) => {
@@ -74,13 +82,6 @@ const LessonPage: React.FC = () => {
       .catch((err: { message: any }) => {
         notificationController.error({ message: err.message });
       });
-
-    // Since there is only ever a single document,
-    // these things are pretty arbitrary.
-    //  * `collection` - the ShareDB collection to use
-    //  * `id` - the id of the ShareDB document to use
-    const collectionId = `${studentId || 'edit'}-${lessonId}`;
-    const id = '1';
 
     if (!initialized.current || pathname !== oldPathname) {
       initialized.current = true;
@@ -133,7 +134,16 @@ const LessonPage: React.FC = () => {
     }
 
     return () => {
-
+      dispatch(doGetLessonTaskCommit({ collectionId }))
+        .unwrap()
+        .then((result) => {
+          console.log('commit result', result);
+          setIsLoading(false);
+        })
+        .catch((err: { message: any }) => {
+          notificationController.error({ message: err.message });
+          setIsLoading(false);
+        });
     }
   }, [pathname]);
 
@@ -224,7 +234,9 @@ const LessonPage: React.FC = () => {
     [data],
   );
 
-  return (
+  return loading ? (
+      <Loading />
+    ) : (
     <>
       <PageTitle>{`Lesson ${pageData?.name}`}</PageTitle>
       <S.Title>{pageData?.name}</S.Title>

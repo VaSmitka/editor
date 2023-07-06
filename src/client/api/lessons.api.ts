@@ -21,6 +21,9 @@ export type LessonTableRow = Lesson;
 
 export const getLesson = (id: string): Promise<Lesson> => httpApi.get(`lessons/${id}`).then(({ data }) => data);
 
+export const getLessonTaskCommit = (collectionId: string, userId: number, lessonName: string): Promise<Lesson> =>
+  httpApi.post('lesson/task/', {collectionId, userId, lessonName}).then(({ data }) => data);
+
 export const getLessonTask = (collectionId: string | undefined): Promise<Lesson> =>
   httpApi.get(`lesson/task/${collectionId}`).then(({ data }) => data);
 

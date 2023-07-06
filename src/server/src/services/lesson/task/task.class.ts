@@ -1,11 +1,14 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.class.html#custom-services
+import fs from 'fs'
 import type { Id, NullableId, Params, ServiceInterface } from '@feathersjs/feathers'
 import type { Application } from '../../../declarations'
 import { initialConnection } from '../../../cooperation/initialConnection'
 import { shareDBBackend } from '../../../app'
+import { commitFiles, getBranchOid } from '../../../cooperation/githubAdapter'
+import { GithubFileRequest } from '../../../cooperation/githubGraphQL/types'
 
 type LessenTask = any
-type LessenTaskData = any
+type LessenTaskData = { collectionId: string, lessonName: string, userId: string }
 type LessenTaskPatch = any
 type LessenTaskQuery = any
 
@@ -36,19 +39,40 @@ export class LessenTaskService<ServiceParams extends LessenTaskParams = LessenTa
   }
 
   async create(data: LessenTaskData, params?: ServiceParams): Promise<LessenTask>
-  async create(data: LessenTaskData[], params?: ServiceParams): Promise<LessenTask[]>
+  // async create(data: LessenTaskData[], params?: ServiceParams): Promise<LessenTask[]>
   async create(
-    data: LessenTaskData | LessenTaskData[],
+    data: LessenTaskData,
     params?: ServiceParams
   ): Promise<LessenTask | LessenTask[]> {
-    if (Array.isArray(data)) {
-      return Promise.all(data.map((current) => this.create(current, params)))
-    }
+    const {collectionId, lessonName, userId} = data;
+    
+    const lessonPath = `/public/studentDirectory/${collectionId}`
+    const idParts = collectionId.split('-');
+    const neededName = idParts[0] === 'edit' ? 'lector' : `student-${idParts[0]}`;
 
-    return {
-      id: 0,
-      ...data
+    const commitMessage = `User with id:${userId} update lesson ${lessonName} with id:${idParts[1]}`;
+  
+    // branch created when initializated
+    const githubBranchOid = await getBranchOid(neededName);
+
+    if (fs.existsSync(`.${lessonPath}`)){
+      const filesNames = fs.readdirSync(`.${lessonPath}`);
+      
+      const files = filesNames.map(fileName => {
+        const fileContent = fs.readFileSync(`.${lessonPath}/${fileName}`, 'utf8');
+
+        const gitFile:GithubFileRequest = {
+          path: `lesson-${idParts[1]}/${fileName}`,
+          contents: Buffer.from(fileContent, 'utf8').toString('base64')
+        }
+
+        return gitFile;
+      })
+
+      commitFiles(neededName, githubBranchOid!, commitMessage, files);
     }
+    
+    return {status: 'OK'}
   }
 
   // This method has to be added to the 'methods' option to make it available to clients
