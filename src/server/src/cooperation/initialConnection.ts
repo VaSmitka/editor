@@ -2,13 +2,35 @@ import fs from 'fs'
 import { json1Presence, shareDBBackend } from '../app'
 import { computeInitialDocument } from './computeInitialDocument'
 import { createNeededFiles } from './fileService'
+import { createBranch, getBranchOid, getFilesFromBranchFolder } from './githubAdapter'
 
-export const initialConnection = (collectionId:string) => {
+export const initialConnection = async (collectionId:string) => {
   // The time in milliseconds by which auto-saving is debounced.
   const autoSaveDebounceTimeMS = 800
   const lessonPath = `/public/studentDirectory/${collectionId}`
+  const emptyTemplateFolder = 'empty-template'
 
-  createNeededFiles(lessonPath);
+  const idParts = collectionId.split('-');
+  // need two parts
+  const neededName = idParts[0] === 'edit' ? 'lector' : `student-${idParts[0]}`;
+  const neededBranch = `refs/heads/${neededName}`;
+
+  const githubBranch = await getBranchOid(neededName);
+
+  if (!githubBranch) {
+    const oid = await getBranchOid('main');
+    await createBranch(neededBranch, oid!);
+  }
+
+  let files = await getFilesFromBranchFolder(`${neededName}:lesson-${idParts[1]}`);
+
+  if (!files) {
+    files = await getFilesFromBranchFolder(`${neededName}:${emptyTemplateFolder}`);
+  }
+
+  // console.log(collectionId, neededBranch, githubBranch, files)
+
+  createNeededFiles(lessonPath, files!);
 
   const initialDocument = computeInitialDocument({
     // Use the current working directory to look for files.
@@ -20,7 +42,7 @@ export const initialConnection = (collectionId:string) => {
   const shareDBConnection = shareDBBackend.connect()
   // @ts-ignore
   const agentsCount = shareDBConnection.agent?.backend.agentsCount
-  console.log('agentsCount', agentsCount)
+  // console.log('agentsCount', agentsCount)
 
   const shareDBDoc = shareDBConnection.get(collectionId, '1')
   shareDBDoc.create(initialDocument, json1Presence.type.uri)

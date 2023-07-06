@@ -11,7 +11,7 @@ export const repoOwner = 'VaSmitka';
 // https://github.com/jasonkuhrt/graphql-request
 // https://stackoverflow.com/questions/72836597/how-to-create-new-commit-with-the-github-graphql-api
 
-export const getBranchOid = async (branchName: string): Promise<string> => {
+export const getBranchOid = async (branchName: string): Promise<string| undefined> => {
     require('dotenv').config();
     const requestHeaders = {
         authorization: 'Bearer ' + process.env.GITHUB_TOKEN
@@ -24,7 +24,7 @@ export const getBranchOid = async (branchName: string): Promise<string> => {
     }
  
     const branchResponse = await request<BranchOidResponse>(githubURL, getBranchOidQuery, qVariables, requestHeaders)
-    return branchResponse.repository.refs.nodes[0].target.history.nodes[0].oid
+    return branchResponse.repository.refs.nodes[0]?.target.history.nodes[0].oid
 }
 
 /**
@@ -32,20 +32,20 @@ export const getBranchOid = async (branchName: string): Promise<string> => {
  * @param expression branch_name:folder_name
  * @returns Github files
  */
-export const getFilesFromBranchFolder = async (expression:string): Promise<GithubFile[]> => {
+export const getFilesFromBranchFolder = async (expression:string): Promise<GithubFile[] | undefined> => {
     require('dotenv').config();
     const requestHeaders = {
         authorization: 'Bearer ' + process.env.GITHUB_TOKEN
     }
 
     const qVariables = {
-        repo: repoName, 
+        name: repoName, 
         owner: repoOwner, 
-        brancheName: expression // branch_name:folder_name
+        expression // branch_name:folder_name
     }
  
     const fileResponse = await request<FilesResponse>(githubURL, getRepoFilesQuery, qVariables, requestHeaders)
-    return fileResponse.repository.object.entries
+    return fileResponse.repository.object?.entries
 }
 
 export const commitFiles = async (branchName: string, oid:string, commitMessage: string, filesForCommit:GithubFileRequest[]): Promise<string> => {

@@ -1,7 +1,7 @@
 export type BranchOidResponse = {
     repository: {
         refs: {
-        nodes: [
+            nodes: [
                 {
                     name: string,
                     target: {

@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
 export const createBranchMutation = gql`
-    mutation ($input: CreateBranchInput!) {
+    mutation ($input: CreateRefInput!) {
         createRef(input: $input) {
             clientMutationId
             ref {
