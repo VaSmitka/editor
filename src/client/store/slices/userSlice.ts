@@ -1,6 +1,7 @@
-import { createAction, createSlice, PrepareAction } from '@reduxjs/toolkit';
+import { createAction, createAsyncThunk, createSlice, PrepareAction } from '@reduxjs/toolkit';
 import { UserModel } from '@app/domain/UserModel';
 import { persistUser, readUser } from '@app/services/localStorage.service';
+import { removeStudent, updateUser } from '@app/api/auth.api';
 
 export interface UserState {
   user: UserModel | null;
@@ -16,6 +17,20 @@ export const setUser = createAction<PrepareAction<UserModel>>('user/setUser', (n
   return {
     payload: newUser,
   };
+});
+
+export const doUpdateUser = createAsyncThunk('user/removeStudent', async (userData: any) => {
+  updateUser(userData).then((res: any) => {
+    console.log('Remove student by user id', res);
+    return res;
+  })
+});
+
+export const doRemoveStudent = createAsyncThunk('user/removeStudent', async (userId: number) => {
+  removeStudent(userId).then((res: any) => {
+    console.log('Remove student by user id', res);
+    return res;
+  })
 });
 
 export const userSlice = createSlice({

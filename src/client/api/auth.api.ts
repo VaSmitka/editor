@@ -13,6 +13,7 @@ export interface AuthData {
 }
 
 export interface StudentSignUpRequest extends SignUpRequest {
+  id?: number;
   course_id?: number;
   lesson_id?: number;
 }
@@ -66,6 +67,12 @@ export const login = (loginPayload: LoginRequest): Promise<LoginResponse> =>
 
 export const signUp = (signUpData: SignUpRequest): Promise<undefined> =>
   httpApi.post<undefined>('users', { ...signUpData }).then(({ data }) => data);
+
+export const updateUser = (userData: any): Promise<undefined> =>
+  httpApi.put<undefined>(`users/${userData.id}`, userData).then(({ data }) => data);
+
+export const removeStudent = (userId: number): Promise<undefined> =>
+  httpApi.delete<undefined>(`users/${userId}`).then(({ data }) => data);
 
 export const studentSignUpToLessons = (signUpData: StudentSignUpRequest): Promise<undefined> =>
   httpApi.post<undefined>('course/users', { ...signUpData }).then(({ data }) => data);

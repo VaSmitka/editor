@@ -36,8 +36,8 @@ export const LoginForm: React.FC = () => {
     dispatch(doLogin(request))
       .unwrap()
       .then(() => navigate('/'))
-      .catch((err) => {
-        notificationController.error({ message: err.message });
+      .catch((_err) => {
+        notificationController.error({ message: 'Nepovedlo se přihlásit' });
         setLoading(false);
       });
   };

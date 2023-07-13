@@ -1,4 +1,5 @@
 import { httpApi } from '@app/api/http.api';
+import { LessonStatus } from './table.api';
 
 export interface Pagination {
   current?: number;
@@ -10,8 +11,10 @@ export interface Lesson {
   id?: number;
   name: string;
   description: string;
+  status?: LessonStatus;
+  task?: string;
   creator?: number;
-  created_at: string;
+  created_at?: string;
 }
 
 export interface LessonsResponse {
@@ -33,3 +36,12 @@ export const getLessonsDataByCourseId = (courseId: string, _pagination: Paginati
 
 export const getLessonStudents = (id: string): Promise<any> =>
   httpApi.get(`lesson/users?lesson_id=${id}`).then((data) => data.data);
+
+export const updateLesson = (lessonData: any): Promise<Lesson> =>
+  httpApi.put(`lessons/${lessonData.id}`, lessonData).then(({ data }) => data);
+
+export const updateStudentsLesson = (lessonData: any): Promise<Lesson> =>
+  httpApi.put(`lesson/users/${lessonData.id}`, lessonData).then(({ data }) => data);
+
+export const removeLesson = (lessonId: number): Promise<Lesson> =>
+  httpApi.delete(`lessons/${lessonId}`).then(({ data }) => data);

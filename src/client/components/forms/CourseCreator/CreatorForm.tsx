@@ -37,8 +37,8 @@ export const CreatorForm: React.FC = () => {
         setCourses(result);
         setIsLoading(false);
       })
-      .catch((err: { message: any }) => {
-        notificationController.error({ message: err.message });
+      .catch((_err: { message: any }) => {
+        notificationController.error({ message: 'Nepovedlo se získat kurzy' });
         setIsLoading(false);
       });
   }, []);
@@ -52,8 +52,8 @@ export const CreatorForm: React.FC = () => {
           form.setFieldValue('lessons', result.data);
           setIsLoading(false);
         })
-        .catch((err: { message: any }) => {
-          notificationController.error({ message: err.message });
+        .catch((_err: { message: any }) => {
+          notificationController.error({ message: 'Nepovedlo se získat lekce kurzu' });
           setIsLoading(false);
         });
     }
@@ -93,8 +93,8 @@ export const CreatorForm: React.FC = () => {
     dispatch(doCreateCourse(request))
       .unwrap()
       .then(() => navigate('/'))
-      .catch((err: { message: any }) => {
-        notificationController.error({ message: err.message });
+      .catch((_err: { message: any }) => {
+        notificationController.error({ message: 'Nepovedlo se vytvořit kurz' });
         setIsLoading(false);
       });
   };

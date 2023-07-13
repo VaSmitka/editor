@@ -7,14 +7,12 @@ import type { Static } from '@feathersjs/typebox'
 import type { HookContext } from '../../../declarations'
 import { dataValidator, queryValidator } from '../../../validators'
 
-import { ExerciseStatus } from '../../../utils/consts'
 import { passwordHash } from '@feathersjs/authentication-local'
 
 // Main data model schema
 export const userHasCourseSchema = Type.Object(
   {
     id: Type.Number(),
-    status: StringEnum(ExerciseStatus),
     student_id: Type.Number(),
     course_id: Type.Number()
   },
@@ -61,7 +59,6 @@ export const userHasCoursePatchResolver = resolve<UserHasCourse, HookContext>({}
 // Schema for allowed query properties
 export const userHasCourseQueryProperties = Type.Pick(userHasCourseSchema, [
   'id',
-  'status',
   'student_id',
   'course_id'
 ])

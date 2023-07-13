@@ -18,7 +18,7 @@ export const Step1: React.FC<Step1Props> = ({ courses }) => {
       </BaseForm.Item>
       <BaseForm.Item
         name="description"
-        label="Zadání"
+        label="Popis"
         rules={[{ required: true, message: 'Zadání je povinné' }]}
       >
         <BaseInput.TextArea rows={4} />

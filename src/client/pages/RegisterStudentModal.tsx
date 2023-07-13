@@ -11,6 +11,7 @@ import { Role, StudentSignUpRequest } from '@app/api/auth.api';
 import { useAppDispatch } from '@app/hooks/reduxHooks';
 import { PageType } from './CoursePage';
 import { doStudentSignUpToLesson, doStudentSignUpToLessons } from '@app/store/slices/authSlice';
+import { doUpdateUser } from '@app/store/slices/userSlice';
 
 interface RegisterStudentModalProps {
   courseId: string | undefined;
@@ -21,7 +22,7 @@ interface RegisterStudentModalProps {
   setModalOpen: any;
 }
 
-const RegisterStudentModal: React.FC<RegisterStudentModalProps> = ({ courseId, lessonId, type, setModalOpen, editableStudent, setEditableStudent }) => {
+const RegisterStudentModal: React.FC<RegisterStudentModalProps> = ({ courseId, lessonId, type, setModalOpen, editableStudent }) => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -52,20 +53,40 @@ const RegisterStudentModal: React.FC<RegisterStudentModalProps> = ({ courseId, l
 
     setLoading(true);
     if (type === PageType.STUDENTS) {
-      dispatch(doStudentSignUpToLessons(request))
-        .unwrap()
-        .then(() => {
-          setLoading(false);
-          notificationController.success({
-            message: t('auth.signUpSuccessMessage'),
-            description: t('auth.signUpSuccessDescription'),
+      if (!editableStudent) {
+        dispatch(doStudentSignUpToLessons(request))
+          .unwrap()
+          .then(() => {
+            setLoading(false);
+            notificationController.success({
+              message: t('auth.signUpSuccessMessage'),
+              description: t('auth.signUpSuccessDescription'),
+            });
+            setModalOpen(false);
+          })
+          .catch((_err: { message: any }) => {
+            notificationController.error({ message: 'Nelze vytvořit studenta'});
+            setLoading(false);
           });
-          setModalOpen(false);
-        })
-        .catch((err: { message: any }) => {
-          notificationController.error({ message: err.message });
-          setLoading(false);
-        });
+      } else {
+        // add id for update
+        request.id = editableStudent.id;
+
+        dispatch(doUpdateUser(request))
+          .unwrap()
+          .then(() => {
+            setLoading(false);
+            notificationController.success({
+              message: t('auth.signUpSuccessMessage'),
+              description: t('auth.signUpSuccessDescription'),
+            });
+            setModalOpen(false);
+          })
+          .catch((_err: { message: any }) => {
+            notificationController.error({ message: 'Nelze aktualizovat studenta'});
+            setLoading(false);
+          });
+      }
     }
     if (type === PageType.LESSON) {
       dispatch(doStudentSignUpToLesson(request))
@@ -77,8 +98,8 @@ const RegisterStudentModal: React.FC<RegisterStudentModalProps> = ({ courseId, l
           });
           setModalOpen(false);
         })
-        .catch((err: { message: any }) => {
-          notificationController.error({ message: err.message });
+        .catch((_err: { message: any }) => {
+          notificationController.error({ message: 'Nelze zaregistrovat studenta' });
           setLoading(false);
         });
     }

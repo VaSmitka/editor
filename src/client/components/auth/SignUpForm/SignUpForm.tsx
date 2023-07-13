@@ -58,8 +58,8 @@ export const SignUpForm: React.FC<SingUpProps> = ({ role }: SingUpProps) => {
         });
         navigate('/auth/login');
       })
-      .catch((err) => {
-        notificationController.error({ message: err.message });
+      .catch((_err) => {
+        notificationController.error({ message: 'Nepovedlo se zaregistrovat' });
         setLoading(false);
       });
   };

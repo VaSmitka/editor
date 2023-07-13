@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 import { BasicTableRow, Pagination, StudentTableRow } from '@app/api/table.api.ts';
 import { BaseTable } from '@app/components/common/BaseTable/BaseTable';
 import { ColumnsType } from 'antd/es/table';
@@ -11,11 +12,13 @@ import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
 import { LessonTableRow } from '@app/api/lessons.api';
 import { PageType } from '@app/pages/CoursePage';
 import { useAppDispatch } from '@app/hooks/reduxHooks';
-import { doGetLessonStudents, doGetLessonsByCourseId } from '@app/store/slices/lessonSlice';
+import { doGetLessonStudents, doGetLessonsByCourseId, doRemoveLesson, doUpdateStudentsLesson } from '@app/store/slices/lessonSlice';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
 import { PlusOutlined } from '@ant-design/icons';
 import { doGetCourseStudents } from '@app/store/slices/courseSlice';
 import { useNavigate } from 'react-router-dom';
+import { Role } from '@app/api/auth.api';
+import { doRemoveStudent } from '@app/store/slices/userSlice';
 
 interface CourseTableProps {
   courseId: string | undefined;
@@ -35,6 +38,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { isMounted } = useMounted();
+  const user = useAppSelector((state) => state.user.user);
 
   const [tableData, setTableData] = useState<{ data: BasicTableRow[]; pagination: Pagination; loading: boolean }>({
     data: [],
@@ -54,8 +58,8 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
             setTableData({ data: res.data, pagination: res.pagination, loading: false });
           }
         })
-        .catch((err: { message: any }) => {
-          notificationController.error({ message: err.message });
+        .catch((_err: { message: any }) => {
+          notificationController.error({ message: 'Nepovedlo se získat studenty kurzu' });
           setTableData((oldData) => ({ ...oldData, loading: false }));
         });
     }
@@ -69,8 +73,8 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
             setTableData({ data: res.data, pagination: res.pagination, loading: false });
           }
         })
-        .catch((err: { message: any }) => {
-          notificationController.error({ message: err.message });
+        .catch((_err: { message: any }) => {
+          notificationController.error({ message: 'Nepovedlo se získat studenty lekce' });
           setTableData((oldData) => ({ ...oldData, loading: false }));
         });
     }
@@ -84,8 +88,8 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
             setTableData({ data: res.data, pagination: res.pagination, loading: false });
           }
         })
-        .catch((err: { message: any }) => {
-          notificationController.error({ message: err.message });
+        .catch((_err: { message: any }) => {
+          notificationController.error({ message: 'Nepovedlo se získat lekce podle kurzu' });
           setTableData((oldData) => ({ ...oldData, loading: false }));
         });
     }
@@ -99,16 +103,96 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
     fetch();
   };
 
-  const handleDeleteRow = (rowId: number) => {
-    setTableData({
-      ...tableData,
-      data: tableData.data.filter((item) => item.key !== rowId),
-      pagination: {
-        ...tableData.pagination,
-        total: tableData.pagination.total ? tableData.pagination.total - 1 : tableData.pagination.total,
-      },
-    });
+  const handleDeleteStudent = (itemId: number) => {
+    dispatch(doRemoveStudent(itemId!))
+      .unwrap()
+      .then((_res) => {
+        notificationController.success({ message: 'Student byl smazán' });
+      })
+      .catch((_err: { message: any }) => {
+        notificationController.error({ message: 'Studenta nešlo smazat' });
+      });
   };
+
+  const handleDeleteLesson = (itemId: number) => {
+    dispatch(doRemoveLesson(itemId!))
+      .unwrap()
+      .then((_res) => {
+        notificationController.success({ message: 'Lekce byla smazána' });
+      })
+      .catch((_err: { message: any }) => {
+        notificationController.error({ message: 'Lekci nešlo smazat' });
+      });
+  };
+
+  const handleVisibility = (data: any) => {
+    const {visibility, ...lessonData} = data;
+    
+    lessonData.visibility = visibility ? 0 : 1;
+    
+    dispatch(doUpdateStudentsLesson(lessonData))
+      .unwrap()
+      .then((_res) => {
+        notificationController.success({ message: 'Lekci byla změněna viditelnost' });
+      })
+      .catch((_err: { message: any }) => {
+        notificationController.error({ message: 'Nešlo aktualizovat stav lekce' });
+      });
+  }
+
+  const handleEditability = (data: any) => {
+    const {editable, ...lessonData} = data;
+
+    lessonData.editable = editable ? 0 : 1;
+
+    dispatch(doUpdateStudentsLesson(lessonData))
+      .unwrap()
+      .then((_res) => {
+        notificationController.success({ message: 'Lekci byla změněca editovatelnost' });
+      })
+      .catch((_err: { message: any }) => {
+        notificationController.error({ message: 'Nešlo aktualizovat stav lekce' });
+      });
+  }
+
+  const getStudentTableButtons = (record: any) => {  
+    return <BaseSpace>
+      <BaseButton
+        type="ghost"
+        severity='success'
+        onClick={() => {
+          // notificationController.info({ message: t('tables.inviteMessage', { name: record.name }) });
+          if (type === PageType.LESSON) {
+            navigate(`/student/${record.id}/lesson/${lessonId}`);
+          } else {
+            const eUser = {...record};
+            eUser.password = '';
+            setEditableStudent(eUser);
+            setModalOpen(true);
+          }
+        }}
+      >
+        {type === PageType.LESSON ? 'Zobrazit' : 'Upravit'}
+      </BaseButton>
+      {
+        (user!.role === Role.teacher && type === PageType.LESSON) && <>
+            <BaseButton type="default" severity={record.visibility ? 'warning' : 'info'}  onClick={() => handleVisibility(record)}>
+              {record.visibility ? 'Zneviditelnit' : 'Zviditelnit'}
+            </BaseButton>
+            <BaseButton type="default" severity={record.editable ? 'warning' : 'info'} onClick={() => handleEditability(record)}>
+              {record.editable ? 'Znepřístupnit' : 'Zpřístupnit'}
+            </BaseButton>
+        </>
+      }
+      {
+        (user!.role === Role.teacher && type === PageType.STUDENTS) && <>
+            <BaseButton type="default" danger onClick={() => handleDeleteStudent(record.id)}>
+              {t('tables.delete')}
+            </BaseButton>
+        </>
+      }
+    </BaseSpace>
+  }
 
   const studentColumns: ColumnsType<StudentTableRow> = [
     {
@@ -133,29 +217,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
       dataIndex: 'actions',
       width: '15%',
       render: (_text: string, record) => {
-        return (
-          <BaseSpace>
-            <BaseButton
-              type="ghost"
-              onClick={() => {
-                // notificationController.info({ message: t('tables.inviteMessage', { name: record.name }) });
-                if (type === PageType.LESSON) {
-                  navigate(`/student/${record.id}/lesson/${lessonId}`);
-                } else {
-                  const eUser = {...record};
-                  eUser.password = '';
-                  setEditableStudent(eUser);
-                  setModalOpen(true);
-                }
-              }}
-            >
-              {type === PageType.LESSON ? 'Zobrazit' : 'Upravit'}
-            </BaseButton>
-            <BaseButton type="default" danger onClick={() => handleDeleteRow(record.id)}>
-              {t('tables.delete')}
-            </BaseButton>
-          </BaseSpace>
-        );
+        return getStudentTableButtons(record);
       },
     },
   ];
@@ -179,6 +241,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
           <BaseSpace>
             <BaseButton
               type="ghost"
+              severity='success'
               onClick={() => {
                 console.log(record);
                 // notificationController.info({ message: t('tables.inviteMessage', { name: record.name }) });
@@ -187,7 +250,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
             >
               Upravit
             </BaseButton>
-            <BaseButton type="default" danger onClick={() => handleDeleteRow(record.id!)}>
+            <BaseButton type="default" danger onClick={() => handleDeleteLesson(record.id!)}>
               {t('tables.delete')}
             </BaseButton>
           </BaseSpace>

@@ -50,8 +50,8 @@ export const LockForm: React.FC = () => {
       .then(() => {
         navigate(-1);
       })
-      .catch((e) => {
-        notificationController.error({ message: e.message });
+      .catch((_e) => {
+        notificationController.error({ message: 'Nepovedlo se přihlásit' });
         setLoading(false);
       });
   };

@@ -41,8 +41,8 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
       .then((result: CourseCreatorData[]) => {
         setSidebarNavigation(generateMenuByRole(result, user!.role));
       })
-      .catch((err: { message: any }) => {
-        notificationController.error({ message: err.message });
+      .catch((_err: { message: any }) => {
+        notificationController.error({ message: 'Nepovedlo se načíst kurzy podle uživatel' });
       });
   }, []);
 

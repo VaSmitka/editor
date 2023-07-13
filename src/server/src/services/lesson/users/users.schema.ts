@@ -7,14 +7,16 @@ import type { Static } from '@feathersjs/typebox'
 import type { HookContext } from '../../../declarations'
 import { dataValidator, queryValidator } from '../../../validators'
 
-import { ExerciseStatus } from '../../../utils/consts'
+import { ExerciseStudentStatusEnum } from '../../../utils/consts'
 import { passwordHash } from '@feathersjs/authentication-local'
 
 // Main data model schema
 export const userHasLessonSchema = Type.Object(
   {
     id: Type.Number(),
-    status: StringEnum(ExerciseStatus),
+    status: StringEnum(ExerciseStudentStatusEnum),
+    editable: Type.Number(),
+    visibility: Type.Number(),
     student_id: Type.Number(),
     lesson_id: Type.Number()
   },

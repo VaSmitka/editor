@@ -7,6 +7,7 @@ import type { Application } from '../../declarations'
 import type { Courses, CoursesData, CoursesPatch, CoursesQuery } from './courses.schema'
 import knex from 'knex'
 import { Lesson } from '../lessons/lessons.class'
+import { ExerciseStatusEnum } from '../../utils/consts'
 
 export type { Courses, CoursesData, CoursesPatch, CoursesQuery }
 
@@ -40,9 +41,10 @@ export class CoursesService<ServiceParams extends Params = CoursesParams> extend
         const ids = await trx.insert(course, 'id').into('courses')
 
         resData.id = ids[0].id
-        lessons.forEach((elm: { course_id: number; creator: number }) => {
+        lessons.forEach((elm: { course_id: number; creator: number, status: string }) => {
           elm.course_id = resData.id
           elm.creator = course.creator
+          elm.status = ExerciseStatusEnum[0]
         })
         resData.lessons = await trx
           .insert(lessons, ['id', 'name', 'description', 'creator', 'course_id'])

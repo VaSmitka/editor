@@ -29,8 +29,8 @@ export const ForgotPasswordForm: React.FC = () => {
       .then(() => {
         navigate('/auth/security-code');
       })
-      .catch((err) => {
-        notificationController.error({ message: err.message });
+      .catch((_err) => {
+        notificationController.error({ message: 'Nepovedlo se resetovat heslo' });
         setLoading(false);
       });
   };

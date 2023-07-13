@@ -5,7 +5,8 @@ import type { KnexAdapterParams, KnexAdapterOptions } from '@feathersjs/knex'
 
 import type { Application } from '../../../declarations'
 import type { UserHasCourse, UserHasCourseData, UserHasCoursePatch, UserHasCourseQuery } from './users.schema'
-import { ExerciseStatus } from '../../../utils/consts'
+import { ExerciseStudentStatusEnum } from '../../../utils/consts'
+
 
 export type { UserHasCourse, UserHasCourseData, UserHasCoursePatch, UserHasCourseQuery }
 
@@ -28,7 +29,6 @@ export class UserHasCourseService<ServiceParams extends Params = UserHasCoursePa
 
         await trx
           .insert({
-            status: ExerciseStatus[0],
             student_id: ids[0].id,
             course_id
           })
@@ -39,8 +39,10 @@ export class UserHasCourseService<ServiceParams extends Params = UserHasCoursePa
         for (const idObj of lessonsIds) {
           await trx
             .insert({
-              status: ExerciseStatus[0],
+              status: ExerciseStudentStatusEnum[0],
               student_id: ids[0].id,
+              editable: 0,
+              visibility: 1,
               lesson_id: idObj.id
             })
             .into('lesson-users')

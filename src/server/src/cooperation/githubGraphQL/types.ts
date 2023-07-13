@@ -25,7 +25,7 @@ export type GithubFileRequest = {
 }
 
 export type GithubFile = {
-    name: string,
+    name?: string,
     type: string,
     mode: number,
     object: {

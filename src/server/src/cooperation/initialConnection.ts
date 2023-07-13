@@ -25,7 +25,7 @@ export const initialConnection = async (collectionId:string) => {
   }
 
   let files = await getFilesFromBranchFolder(`${neededName}:lesson-${idParts[1]}`);
-
+  console.log('get files', files)
   if (!files) {
     if (neededName === 'lector') {
       files = await getFilesFromBranchFolder(`${neededName}:${emptyTemplateFolder}`);
@@ -37,6 +37,7 @@ export const initialConnection = async (collectionId:string) => {
     }
   }
 
+  console.log('get files', files)
   // console.log(collectionId, neededBranch, githubBranch, files)
 
   createNeededFiles(lessonPath, files!);

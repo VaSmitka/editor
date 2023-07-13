@@ -1,5 +1,17 @@
 import { Priority } from '../constants/enums/priorities';
 
+export enum LessonStatus {
+  SEED='SEED', 
+  READY='READY'
+}
+
+export enum StudentLessonStatus {
+  CREATED='CREATED', 
+  DRAFTED='DRAFTED', 
+  FINISHED='FINISHED',
+  HIDDEN='HIDDEN'
+}
+
 export interface Tag {
   value: string;
   priority: Priority;
@@ -22,7 +34,7 @@ export interface Pagination {
 export interface StudentTableRow {
   password: string;
   id: number;
-  status: string;
+  status: StudentLessonStatus;
   firstName: string;
   lastName: string;
   role: string;

@@ -8,6 +8,8 @@ import {
   getCourses,
   getCoursesByCreator,
   getCoursesByStudent,
+  removeCourse,
+  updateCourse,
 } from '@app/api/course.api';
 
 export interface CourseSlice {}
@@ -52,6 +54,20 @@ export const doGetCoursesByStudent = createAsyncThunk('course/getByStudent', asy
 export const doGetCourseStudents = createAsyncThunk('course/students', async (courseId: string) =>
   getCourseStudents(courseId).then((res: any) => {
     console.log('Get course students by course id', res);
+    return res;
+  }),
+);
+
+export const doUpdateCourse = createAsyncThunk('course/Update', async (courseId: string, courseData) =>
+  updateCourse(courseId, courseData).then((res: any) => {
+    console.log('Update course by course id', res);
+    return res;
+  }),
+);
+
+export const doRemoveCourse = createAsyncThunk('course/Remove', async (courseId: string) =>
+  removeCourse(courseId).then((res: any) => {
+    console.log('Remove course by course id', res);
     return res;
   }),
 );

@@ -58,3 +58,7 @@ export const Row = styled.div`
   display: flex;
   gap: 0.5rem;
 `;
+
+export const Box = styled.div`
+  margin-bottom: 1rem;
+`;

@@ -18,7 +18,7 @@ import type { Application } from '../../declarations'
 import { LessonsService, getOptions } from './lessons.class'
 
 export const lessonsPath = 'lessons'
-export const lessonsMethods = ['find', 'get', 'create', 'patch', 'remove'] as const
+export const lessonsMethods = ['find', 'get', 'create', 'patch', 'remove', 'update'] as const
 
 export * from './lessons.class'
 export * from './lessons.schema'

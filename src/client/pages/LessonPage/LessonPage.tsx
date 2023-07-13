@@ -17,6 +17,11 @@ import { Loading } from '@app/components/common/Loading/Loading';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
 import { BaseTooltip } from '@app/components/common/BaseTooltip/BaseTooltip';
+import { LessonStatus } from '@app/api/table.api';
+import { Placeholder } from '@app/components/Error/Placeholder';
+
+import error404 from '@app/assets/images/error404.svg';
+import { Role } from '@app/api/auth.api';
 
 interface FilesData {
   htmlFileId: string;
@@ -85,8 +90,8 @@ const LessonPage: React.FC = () => {
       .then((result) => {
         setPageData(result);
       })
-      .catch((err: { message: any }) => {
-        notificationController.error({ message: err.message });
+      .catch((_err: { message: any }) => {
+        notificationController.error({ message: 'Nelze získat lekci' });
       });
 
     if (!initialized.current || pathname !== oldPathname) {
@@ -151,8 +156,8 @@ const LessonPage: React.FC = () => {
         console.log('result', result);
         setIsLoading(false);
       })
-      .catch((err: { message: any }) => {
-        notificationController.error({ message: err.message });
+      .catch((_err: { message: any }) => {
+        notificationController.error({ message: 'Nelze získat informace k lekci' });
         setIsLoading(false);
       });
   };
@@ -165,8 +170,8 @@ const LessonPage: React.FC = () => {
           console.log('commit result', result);
           setIsLoading(false);
         })
-        .catch((err: { message: any }) => {
-          notificationController.error({ message: err.message });
+        .catch((_err: { message: any }) => {
+          notificationController.error({ message: 'Nelze uložit data do githubu' });
           setIsLoading(false);
         });
     }
@@ -251,8 +256,10 @@ const LessonPage: React.FC = () => {
     setiframeKey(oldValue => oldValue + 1)
   }
 
-  return loading ? (
-      <Loading />
+  console.log(loading, !pageData )
+  return loading ? <Loading /> : (
+        (user?.role === Role.student && pageData?.status === LessonStatus.SEED) ? (
+      <Placeholder img={error404} msg="Cvičení není ještě připravené" />
     ) : (
     <>
       <PageTitle>{`Lekce ${pageData?.name}`}</PageTitle>
@@ -279,6 +286,10 @@ const LessonPage: React.FC = () => {
 
       <S.IFrame key={iframeKey} src={`${previewBaseUrl}${collectionId}/`}/>
     </>
+  )
+
+  
+
   );
 };
 

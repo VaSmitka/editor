@@ -18,7 +18,7 @@ import type { Application } from '../../declarations'
 import { UserService, getOptions } from './users.class'
 
 export const userPath = 'users'
-export const userMethods = ['find', 'get', 'create', 'patch', 'remove'] as const
+export const userMethods = ['find', 'get', 'create', 'patch', 'remove', 'update'] as const
 
 export * from './users.class'
 export * from './users.schema'

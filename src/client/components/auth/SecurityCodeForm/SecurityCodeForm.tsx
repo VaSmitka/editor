@@ -34,8 +34,8 @@ export const SecurityCodeForm: React.FC<SecurityCodeFormProps> = ({ onBack, onFi
       dispatch(doVerifySecurityCode({ code: securityCode }))
         .unwrap()
         .then(onFinish || navigateForward)
-        .catch((err) => {
-          notificationController.error({ message: err.message });
+        .catch((_err) => {
+          notificationController.error({ message: 'Nepovedlo se ověřit kód' });
           setLoading(false);
         });
     }

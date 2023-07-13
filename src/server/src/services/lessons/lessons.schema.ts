@@ -1,10 +1,11 @@
 // // For more information about this file see https://dove.feathersjs.com/guides/cli/service.schemas.html
 import { resolve } from '@feathersjs/schema'
-import { Type, getValidator, querySyntax } from '@feathersjs/typebox'
+import { StringEnum, Type, getValidator, querySyntax } from '@feathersjs/typebox'
 import type { Static } from '@feathersjs/typebox'
 
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
+import { ExerciseStatusEnum } from '../../utils/consts'
 
 // Main data model schema
 export const lessonsSchema = Type.Object(
@@ -12,6 +13,8 @@ export const lessonsSchema = Type.Object(
     id: Type.Number(),
     name: Type.String(),
     description: Type.String(),
+    status: StringEnum(ExerciseStatusEnum),
+    task: Type.String(),
     creator: Type.Number(),
     courseId: Type.Number()
   },
