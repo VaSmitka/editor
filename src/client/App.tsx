@@ -1,7 +1,7 @@
 import React from 'react';
 import { ConfigProvider, theme as thm } from 'antd';
 import { HelmetProvider } from 'react-helmet-async';
-import enUS from 'antd/lib/locale/en_US';
+import csCZ from 'antd/lib/locale/cs_CZ';
 import GlobalStyle from './styles/GlobalStyle';
 import 'typeface-montserrat';
 import 'typeface-lato';
@@ -30,7 +30,7 @@ const App: React.FC = () => {
       <GlobalStyle />
       <HelmetProvider>
         <ConfigProvider
-          locale={enUS}
+          locale={csCZ}
           theme={{
             token,
             algorithm: thm.darkAlgorithm,

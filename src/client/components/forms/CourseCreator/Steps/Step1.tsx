@@ -13,18 +13,18 @@ export const Step1: React.FC<Step1Props> = ({ courses }) => {
   // const { t } = useTranslation();
   return (
     <S.FormContent>
-      <BaseForm.Item name="name" label="Name" rules={[{ required: true, message: 'Name is required' }]}>
+      <BaseForm.Item name="name" label="Název" rules={[{ required: true, message: 'Jméno je povinné' }]}>
         <BaseInput />
       </BaseForm.Item>
       <BaseForm.Item
         name="description"
-        label="Description"
-        rules={[{ required: true, message: 'Description is required' }]}
+        label="Zadání"
+        rules={[{ required: true, message: 'Zadání je povinné' }]}
       >
         <BaseInput.TextArea rows={4} />
       </BaseForm.Item>
-      <BaseForm.Item name="template" label="Template">
-        <BaseSelect placeholder="Choose template">
+      <BaseForm.Item name="template" label="Šablona">
+        <BaseSelect placeholder="Zvolte šablonu">
           {courses.map(({ id, name }) => (
             <Option value={id}>{name}</Option>
           ))}

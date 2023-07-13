@@ -11,6 +11,7 @@ export interface Lesson {
   name: string;
   description: string;
   creator?: number;
+  created_at: string;
 }
 
 export interface LessonsResponse {

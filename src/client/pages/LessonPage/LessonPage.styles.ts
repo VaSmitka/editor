@@ -3,12 +3,15 @@ import { BaseTypography } from '@app/components/common/BaseTypography/BaseTypogr
 import { styled } from 'styled-components';
 
 export const Title = styled(BaseTypography.Title)`
+  flex-shrink: 0;
   display: block;
   margin-bottom: 2rem;
+  margin-right: 1rem;
 `;
 
 export const Col = styled(BaseCol)`
-  margin-bottom: 2rem;
+margin-top: 2rem;  
+margin-bottom: 3rem;
 `;
 
 export const IFrame = styled.iframe`
@@ -16,4 +19,10 @@ export const IFrame = styled.iframe`
   width: 100%;
   border-width: 0;
   margin-top: 1.5rem;
+`
+
+export const EditorBox = styled.div`
+  height: 600px;
+  background-color: #282c34;
+  overflow: scroll;
 `

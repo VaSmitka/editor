@@ -39,6 +39,7 @@ const CoursePage: React.FC = () => {
   const [info, setInfo] = useState<Course | Lesson>();
   // const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setModalOpen] = useState(false);
+  const [editableStudent, setEditableStudent] = useState(null);
 
   useEffect(() => {
     // setIsLoading(true);
@@ -98,7 +99,7 @@ const CoursePage: React.FC = () => {
               size="large"
             >
               <OrderedListOutlined />
-              Lectures
+              Lekce
             </BaseButton>
           </BaseCol>
 
@@ -109,7 +110,7 @@ const CoursePage: React.FC = () => {
               size="large"
             >
               <UserOutlined />
-              Students
+              Studenti
             </BaseButton>
           </BaseCol>
         </BaseRow>
@@ -117,19 +118,19 @@ const CoursePage: React.FC = () => {
 
       <S.TablesWrapper>
         <S.Card id="basic-table" title={info?.name} padding="1.25rem 1.25rem 0">
-          <CourseTable courseId={courseId} lessonId={lessonId} type={pageType} setModalOpen={setModalOpen} />
+          <CourseTable courseId={courseId} lessonId={lessonId} type={pageType} setModalOpen={setModalOpen} setEditableStudent={setEditableStudent} />
         </S.Card>
       </S.TablesWrapper>
 
       <BaseModal
-        title="Register Student"
+        title="Registrace studenta"
         centered
         open={isOpen}
         onCancel={() => setModalOpen(false)}
         size="medium"
         footer={false}
       >
-        <RegisterStudentModal courseId={courseId} lessonId={lessonId} type={pageType} setModalOpen={setModalOpen} />
+        <RegisterStudentModal courseId={courseId} lessonId={lessonId} type={pageType} setModalOpen={setModalOpen} editableStudent={editableStudent} setEditableStudent={setEditableStudent}/>
       </BaseModal>
     </>
   );

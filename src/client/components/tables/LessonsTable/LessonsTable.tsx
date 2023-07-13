@@ -20,13 +20,13 @@ export const LessonsTable: React.FC<LessonsTableProps> = ({ fields, add, remove 
 
   const columns = [
     {
-      title: 'Name',
+      title: 'Jméno',
       dataIndex: 'name',
       width: '25%',
       editable: true,
     },
     {
-      title: 'Description',
+      title: 'Zadání',
       dataIndex: 'description',
       width: '40%',
       editable: true,
@@ -77,7 +77,7 @@ export const LessonsTable: React.FC<LessonsTableProps> = ({ fields, add, remove 
       />
       <BaseButtonsForm.Item>
         <BaseButton type="dashed" block onClick={() => add()} icon={<PlusOutlined />}>
-          Add lesson
+          Přidat lekci
         </BaseButton>
       </BaseButtonsForm.Item>
     </>

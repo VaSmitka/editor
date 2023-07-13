@@ -101,13 +101,13 @@ export const CreatorForm: React.FC = () => {
 
   const steps = [
     {
-      title: 'General',
+      title: 'Obecný',
     },
     {
-      title: 'Lessons',
+      title: 'Lekce',
     },
     {
-      title: t('forms.stepFormLabels.confirm'),
+      title: 'Shrnutí',
     },
   ];
 

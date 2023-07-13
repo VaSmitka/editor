@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // import { useTranslation } from 'react-i18next';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { SignUpFormData } from '@app/components/auth/SignUpForm/SignUpForm';
@@ -16,13 +16,28 @@ interface RegisterStudentModalProps {
   courseId: string | undefined;
   lessonId: string | undefined;
   type: PageType | undefined;
+  editableStudent: any;
+  setEditableStudent: any;
   setModalOpen: any;
 }
 
-const RegisterStudentModal: React.FC<RegisterStudentModalProps> = ({ courseId, lessonId, type, setModalOpen }) => {
+const RegisterStudentModal: React.FC<RegisterStudentModalProps> = ({ courseId, lessonId, type, setModalOpen, editableStudent, setEditableStudent }) => {
+  const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const [isLoading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (editableStudent) {
+      for (const [key, value] of Object.entries(editableStudent)) {
+        form.setFieldValue(key, value);
+      }
+    } else {
+      form.resetFields()
+    }
+
+  }, [editableStudent])
+
 
   const handleSubmit = (values: SignUpFormData) => {
     const { confirmPassword, termOfUse, ...data } = values;
@@ -72,7 +87,7 @@ const RegisterStudentModal: React.FC<RegisterStudentModalProps> = ({ courseId, l
   return (
     <BaseCard>
       <PageTitle>Register Student</PageTitle>
-      <BaseForm layout="vertical" onFinish={handleSubmit} requiredMark="optional">
+      <BaseForm form={form} layout="vertical"  onFinish={handleSubmit} requiredMark="optional">
         <Auth.FormItem
           name="firstName"
           label={t('common.firstName')}

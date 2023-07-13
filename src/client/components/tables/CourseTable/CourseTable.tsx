@@ -22,6 +22,7 @@ interface CourseTableProps {
   lessonId: string | undefined;
   type: PageType | undefined;
   setModalOpen: any;
+  setEditableStudent: any;
 }
 
 const initialPagination: Pagination = {
@@ -29,7 +30,7 @@ const initialPagination: Pagination = {
   pageSize: 5,
 };
 
-export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, type, setModalOpen }) => {
+export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, type, setModalOpen, setEditableStudent }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -120,18 +121,18 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
       ),
     },
     {
-      title: 'Email',
+      title: 'E-mail',
       dataIndex: 'email',
     },
     {
-      title: 'Status',
+      title: 'Stav',
       dataIndex: 'status',
     },
     {
       title: t('tables.actions'),
       dataIndex: 'actions',
       width: '15%',
-      render: (_text: string, record: { id: number }) => {
+      render: (_text: string, record) => {
         return (
           <BaseSpace>
             <BaseButton
@@ -141,11 +142,14 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
                 if (type === PageType.LESSON) {
                   navigate(`/student/${record.id}/lesson/${lessonId}`);
                 } else {
-                  console.log('jdeme na to');
+                  const eUser = {...record};
+                  eUser.password = '';
+                  setEditableStudent(eUser);
+                  setModalOpen(true);
                 }
               }}
             >
-              {type === PageType.LESSON ? 'Show' : 'Edit'}
+              {type === PageType.LESSON ? 'Zobrazit' : 'Upravit'}
             </BaseButton>
             <BaseButton type="default" danger onClick={() => handleDeleteRow(record.id)}>
               {t('tables.delete')}
@@ -181,7 +185,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
                 navigate(`/lesson/${record.id}`);
               }}
             >
-              Edit
+              Upravit
             </BaseButton>
             <BaseButton type="default" danger onClick={() => handleDeleteRow(record.id!)}>
               {t('tables.delete')}
@@ -194,6 +198,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
 
   const addNew = (pageType?: PageType) => {
     if (pageType === PageType.LESSON || pageType === PageType.STUDENTS) {
+      setEditableStudent(null);
       setModalOpen(true);
     }
   };
@@ -212,7 +217,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
       <BaseButtonsForm.Item>
         {type !== PageType.LESSON && (
           <BaseButton type="dashed" onClick={() => addNew(type)} icon={<PlusOutlined />}>
-            {type === PageType.LESSONS ? 'Add lesson' : 'Add student'}
+            {type === PageType.LESSONS ? 'Přidat lekci' : 'Přidat studenta'}
           </BaseButton>
         )}
       </BaseButtonsForm.Item>

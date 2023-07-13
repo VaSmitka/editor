@@ -15,6 +15,8 @@ import { json1Presence } from '../../../ot';
 import ShareDBClient from 'sharedb-client-browser/dist/sharedb-client-umd.cjs';
 import { Loading } from '@app/components/common/Loading/Loading';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
+import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
+import { BaseTooltip } from '@app/components/common/BaseTooltip/BaseTooltip';
 
 interface FilesData {
   htmlFileId: string;
@@ -195,9 +197,9 @@ const LessonPage: React.FC = () => {
     () => [
       {
         key: '1',
-        label: 'HTML',
+        label: <BaseTooltip title="index.html">HTML</BaseTooltip>,
         children: (
-          <>
+          <S.EditorBox>
             {data && data.htmlFileId ? (
               <CodeEditor
                 shareDBDoc={shareDBDoc}
@@ -206,14 +208,14 @@ const LessonPage: React.FC = () => {
                 activeFileId={data.htmlFileId}
               />
             ) : null}
-          </>
+          </S.EditorBox>
         ),
       },
       {
         key: '2',
-        label: 'CSS',
+        label: <BaseTooltip title="style.css">CSS</BaseTooltip>,
         children: (
-          <>
+          <S.EditorBox>
             {data && data.cssFileId ? (
               <CodeEditor
                 shareDBDoc={shareDBDoc}
@@ -222,14 +224,14 @@ const LessonPage: React.FC = () => {
                 activeFileId={data.cssFileId}
               />
             ) : null}
-          </>
+          </S.EditorBox>
         ),
       },
       {
         key: '3',
-        label: 'JS',
+        label: <BaseTooltip title="index.js">JavaScript</BaseTooltip>,
         children: (
-          <>
+          <S.EditorBox>
             {data && data.jsFileId ? (
               <CodeEditor
                 shareDBDoc={shareDBDoc}
@@ -238,7 +240,7 @@ const LessonPage: React.FC = () => {
                 activeFileId={data.jsFileId}
               />
             ) : null}
-          </>
+          </S.EditorBox>
         ),
       },
     ],
@@ -253,14 +255,28 @@ const LessonPage: React.FC = () => {
       <Loading />
     ) : (
     <>
-      <PageTitle>{`Lesson ${pageData?.name}`}</PageTitle>
-      <S.Title>{pageData?.name}</S.Title>
-      <BaseButton onClick={() => commitLesson(collectionId)}>Save to Github</BaseButton>
+      <PageTitle>{`Lekce ${pageData?.name}`}</PageTitle>
+
+
+      <BaseRow>
+        <S.Title level={2}>{pageData?.name}</S.Title>
+        <BaseButton onClick={() => commitLesson(collectionId)}>Save to Github</BaseButton> 
+      </BaseRow>       
+
+      <BaseRow wrap={false}>
+        <S.Title level={4}>Zadání</S.Title>
+        <p>{pageData?.description}</p>
+      </BaseRow>
+
       <S.Col>
         <BaseTabs defaultActiveKey="1" items={commonTabs} />
       </S.Col>
-      <S.Title>Preview</S.Title>
-      <BaseButton onClick={() => refreshPreview()}>Refresh</BaseButton>
+
+      <BaseRow>
+        <S.Title className="mr-2" level={2}>Preview</S.Title>{' '}
+        <BaseButton onClick={() => refreshPreview()}>Refresh</BaseButton>
+      </BaseRow>
+
       <S.IFrame key={iframeKey} src={`${previewBaseUrl}${collectionId}/`}/>
     </>
   );

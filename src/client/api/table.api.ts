@@ -20,6 +20,7 @@ export interface Pagination {
 }
 
 export interface StudentTableRow {
+  password: string;
   id: number;
   status: string;
   firstName: string;
