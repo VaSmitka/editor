@@ -122,9 +122,9 @@ const CoursePage: React.FC = () => {
         </S.Card>
       </S.TablesWrapper>
 
-      {pageType !== PageType.STUDENTS && (
+      {pageType === PageType.STUDENTS && (
         <BaseModal
-          title="Registrace studenta"
+          title={!editableStudent ? 'Registrace studenta' : 'Úprava studenta'}
           centered
           open={isOpen}
           onCancel={() => setModalOpen(false)}

@@ -9,24 +9,23 @@ import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
 import { useMounted } from '@app/hooks/useMounted';
 import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
-import { LessonTableRow } from '@app/api/lessons.api';
+import { LessonsTableRow } from '@app/api/lessons.api';
 import { PageType } from '@app/pages/CoursePage';
 import { useAppDispatch } from '@app/hooks/reduxHooks';
-import { doGetLessonStudents, doGetLessonsByCourseId, doRemoveLesson, doUpdateStudentsLesson } from '@app/store/slices/lessonSlice';
+import { doGetLessonStudents, doGetLessonsByCourseId, doGetLessonsStudentDataByCourseId, doRemoveLesson, doUpdateStudentsLesson } from '@app/store/slices/lessonSlice';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
 import { CheckOutlined, EditOutlined, EyeInvisibleOutlined, EyeOutlined, LockOutlined, PlusOutlined, QuestionOutlined, UnlockOutlined } from '@ant-design/icons';
 import { doGetCourseStudents } from '@app/store/slices/courseSlice';
 import { useNavigate } from 'react-router-dom';
 import { Role } from '@app/api/auth.api';
 import { doRemoveStudent } from '@app/store/slices/userSlice';
-import { BaseTag } from '@app/components/common/BaseTag/BaseTag';
 
 interface CourseTableProps {
   courseId: string | undefined;
-  lessonId: string | undefined;
+  lessonId?: string | undefined;
   type: PageType | undefined;
-  setModalOpen: any;
-  setEditableStudent: any;
+  setModalOpen?: any;
+  setEditableStudent?: any;
 }
 
 const initialPagination: Pagination = {
@@ -82,7 +81,8 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
 
     // PageType.LESSONS - get course lessons
     if (type === PageType.LESSONS) {
-      dispatch(doGetLessonsByCourseId(courseId!))
+      if (user!.role === Role.teacher) {
+        dispatch(doGetLessonsByCourseId(courseId!))
         .unwrap()
         .then((res) => {
           if (isMounted.current) {
@@ -93,6 +93,21 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
           notificationController.error({ message: 'Nepovedlo se získat lekce podle kurzu' });
           setTableData((oldData) => ({ ...oldData, loading: false }));
         });
+      }
+
+      if (user!.role === Role.student) {
+        dispatch(doGetLessonsStudentDataByCourseId(user!.id))
+          .unwrap()
+          .then((res) => {
+            if (isMounted.current) {
+              setTableData({ data: res.data, pagination: res.pagination, loading: false });
+            }
+          })
+          .catch((_err: { message: any }) => {
+            notificationController.error({ message: 'Nepovedlo se získat lekce podle kurzu' });
+            setTableData((oldData) => ({ ...oldData, loading: false }));
+          });
+      }
     }
   };
 
@@ -174,10 +189,6 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
       dataIndex: 'email',
     },
     {
-      title: 'Stav',
-      dataIndex: 'status',
-    },
-    {
       title: t('tables.actions'),
       dataIndex: 'actions',
       width: '15%',
@@ -205,16 +216,31 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
     },
   ];
 
-  const lessonsColumns: ColumnsType<LessonTableRow> = [
+  const lessonsColumns: ColumnsType<LessonsTableRow> = [
     {
       title: 'Stav',
       dataIndex: 'status',
-      render: (_text: string, record: any) => {
-        return (
-          <BaseSpace style={{fontSize: '1.5rem'}}>
-            {record.status === LessonStatus.SEED ? <EditOutlined /> : <CheckOutlined />}
-          </BaseSpace>
-        );
+      render: (_text: string, record) => {
+        if (user!.role === Role.teacher) {
+          return (
+            <BaseSpace style={{fontSize: '1.5rem'}}>
+              {record.status === LessonStatus.SEED ? <EditOutlined /> : <CheckOutlined />}              
+            </BaseSpace>
+          );          
+        }
+
+        if (user!.role === Role.student) {
+          return (
+            <BaseSpace style={{fontSize: '1.5rem'}}>
+              {!record.editable && <LockOutlined />} 
+
+              {record.progress === StudentLessonStatus.CREATED &&  <QuestionOutlined />}
+              {record.progress === StudentLessonStatus.DRAFTED &&  <EditOutlined />}
+              {record.progress === StudentLessonStatus.FINISHED &&  <CheckOutlined />}  
+            </BaseSpace>
+          );          
+        }
+
       },
     },
     {
@@ -230,10 +256,10 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
       title: t('tables.actions'),
       dataIndex: 'actions',
       width: '15%',
-      render: (_text: string, record: { id?: number }) => {
+      render: (_text: string, record) => {
         return (
           <BaseSpace>
-            <BaseButton
+            {record.status === LessonStatus.READY || user?.role === Role.teacher && <BaseButton
               type="ghost"
               severity='success'
               onClick={() => {
@@ -242,44 +268,53 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
                 navigate(`/lesson/${record.id}`);
               }}
             >
-              Upravit
-            </BaseButton>
-            <BaseButton type="default" danger onClick={() => handleDeleteLesson(record.id!)}>
-              {t('tables.delete')}
-            </BaseButton>
+              {user?.role === Role.teacher ? 'Upravit' : 'Otevřít'}
+            </BaseButton>}
+            { user?.role === Role.teacher &&
+              <BaseButton type="default" danger onClick={() => handleDeleteLesson(record.id!)}>
+                {t('tables.delete')}
+              </BaseButton>
+            }
           </BaseSpace>
         );
       },
     },
   ];
 
-  const lessonColumns: ColumnsType<LessonTableRow> = [
+  const lessonColumns: ColumnsType<LessonsTableRow> = [
     {
       title: 'Stav',
       dataIndex: 'status',
       width: '15%',
-      render: (_text: string, record: any) => 
+      render: (_text: string, record: any) => {
+        return (
           <BaseSpace style={{fontSize: '1.5rem'}}>
             {  user?.role === Role.teacher && <>
                 {record.editable ? <UnlockOutlined /> : <LockOutlined />}
-                {record.vidibility ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+                {record.visibility ? <EyeOutlined /> : <EyeInvisibleOutlined />}
               </>
             }
 
 
-            {record.studentStatus === StudentLessonStatus.CREATED &&  <QuestionOutlined />}
-            {record.studentStatus === StudentLessonStatus.DRAFTED &&  <EditOutlined />}
-            {record.studentStatus === StudentLessonStatus.FINISHED &&  <CheckOutlined />}
+            {record.progress === StudentLessonStatus.CREATED &&  <QuestionOutlined />}
+            {record.progress === StudentLessonStatus.DRAFTED &&  <EditOutlined />}
+            {record.progress === StudentLessonStatus.FINISHED &&  <CheckOutlined />}
           </BaseSpace>
+        )
+      }
     },
     {
-      title: 'Název',
+      title: t('common.name'),
       dataIndex: 'name',
-      render: (text: string) => <span>{text}</span>,
+      render: (_text, record: any) => (
+        <span>
+          {record.firstName} {record.lastName}
+        </span>
+      ),
     },
     {
-      title: 'Popis',
-      dataIndex: 'description',
+      title: 'E-mail',
+      dataIndex: 'email',
     },
     {
       title: t('tables.actions'),
@@ -299,11 +334,11 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
             </BaseButton>
             {
               (user!.role === Role.teacher ) && <>
-                  <BaseButton type="default" severity={record.visibility ? 'warning' : 'info'}  onClick={() => handleVisibility(record)}>
-                    {record.visibility ? 'Zneviditelnit' : 'Zviditelnit'}
-                  </BaseButton>
                   <BaseButton type="default" severity={record.editable ? 'warning' : 'info'} onClick={() => handleEditability(record)}>
                     {record.editable ? 'Znepřístupnit' : 'Zpřístupnit'}
+                  </BaseButton>
+                  <BaseButton type="default" severity={record.visibility ? 'warning' : 'info'}  onClick={() => handleVisibility(record)}>
+                    {record.visibility ? 'Zneviditelnit' : 'Zviditelnit'}
                   </BaseButton>
               </>
             }
@@ -326,7 +361,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
         bordered
       />
       <BaseButtonsForm.Item>
-        {type !== PageType.LESSON && (
+        {(user!.role === Role.teacher && type !== PageType.LESSON) && (
           <BaseButton type="dashed" onClick={() => addNew(type)} icon={<PlusOutlined />}>
             {type === PageType.LESSONS ? 'Přidat lekci' : 'Přidat studenta'}
           </BaseButton>

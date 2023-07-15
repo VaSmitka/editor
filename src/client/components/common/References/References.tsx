@@ -5,7 +5,7 @@ export const References: React.FC = () => {
   return (
     <S.ReferencesWrapper>
       <S.Text>
-        Vytvořeno jako diplomová práce Václava Smítky
+        Vytvořeno jako diplomová práce Václavem Smítkou
       </S.Text>
     </S.ReferencesWrapper>
   );

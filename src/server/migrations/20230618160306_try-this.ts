@@ -38,6 +38,8 @@ export async function up(knex: Knex): Promise<void> {
 
   await knex.schema.createTable('course-users', (table) => {
     table.increments('id').primary()
+    table.tinyint('editable').notNullable()
+    table.tinyint('visibility').notNullable()
     table.bigint('student_id').notNullable().unsigned().references('users.id')
     table.bigint('course_id').notNullable().unsigned().references('courses.id')
 
@@ -46,7 +48,7 @@ export async function up(knex: Knex): Promise<void> {
 
   await knex.schema.createTable('lesson-users', (table) => {
     table.increments('id').primary()
-    table.string('status').notNullable()
+    table.string('progress').notNullable()
     table.tinyint('editable').notNullable()
     table.tinyint('visibility').notNullable()
 

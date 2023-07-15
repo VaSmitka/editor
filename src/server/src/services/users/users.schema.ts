@@ -62,11 +62,10 @@ export type UserQuery = Static<typeof userQuerySchema>
 export const userQueryValidator = getValidator(userQuerySchema, queryValidator)
 export const userQueryResolver = resolve<UserQuery, HookContext>({
   // If there is a user (e.g. with authentication), they are only allowed to see their own data
-  id: async (value, user, context) => {
-    if (context.params.user) {
-      return context.params.user.id
-    }
-
-    return value
-  }
+  // id: async (value, user, context) => {
+  //    if (context.params.user.role === 'student') {
+  //     return context.params.user.id
+  //   }
+  //   return value
+  // }
 })

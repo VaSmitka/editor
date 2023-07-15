@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { LAYOUT, media } from '@app/styles/themes/constants';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
+import { BaseCard } from '@app/components/common/BaseCard/BaseCard';
 
 export const RightSideCol = styled(BaseCol)`
   padding: ${LAYOUT.desktop.paddingVertical} ${LAYOUT.desktop.paddingHorizontal};
@@ -54,3 +55,13 @@ export const Item = styled.div`
   height: 150px;
   flex-shrink: 0;
 `;
+
+export const Card = styled(BaseCard)`
+  .ant-card-head {
+    margin: 1rem 0;
+  } 
+
+.ant-card-body {
+    padding: 0 2rem;
+  }
+`

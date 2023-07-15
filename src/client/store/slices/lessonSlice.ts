@@ -1,4 +1,4 @@
-import { getLessonsDataByCourseId, getLesson, getLessonStudents, getLessonTask, getLessonTaskCommit, updateStudentsLesson, removeLesson, updateLesson } from '@app/api/lessons.api';
+import { getLessonsDataByCourseId, getLesson, getLessonStudents, getLessonTask, getLessonTaskCommit, updateStudentsLesson, removeLesson, updateLesson, getLessonsStudentDataByCourseId } from '@app/api/lessons.api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export interface LessonSlice {}
@@ -44,6 +44,15 @@ export const doGetLessonStudents = createAsyncThunk('lesson/students', async (le
     return res;
   }),
 );
+
+export const doGetLessonsStudentDataByCourseId = createAsyncThunk('lesson/studentsLessons', async (studentId:number) =>
+  getLessonsStudentDataByCourseId(studentId).then((res: any) => {
+    console.log('Get lessons and students data by course id and student id', res);
+    return res;
+  }),
+);
+
+getLessonsStudentDataByCourseId
 
 export const doUpdateLesson = createAsyncThunk('lesson/Update', async ({id,...lessonData}: any) =>
   updateLesson(id, lessonData).then((res: any) => {

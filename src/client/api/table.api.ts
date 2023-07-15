@@ -9,7 +9,6 @@ export enum StudentLessonStatus {
   CREATED='CREATED', 
   DRAFTED='DRAFTED', 
   FINISHED='FINISHED',
-  HIDDEN='HIDDEN'
 }
 
 export interface Tag {

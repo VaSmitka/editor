@@ -1,5 +1,6 @@
 import { httpApi } from '@app/api/http.api';
 import { LessonStatus, StudentLessonStatus } from './table.api';
+import { User } from './auth.api';
 
 export interface Pagination {
   current?: number;
@@ -17,11 +18,17 @@ export interface Lesson {
   created_at?: string;
 }
 
+export interface UserHasLesson {
+  progress: StudentLessonStatus;
+  editable: number;
+  visibility: number;
+}
+
 export interface LessonsResponse {
   data: Lesson[];
 }
 
-export type LessonTableRow = Lesson;
+export type LessonsTableRow = Lesson & User & UserHasLesson;
 
 export const getLesson = (id: string): Promise<Lesson> => httpApi.get(`lessons/${id}`).then(({ data }) => data);
 
@@ -33,6 +40,9 @@ export const getLessonTask = (collectionId: string | undefined): Promise<Lesson>
 
 export const getLessonsDataByCourseId = (courseId: string, _pagination: Pagination): Promise<LessonsResponse> =>
   httpApi.get(`lessons?course_id=${courseId}`).then(({ data }) => data);
+
+  export const getLessonsStudentDataByCourseId = (studentId: number): Promise<any> =>
+  httpApi.get(`lesson/users?student_id=${studentId}`).then(({ data }) => data);
 
 export const getLessonStudents = (id: string): Promise<any> =>
   httpApi.get(`lesson/users?lesson_id=${id}`).then((data) => data.data);

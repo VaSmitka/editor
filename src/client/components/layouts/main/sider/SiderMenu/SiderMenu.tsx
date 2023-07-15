@@ -47,7 +47,6 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
   }, []);
 
   const generateMenuByRole = (result: CourseCreatorData[], role: Role): any[] => {
-    console.log('user', role);
     if (role === Role.teacher) {
       return result
         .map((elm) => ({
@@ -225,7 +224,7 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
           ],
         );
     } else if (role === Role.student) {
-      return result.map((elm) => ({
+      return result.filter(elm => elm.editable).map((elm) => ({
         title: elm.name,
         key: `course-${elm.id}`,
         icon: <ProfileOutlined />,

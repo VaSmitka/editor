@@ -70,9 +70,23 @@ const RegisterStudentModal: React.FC<RegisterStudentModalProps> = ({ courseId, l
           });
       } else {
         // add id for update
-        request.id = editableStudent.id;
+        const reqBody:any = {
+          id: editableStudent.id
+        }
+        if (data.firstName !== editableStudent.firstName) {
+          reqBody.firstName = data.firstName;
+        }
+        if (data.lastName !== editableStudent.lastName) {
+          reqBody.lastName = data.lastName;
+        }
+        if (data.email !== editableStudent.email) {
+          reqBody.email = data.email;
+        }
+        if (data.password !== editableStudent.password) {
+          reqBody.password = data.password;
+        }
 
-        dispatch(doUpdateUser(request))
+        dispatch(doUpdateUser(reqBody))
           .unwrap()
           .then(() => {
             setLoading(false);
@@ -107,19 +121,19 @@ const RegisterStudentModal: React.FC<RegisterStudentModalProps> = ({ courseId, l
 
   return (
     <BaseCard>
-      <PageTitle>Registrace Studenta</PageTitle>
+      <PageTitle>{!editableStudent ? 'Registrace Studenta' : 'Úprava'}</PageTitle>
       <BaseForm form={form} layout="vertical"  onFinish={handleSubmit} requiredMark="optional">
         <Auth.FormItem
           name="firstName"
           label={t('common.firstName')}
-          rules={[{ required: true, message: t('common.requiredField') }]}
+          rules={[{ required: !editableStudent, message: t('common.requiredField') }]}
         >
           <Auth.FormInput placeholder={t('common.firstName')} />
         </Auth.FormItem>
         <Auth.FormItem
           name="lastName"
           label={t('common.lastName')}
-          rules={[{ required: true, message: t('common.requiredField') }]}
+          rules={[{ required: !editableStudent, message: t('common.requiredField') }]}
         >
           <Auth.FormInput placeholder={t('common.lastName')} />
         </Auth.FormItem>
@@ -127,7 +141,7 @@ const RegisterStudentModal: React.FC<RegisterStudentModalProps> = ({ courseId, l
           name="email"
           label={t('common.email')}
           rules={[
-            { required: true, message: t('common.requiredField') },
+            { required: !editableStudent, message: t('common.requiredField') },
             {
               type: 'email',
               message: t('common.notValidEmail'),
@@ -139,7 +153,7 @@ const RegisterStudentModal: React.FC<RegisterStudentModalProps> = ({ courseId, l
         <Auth.FormItem
           label={t('common.password')}
           name="password"
-          rules={[{ required: true, message: t('common.requiredField') }]}
+          rules={[{ required: !editableStudent, message: t('common.requiredField') }]}
         >
           <Auth.FormInputPassword placeholder={t('common.password')} />
         </Auth.FormItem>
@@ -148,7 +162,7 @@ const RegisterStudentModal: React.FC<RegisterStudentModalProps> = ({ courseId, l
           name="confirmPassword"
           dependencies={['password']}
           rules={[
-            { required: true, message: t('common.requiredField') },
+            { required: !editableStudent, message: t('common.requiredField') },
             ({ getFieldValue }: {getFieldValue:any}) => ({
               validator(_: any, value: any) {
                 if (!value || getFieldValue('password') === value) {
@@ -164,7 +178,7 @@ const RegisterStudentModal: React.FC<RegisterStudentModalProps> = ({ courseId, l
         <Auth.ActionsWrapper></Auth.ActionsWrapper>
         <BaseForm.Item noStyle>
           <Auth.SubmitButton type="primary" htmlType="submit" loading={isLoading}>
-            {t('common.signUp')}
+            {!editableStudent ? t('common.signUp') : 'Upravit'}
           </Auth.SubmitButton>
         </BaseForm.Item>
       </BaseForm>

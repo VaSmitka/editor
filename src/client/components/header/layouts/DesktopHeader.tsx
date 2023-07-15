@@ -9,6 +9,8 @@ import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from '@app/hooks/reduxHooks';
+import { Role } from '@app/api/auth.api';
 
 interface DesktopHeaderProps {
   isTwoColumnsLayout: boolean;
@@ -16,6 +18,7 @@ interface DesktopHeaderProps {
 
 export const DesktopHeader: React.FC<DesktopHeaderProps> = ({ isTwoColumnsLayout }) => {
   const navigate = useNavigate();
+  const user = useAppSelector((state) => state.user.user);
 
   const leftSide = isTwoColumnsLayout ? (
     <S.SearchColumn xl={16} xxl={17}>
@@ -36,7 +39,7 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({ isTwoColumnsLayout
 
   return (
     <BaseRow justify="space-between" align="middle">
-      {leftSide}
+      {user!.role === Role.teacher ? leftSide: <div />}
 
       <S.ProfileColumn xl={8} xxl={7} $isTwoColumnsLayout={isTwoColumnsLayout}>
         <BaseRow align="middle" justify="end" gutter={[5, 5]}>

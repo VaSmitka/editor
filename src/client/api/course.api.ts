@@ -16,6 +16,8 @@ export interface CoursesResponse {
 }
 
 export interface CourseCreatorData {
+  editable: unknown;
+  visibility: unknown;
   id?: number;
   name: string;
   description: string;

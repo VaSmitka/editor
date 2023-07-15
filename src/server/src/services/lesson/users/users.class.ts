@@ -5,7 +5,7 @@ import type { KnexAdapterParams, KnexAdapterOptions } from '@feathersjs/knex'
 
 import type { Application } from '../../../declarations'
 import type { UserHasLesson, UserHasLessonData, UserHasLessonPatch, UserHasLessonQuery } from './users.schema'
-import { ExerciseStudentStatusEnum } from '../../../utils/consts'
+import { ExerciseStudentProressEnum } from '../../../utils/consts'
 
 export type { UserHasLesson, UserHasLessonData, UserHasLessonPatch, UserHasLessonQuery }
 
@@ -26,7 +26,7 @@ export class UserHasLessonService<ServiceParams extends Params = UserHasLessonPa
         const ids = await trx.insert(user, 'id').into('users')
         await trx
           .insert({
-            status: ExerciseStudentStatusEnum[0],
+            progress: ExerciseStudentProressEnum[0],
             student_id: ids[0].id,
             editable: 0,
             visibility: 1,
@@ -50,6 +50,10 @@ export class UserHasLessonService<ServiceParams extends Params = UserHasLessonPa
       response.data = await this.Model.from('lesson-users')
         .join('users', 'lesson-users.student_id', '=', 'users.id')
         .where({ lesson_id: query.lesson_id })
+    } else if (query?.student_id) { 
+      response.data = await this.Model.from('lesson-users')
+        .join('lessons', 'lesson-users.lesson_id', '=', 'lessons.id')
+        .where({ student_id: query.student_id })
     } else {
       response.data = await this.Model.from('lesson-users')
     }
