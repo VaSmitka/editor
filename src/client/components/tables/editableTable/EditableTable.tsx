@@ -75,7 +75,7 @@ export const EditableTable: React.FC = () => {
       setTableData({ ...tableData, data: newData });
       setEditingKey(0);
     } catch (errInfo) {
-      console.log('Validate Failed:', errInfo);
+      console.error('Validate Failed:', errInfo);
     }
   };
 
@@ -106,9 +106,8 @@ export const EditableTable: React.FC = () => {
       title: t('tables.actions'),
       dataIndex: 'actions',
       width: '15%',
-      render: (text: string, record: BasicTableRow) => {
+      render: (_text: string, record: BasicTableRow) => {
         const editable = isEditing(record);
-        console.log(text, record);
         return (
           <BaseSpace>
             {editable ? (

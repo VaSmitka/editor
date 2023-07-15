@@ -19,6 +19,7 @@ import { doGetCourseStudents } from '@app/store/slices/courseSlice';
 import { useNavigate } from 'react-router-dom';
 import { Role } from '@app/api/auth.api';
 import { doRemoveStudent } from '@app/store/slices/userSlice';
+import { nanoid } from '@reduxjs/toolkit';
 
 interface CourseTableProps {
   courseId: string | undefined;
@@ -55,7 +56,8 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
         .unwrap()
         .then((res) => {
           if (isMounted.current) {
-            setTableData({ data: res.data, pagination: res.pagination, loading: false });
+            const dataWithKey = res.data.map((row: any) => ({key: nanoid(), ...row}))
+            setTableData({ data: dataWithKey, pagination: res.pagination, loading: false });
           }
         })
         .catch((_err: { message: any }) => {
@@ -70,7 +72,8 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
         .unwrap()
         .then((res) => {
           if (isMounted.current) {
-            setTableData({ data: res.data, pagination: res.pagination, loading: false });
+            const dataWithKey = res.data.map((row: any) => ({key: nanoid(), ...row}))
+            setTableData({ data: dataWithKey, pagination: res.pagination, loading: false });
           }
         })
         .catch((_err: { message: any }) => {
@@ -86,7 +89,8 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
         .unwrap()
         .then((res) => {
           if (isMounted.current) {
-            setTableData({ data: res.data, pagination: res.pagination, loading: false });
+            const dataWithKey = res.data.map((row: any) => ({key: nanoid(), ...row}))
+            setTableData({ data: dataWithKey, pagination: res.pagination, loading: false });
           }
         })
         .catch((_err: { message: any }) => {
@@ -100,7 +104,8 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
           .unwrap()
           .then((res) => {
             if (isMounted.current) {
-              setTableData({ data: res.data, pagination: res.pagination, loading: false });
+              const dataWithKey = res.data.map((row: any) => ({key: nanoid(), ...row}))
+              setTableData({ data: dataWithKey, pagination: res.pagination, loading: false });
             }
           })
           .catch((_err: { message: any }) => {
@@ -113,7 +118,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
 
   useEffect(() => {
     fetch();
-  }, [type, lessonId]);
+  }, [courseId, lessonId, type]);
 
   const handleTableChange = () => {
     fetch();
@@ -144,7 +149,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
   const handleVisibility = (data: any) => {    
     const newVisibility = data.visibility ? 0 : 1;
     
-    dispatch(doUpdateStudentsLesson({id: data.id, visibility: newVisibility}))
+    dispatch(doUpdateStudentsLesson({id: lessonId, visibility: newVisibility}))
       .unwrap()
       .then((_res) => {
         notificationController.success({ message: 'Lekci byla změněna viditelnost' });
@@ -157,7 +162,7 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
   const handleEditability = (data: any) => {
     const newEditable = data.editable ? 0 : 1;
 
-    dispatch(doUpdateStudentsLesson({id: data.id, editable: newEditable}))
+    dispatch(doUpdateStudentsLesson({id: lessonId, editable: newEditable}))
       .unwrap()
       .then((_res) => {
         notificationController.success({ message: 'Lekci byla změněca editovatelnost' });
@@ -259,11 +264,10 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
       render: (_text: string, record) => {
         return (
           <BaseSpace>
-            {record.status === LessonStatus.READY || user?.role === Role.teacher && <BaseButton
+            {(record.editable || user?.role === Role.teacher) && <BaseButton
               type="ghost"
-              severity='success'
+              severity={(user?.role === Role.teacher || record.progress !== StudentLessonStatus.FINISHED) ? 'success' : 'info'}
               onClick={() => {
-                console.log(record);
                 // notificationController.info({ message: t('tables.inviteMessage', { name: record.name }) });
                 navigate(`/lesson/${record.id}`);
               }}

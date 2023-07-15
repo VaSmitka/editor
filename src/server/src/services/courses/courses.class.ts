@@ -49,8 +49,6 @@ export class CoursesService<ServiceParams extends Params = CoursesParams> extend
         resData.lessons = await trx
           .insert(lessons, ['id', 'name', 'description', 'creator', 'course_id'])
           .into('lessons')
-
-        console.log('data', resData)
       })
     } catch (error) {
       // If we get here, that means that neither the 'Old Books' catalogues insert,

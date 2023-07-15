@@ -16,6 +16,8 @@ export interface Lesson {
   task?: string;
   creator?: number;
   created_at?: string;
+  editable?: number;
+  visibility?: number;
 }
 
 export interface UserHasLesson {

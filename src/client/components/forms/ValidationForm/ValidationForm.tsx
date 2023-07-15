@@ -32,13 +32,12 @@ export const ValidationForm: React.FC = () => {
   const [isLoading, setLoading] = useState(false);
   const { t } = useTranslation();
 
-  const onFinish = async (values = {}) => {
+  const onFinish = async (_values = {}) => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
       setFieldsChanged(false);
       notificationController.success({ message: t('common.success') });
-      console.log(values);
     }, 1000);
   };
 

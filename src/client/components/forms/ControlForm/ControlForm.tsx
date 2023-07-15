@@ -33,13 +33,12 @@ export const ControlForm: React.FC = () => {
     setOpen(false);
   };
 
-  const onFinish = (values = {}) => {
+  const onFinish = (_values = {}) => {
     setLoading(true);
     setTimeout(() => {
       setFieldsChanged(false);
       setLoading(false);
       notificationController.success({ message: t('common.success') });
-      console.log(values);
     }, 1000);
   };
 

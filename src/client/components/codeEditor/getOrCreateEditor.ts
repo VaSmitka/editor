@@ -1,7 +1,9 @@
 import { EditorView, basicSetup } from 'codemirror';
 import { EditorState } from '@codemirror/state';
+import { keymap } from "@codemirror/view";
 import { javascript } from '@codemirror/lang-javascript';
 import { markdown } from '@codemirror/lang-markdown';
+import {indentWithTab} from "@codemirror/commands";
 import { html } from '@codemirror/lang-html';
 import { css } from '@codemirror/lang-css';
 import { oneDark } from '@codemirror/theme-one-dark';
@@ -44,7 +46,7 @@ export const getOrCreateEditor = ({ fileId, shareDBDoc, localPresence, docPresen
 
     // Deals with receiving the broadcas from other clients and displaying them.
     json1PresenceDisplay({ path, docPresence }),
-
+    keymap.of([indentWithTab]),
     basicSetup,
     oneDark,
   ];

@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import {
-  CourseCreatorData,
   buildCourse,
   getCourse,
   getCourseStudents,
@@ -37,7 +36,7 @@ export const doGetCoursesByCreator = createAsyncThunk('course/getByCreator', asy
   }),
 );
 
-export const doCreateCourse = createAsyncThunk('course/create', async (formData: CourseCreatorData) =>
+export const doCreateCourse = createAsyncThunk('course/create', async (formData: any) =>
   buildCourse(formData).then((res: any) => {
     console.log('course is created', res);
     return res;

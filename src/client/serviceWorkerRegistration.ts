@@ -25,7 +25,6 @@ type Config = {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function register(config?: Config) {
-  console.log('ahoj', import.meta.env.PROD, import.meta.env.VITE_PUBLIC_URL);
   if (import.meta.env.PROD && 'serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(import.meta.env.VITE_PUBLIC_URL, window.location.href);

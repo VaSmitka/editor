@@ -88,7 +88,6 @@ export const CreatorForm: React.FC = () => {
       creator: user!.id,
     };
 
-    console.log(request);
     setIsLoading(true);
     dispatch(doCreateCourse(request))
       .unwrap()

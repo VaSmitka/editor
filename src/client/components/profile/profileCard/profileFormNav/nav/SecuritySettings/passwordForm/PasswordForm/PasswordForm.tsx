@@ -14,13 +14,12 @@ export const PasswordForm: React.FC = () => {
   const [isLoading, setLoading] = useState(false);
   const { t } = useTranslation();
 
-  const onFinish = (values: []) => {
+  const onFinish = (_values: []) => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
       setFieldsChanged(false);
       notificationController.success({ message: t('common.success') });
-      console.log(values);
     }, 1000);
   };
 

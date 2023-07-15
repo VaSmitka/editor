@@ -22,6 +22,7 @@ import { Placeholder } from '@app/components/Error/Placeholder';
 import error404 from '@app/assets/images/error404.svg';
 import { Role } from '@app/api/auth.api';
 import TextEditor from '@app/components/textEditor/TextEditor';
+import parse from 'html-react-parser';
 
 interface FilesData {
   htmlFileId: string;
@@ -85,15 +86,18 @@ const LessonPage: React.FC = () => {
   const collectionId = `${studentId || 'edit'}-${lessonId}`;
   const id = '1';
 
-  useEffect(() => {  
-    dispatch(doGetLesson(lessonId!))
-      .unwrap()
-      .then((result) => {
-        setPageData(result);
-      })
-      .catch((_err: { message: any }) => {
-        notificationController.error({ message: 'Nelze získat lekci' });
-      });
+  useEffect(() => {
+    if (lessonId) {
+      dispatch(doGetLesson(lessonId!))
+        .unwrap()
+        .then((result) => {
+          setPageData(result);
+          setTaskText({value: result.task});
+        })
+        .catch((_err: { message: any }) => {
+          notificationController.error({ message: 'Nelze získat lekci' });
+        });      
+    }
 
     if (!initialized.current || pathname !== oldPathname) {
       initialized.current = true;
@@ -146,15 +150,14 @@ const LessonPage: React.FC = () => {
     }
 
     return () => {
-      commitLesson(collectionId);
+      if (pageData) commitLesson(collectionId);
     }
   }, [pathname]);
 
   const initialShareDb = (collectionId:string) => {
     dispatch(doGetLessonTask({ collectionId }))
       .unwrap()
-      .then((result) => {
-        console.log('result', result);
+      .then((_result) => {
         setIsLoading(false);
       })
       .catch((_err: { message: any }) => {
@@ -200,7 +203,7 @@ const LessonPage: React.FC = () => {
     if (user?.role === Role.student) {
       const requestBody = {
         id: pageData?.id,
-        status: StudentLessonStatus.DRAFTED
+        progress: StudentLessonStatus.DRAFTED
       }
 
       dispatch(doUpdateStudentsLesson(requestBody))
@@ -240,7 +243,7 @@ const LessonPage: React.FC = () => {
     if (user?.role === Role.student) {
       const requestBody = {
         id: pageData?.id,
-        status: StudentLessonStatus.FINISHED
+        progress: StudentLessonStatus.FINISHED
       }
 
       dispatch(doUpdateStudentsLesson(requestBody))
@@ -370,17 +373,18 @@ const LessonPage: React.FC = () => {
         <p>{pageData?.description}</p>
       </S.Row>
 
-      {
-        user?.role === Role.teacher ? <TextEditor text={taskText.value} changeHandler={handleTaskChange}/> : pageData?.task
-      }
+      { user?.role === Role.teacher && <TextEditor text={taskText.value} changeHandler={handleTaskChange}/> }
+      {(pageData && user?.role === Role.student) && <S.TaskBox>
+        {parse(pageData.task!)}
+      </S.TaskBox>}
 
       <S.Col>
         <BaseTabs defaultActiveKey="1" items={commonTabs} />
       </S.Col>
 
       <S.Row>
-        <S.Title className="mr-2" level={2}>Preview</S.Title>{' '}
-        <BaseButton onClick={() => refreshPreview()}>Refresh</BaseButton>
+        <S.Title className="mr-2" level={2}>Náhled</S.Title>{' '}
+        <BaseButton onClick={() => refreshPreview()}>Zobrazit</BaseButton>
       </S.Row>
 
       <S.IFrame key={iframeKey} src={`${previewBaseUrl}${collectionId}/`}/>

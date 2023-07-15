@@ -137,8 +137,7 @@ export const BasicTable: React.FC = () => {
       title: t('tables.actions'),
       dataIndex: 'actions',
       width: '15%',
-      render: (text: string, record: { name: string; key: number }) => {
-        console.log(text);
+      render: (_text: string, record: { name: string; key: number }) => {
         return (
           <BaseSpace>
             <BaseButton

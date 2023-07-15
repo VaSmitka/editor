@@ -21,7 +21,6 @@ export class UserHasCourseService<ServiceParams extends Params = UserHasCoursePa
 > {
   async create(data: any, params: Params): Promise<any> {
     const { course_id, lesson_id, ...user } = data
-    console.log(course_id, lesson_id, user)
 
     try {
       await this.Model.transaction(async (trx) => {
@@ -72,7 +71,9 @@ export class UserHasCourseService<ServiceParams extends Params = UserHasCoursePa
         .where({ student_id: query.student_id })
 
       for (const course of courses) {
-        const lessons = await this.Model.from('lessons').where({ course_id: course.id })
+        const lessons = await this.Model.from('lessons')
+          .join('lesson-users', 'lesson-users.lesson_id', '=', 'lessons.id')
+          .where({ student_id: query.student_id, visibility: 1 })
         course.lessons = lessons
       }
 

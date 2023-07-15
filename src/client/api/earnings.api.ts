@@ -19,8 +19,7 @@ export interface TotalEarning {
   timeline: Earning[];
 }
 
-export const getTotalEarning = (id: number, currency: CurrencyTypeEnum): Promise<TotalEarning> => {
-  console.log(id, currency);
+export const getTotalEarning = (_id: number, _currency: CurrencyTypeEnum): Promise<TotalEarning> => {
   return new Promise((res) => {
     setTimeout(() => {
       res({

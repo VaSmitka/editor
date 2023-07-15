@@ -224,11 +224,11 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
           ],
         );
     } else if (role === Role.student) {
-      return result.filter(elm => elm.editable).map((elm) => ({
+      return result.map((elm) => ({
         title: elm.name,
         key: `course-${elm.id}`,
         icon: <ProfileOutlined />,
-        children: elm.lessons.map((les) => ({
+        children: elm.lessons.filter(elm => elm.editable).map((les) => ({
           title: les.name,
           key: `lesson-${les.id}`,
           url: `/student/${userId}/lesson/${les.id}`,

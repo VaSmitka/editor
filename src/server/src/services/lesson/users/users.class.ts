@@ -53,7 +53,7 @@ export class UserHasLessonService<ServiceParams extends Params = UserHasLessonPa
     } else if (query?.student_id) { 
       response.data = await this.Model.from('lesson-users')
         .join('lessons', 'lesson-users.lesson_id', '=', 'lessons.id')
-        .where({ student_id: query.student_id })
+        .where({ student_id: query.student_id, visibility: 1 })
     } else {
       response.data = await this.Model.from('lesson-users')
     }

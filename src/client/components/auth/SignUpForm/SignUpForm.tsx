@@ -46,7 +46,6 @@ export const SignUpForm: React.FC<SingUpProps> = ({ role }: SingUpProps) => {
       ...data,
       role,
     };
-    console.log(request);
 
     setLoading(true);
     dispatch(doSignUp(request))

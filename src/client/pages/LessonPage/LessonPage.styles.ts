@@ -31,3 +31,12 @@ export const EditorBox = styled.div`
   background-color: #282c34;
   overflow: scroll;
 `
+
+export const TaskBox = styled.div`
+  margin-top: 1rem;
+  line-height: 1.5rem;
+
+  ol {
+    margin-left: 2rem;
+  }
+`

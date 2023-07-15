@@ -49,7 +49,6 @@ const RegisterStudentModal: React.FC<RegisterStudentModalProps> = ({ courseId, l
       course_id: parseInt(courseId!),
       lesson_id: parseInt(lessonId || '-1'), // -1 as invalide value
     };
-    console.log(request);
 
     setLoading(true);
     if (type === PageType.STUDENTS) {
