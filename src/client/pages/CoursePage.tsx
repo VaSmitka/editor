@@ -89,7 +89,7 @@ const CoursePage: React.FC = () => {
 
   return (
     <>
-      <PageTitle>Course</PageTitle>
+      <PageTitle>Kurz</PageTitle>
       {pageType !== PageType.LESSON && (
         <BaseRow gutter={{ xs: 10, md: 15, xl: 30 }}>
           <BaseCol xs={24} md={12}>
@@ -122,16 +122,18 @@ const CoursePage: React.FC = () => {
         </S.Card>
       </S.TablesWrapper>
 
-      <BaseModal
-        title="Registrace studenta"
-        centered
-        open={isOpen}
-        onCancel={() => setModalOpen(false)}
-        size="medium"
-        footer={false}
-      >
-        <RegisterStudentModal courseId={courseId} lessonId={lessonId} type={pageType} setModalOpen={setModalOpen} editableStudent={editableStudent} setEditableStudent={setEditableStudent}/>
-      </BaseModal>
+      {pageType !== PageType.STUDENTS && (
+        <BaseModal
+          title="Registrace studenta"
+          centered
+          open={isOpen}
+          onCancel={() => setModalOpen(false)}
+          size="medium"
+          footer={false}
+        >
+          <RegisterStudentModal courseId={courseId} lessonId={lessonId} type={pageType} setModalOpen={setModalOpen} editableStudent={editableStudent} setEditableStudent={setEditableStudent}/>
+        </BaseModal>
+      )}
     </>
   );
 };

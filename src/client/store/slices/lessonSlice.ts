@@ -45,8 +45,8 @@ export const doGetLessonStudents = createAsyncThunk('lesson/students', async (le
   }),
 );
 
-export const doUpdateLesson = createAsyncThunk('lesson/Update', async (lessonData: any) =>
-  updateLesson(lessonData).then((res: any) => {
+export const doUpdateLesson = createAsyncThunk('lesson/Update', async ({id,...lessonData}: any) =>
+  updateLesson(id, lessonData).then((res: any) => {
     console.log('Update lesson by lesson id', res);
     return res;
   }),
@@ -60,8 +60,8 @@ export const doRemoveLesson = createAsyncThunk('course/Remove', async (lessonId:
 );
 
 
-export const doUpdateStudentsLesson = createAsyncThunk('course/updateStudent', async (lessonData: any) =>
-  updateStudentsLesson(lessonData).then((res: any) => {
+export const doUpdateStudentsLesson = createAsyncThunk('course/updateStudent', async ({id,...lessonData}: any) =>
+  updateStudentsLesson(id, lessonData).then((res: any) => {
     console.log('Remove lesson by lesson id', res);
     return res;
   }),

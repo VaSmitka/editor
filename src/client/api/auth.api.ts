@@ -68,8 +68,8 @@ export const login = (loginPayload: LoginRequest): Promise<LoginResponse> =>
 export const signUp = (signUpData: SignUpRequest): Promise<undefined> =>
   httpApi.post<undefined>('users', { ...signUpData }).then(({ data }) => data);
 
-export const updateUser = (userData: any): Promise<undefined> =>
-  httpApi.put<undefined>(`users/${userData.id}`, userData).then(({ data }) => data);
+export const updateUser = (userId: number, userData: any): Promise<undefined> =>
+  httpApi.patch<undefined>(`users/${userId}`, userData).then(({ data }) => data);
 
 export const removeStudent = (userId: number): Promise<undefined> =>
   httpApi.delete<undefined>(`users/${userId}`).then(({ data }) => data);

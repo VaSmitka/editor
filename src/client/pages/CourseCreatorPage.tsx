@@ -7,7 +7,7 @@ const CourseCreator: React.FC = () => {
   // const { t } = useTranslation();
   return (
     <>
-      <PageTitle>Course Creator</PageTitle>
+      <PageTitle>Tvorba kurzu</PageTitle>
       <CreatorForm />
     </>
   );

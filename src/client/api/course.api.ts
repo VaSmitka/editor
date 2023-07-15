@@ -41,7 +41,7 @@ export const buildCourse = (data: CourseCreatorData): Promise<any> =>
   httpApi.post<CourseCreatorData>('courses', data).then((data) => data.data);
 
 export const updateCourse = (courseId: string, courseData: any): Promise<any> =>
-  httpApi.put(`courses/${courseId}`, courseData).then((data) => data.data);
+  httpApi.patch(`courses/${courseId}`, courseData).then((data) => data.data);
 
 export const removeCourse = (userId: string): Promise<any> =>
   httpApi.delete(`courses/${userId}`).then(({ data }) => data.data);

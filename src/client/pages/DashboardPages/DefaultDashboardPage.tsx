@@ -59,7 +59,7 @@ const DefaultDashboardPage: React.FC = () => {
 
   return (
     <>
-      <PageTitle>Dashboard</PageTitle>
+      <PageTitle>Přehled</PageTitle>
       {isDesktop ? desktopLayout : mobileAndTabletLayout}
     </>
   );

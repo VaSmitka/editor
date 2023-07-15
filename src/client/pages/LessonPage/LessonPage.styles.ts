@@ -1,4 +1,5 @@
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
+import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
 import { BaseTypography } from '@app/components/common/BaseTypography/BaseTypography';
 import { styled } from 'styled-components';
 
@@ -6,12 +7,16 @@ export const Title = styled(BaseTypography.Title)`
   flex-shrink: 0;
   display: block;
   margin-bottom: 2rem;
-  margin-right: 1rem;
 `;
 
+export const Row = styled(BaseRow)`
+  gap: 1rem;
+`;
+
+
 export const Col = styled(BaseCol)`
-margin-top: 2rem;  
-margin-bottom: 3rem;
+  margin-top: 2rem;  
+  margin-bottom: 3rem;
 `;
 
 export const IFrame = styled.iframe`

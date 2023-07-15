@@ -107,7 +107,7 @@ const RegisterStudentModal: React.FC<RegisterStudentModalProps> = ({ courseId, l
 
   return (
     <BaseCard>
-      <PageTitle>Register Student</PageTitle>
+      <PageTitle>Registrace Studenta</PageTitle>
       <BaseForm form={form} layout="vertical"  onFinish={handleSubmit} requiredMark="optional">
         <Auth.FormItem
           name="firstName"

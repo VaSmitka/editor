@@ -19,8 +19,8 @@ export const setUser = createAction<PrepareAction<UserModel>>('user/setUser', (n
   };
 });
 
-export const doUpdateUser = createAsyncThunk('user/removeStudent', async (userData: any) => {
-  updateUser(userData).then((res: any) => {
+export const doUpdateUser = createAsyncThunk('user/removeStudent', async ({id, ...userData}: any) => {
+  updateUser(id, userData).then((res: any) => {
     console.log('Remove student by user id', res);
     return res;
   })

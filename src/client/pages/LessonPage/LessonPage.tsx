@@ -4,24 +4,24 @@ import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { useLocation, useParams } from 'react-router-dom';
 import { notificationController } from '@app/controllers/notificationController';
 import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
-import { doGetLesson, doGetLessonTask, doGetLessonTaskCommit } from '@app/store/slices/lessonSlice';
+import { doGetLesson, doGetLessonTask, doGetLessonTaskCommit, doUpdateLesson, doUpdateStudentsLesson } from '@app/store/slices/lessonSlice';
 import { Lesson } from '@app/api/lessons.api';
 import { BaseTabs } from '@app/components/common/BaseTabs/BaseTabs';
 import * as S from './LessonPage.styles';
-import { CodeEditor } from './CodeEditor';
+import { CodeEditor } from '../../components/codeEditor/CodeEditor';
 import { randomId } from '../../../randomId';
 import { json1Presence } from '../../../ot';
 // @ts-ignore
 import ShareDBClient from 'sharedb-client-browser/dist/sharedb-client-umd.cjs';
 import { Loading } from '@app/components/common/Loading/Loading';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
-import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
 import { BaseTooltip } from '@app/components/common/BaseTooltip/BaseTooltip';
-import { LessonStatus } from '@app/api/table.api';
+import { LessonStatus, StudentLessonStatus } from '@app/api/table.api';
 import { Placeholder } from '@app/components/Error/Placeholder';
 
 import error404 from '@app/assets/images/error404.svg';
 import { Role } from '@app/api/auth.api';
+import TextEditor from '@app/components/textEditor/TextEditor';
 
 interface FilesData {
   htmlFileId: string;
@@ -50,6 +50,7 @@ const LessonPage: React.FC = () => {
   const user = useAppSelector((state) => state.user.user);
 
   const [pageData, setPageData] = useState<Lesson>();
+  const [taskText, setTaskText] = useState({ value: undefined });
   const [loading, setIsLoading] = useState(false);
 
   const initialized = useRef(false);
@@ -166,12 +167,90 @@ const LessonPage: React.FC = () => {
     if (user?.id && pageData?.name) {
       dispatch(doGetLessonTaskCommit({ collectionId, userId: user?.id, lessonName: pageData?.name }))
         .unwrap()
-        .then((result) => {
-          console.log('commit result', result);
+        .then((_result) => {
+          notificationController.success({ message: 'Lekce uložena na github' });
           setIsLoading(false);
         })
         .catch((_err: { message: any }) => {
           notificationController.error({ message: 'Nelze uložit data do githubu' });
+          setIsLoading(false);
+        });
+    }
+
+    if (user?.role === Role.teacher) {
+      const requestBody = {
+        id: pageData?.id,
+        name: pageData?.name,
+        description: pageData?.description,
+        task: taskText.value !== pageData?.task ? taskText.value : pageData?.task
+      }
+
+      dispatch(doUpdateLesson(requestBody))
+        .unwrap()
+        .then((_result) => {
+          notificationController.success({ message: 'Lekce byla uložena' });
+          setIsLoading(false);
+        })
+        .catch((_err: { message: any }) => {
+          notificationController.error({ message: 'Nelze uložit lekci jako připravenou' });
+          setIsLoading(false);
+        });
+    }
+
+    if (user?.role === Role.student) {
+      const requestBody = {
+        id: pageData?.id,
+        status: StudentLessonStatus.DRAFTED
+      }
+
+      dispatch(doUpdateStudentsLesson(requestBody))
+        .unwrap()
+        .then((_result) => {
+          notificationController.success({ message: 'Lekce byla uložena' });
+          setIsLoading(false);
+        })
+        .catch((_err: { message: any }) => {
+          notificationController.error({ message: 'Nelze uložit lekci jako hotovou' });
+          setIsLoading(false);
+        });
+    }
+  }
+
+  const changeLessonStatus = (collectionId: string) => {
+    commitLesson(collectionId);
+
+    if (user?.role === Role.teacher) {
+      const requestBody = {
+        id: pageData?.id,
+        status: LessonStatus.READY
+      }
+
+      dispatch(doUpdateLesson(requestBody))
+        .unwrap()
+        .then((_result) => {
+          notificationController.success({ message: 'Lekce byla nastavena na připravenou' });
+          setIsLoading(false);
+        })
+        .catch((_err: { message: any }) => {
+          notificationController.error({ message: 'Nelze uložit lekci jako připravenou' });
+          setIsLoading(false);
+        });
+    }
+
+    if (user?.role === Role.student) {
+      const requestBody = {
+        id: pageData?.id,
+        status: StudentLessonStatus.FINISHED
+      }
+
+      dispatch(doUpdateStudentsLesson(requestBody))
+        .unwrap()
+        .then((_result) => {
+          notificationController.success({ message: 'Lekce byla nastavena jako hotová' });
+          setIsLoading(false);
+        })
+        .catch((_err: { message: any }) => {
+          notificationController.error({ message: 'Nelze uložit lekci jako hotovou' });
           setIsLoading(false);
         });
     }
@@ -256,7 +335,20 @@ const LessonPage: React.FC = () => {
     setiframeKey(oldValue => oldValue + 1)
   }
 
-  console.log(loading, !pageData )
+  const setFinishButtonType = () => {
+    if (user?.role === Role.teacher) {
+      return pageData?.status === LessonStatus.READY ? 'success' : 'warning';
+    }
+
+    if (user?.role === Role.student) {
+      return pageData?.status === StudentLessonStatus.FINISHED ? 'success' : 'warning';
+    }
+  }
+
+  const handleTaskChange = (value: any) => {
+    setTaskText({ value });
+  };
+
   return loading ? <Loading /> : (
         (user?.role === Role.student && pageData?.status === LessonStatus.SEED) ? (
       <Placeholder img={error404} msg="Cvičení není ještě připravené" />
@@ -265,31 +357,35 @@ const LessonPage: React.FC = () => {
       <PageTitle>{`Lekce ${pageData?.name}`}</PageTitle>
 
 
-      <BaseRow>
+      <S.Row>
         <S.Title level={2}>{pageData?.name}</S.Title>
-        <BaseButton onClick={() => commitLesson(collectionId)}>Save to Github</BaseButton> 
-      </BaseRow>       
+        <BaseButton onClick={() => commitLesson(collectionId)}>Uložit lekci</BaseButton>
+        <BaseButton severity={setFinishButtonType()} onClick={() => changeLessonStatus(collectionId)}>{
+          user?.role === Role.teacher ? 'Lekce je připravena' : 'Lekce mám hotovou'
+        }</BaseButton>
+      </S.Row>       
 
-      <BaseRow wrap={false}>
-        <S.Title level={4}>Zadání</S.Title>
+      <S.Row wrap={false} align={'middle'} >
+        <S.Title level={4} style={{marginBottom:0}}>Zadání</S.Title>
         <p>{pageData?.description}</p>
-      </BaseRow>
+      </S.Row>
+
+      {
+        user?.role === Role.teacher ? <TextEditor text={taskText.value} changeHandler={handleTaskChange}/> : pageData?.task
+      }
 
       <S.Col>
         <BaseTabs defaultActiveKey="1" items={commonTabs} />
       </S.Col>
 
-      <BaseRow>
+      <S.Row>
         <S.Title className="mr-2" level={2}>Preview</S.Title>{' '}
         <BaseButton onClick={() => refreshPreview()}>Refresh</BaseButton>
-      </BaseRow>
+      </S.Row>
 
       <S.IFrame key={iframeKey} src={`${previewBaseUrl}${collectionId}/`}/>
     </>
   )
-
-  
-
   );
 };
 

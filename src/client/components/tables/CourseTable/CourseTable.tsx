@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAppSelector } from '@app/hooks/reduxHooks';
-import { BasicTableRow, Pagination, StudentTableRow } from '@app/api/table.api.ts';
+import { BasicTableRow, LessonStatus, Pagination, StudentLessonStatus, StudentTableRow } from '@app/api/table.api.ts';
 import { BaseTable } from '@app/components/common/BaseTable/BaseTable';
 import { ColumnsType } from 'antd/es/table';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
@@ -14,11 +14,12 @@ import { PageType } from '@app/pages/CoursePage';
 import { useAppDispatch } from '@app/hooks/reduxHooks';
 import { doGetLessonStudents, doGetLessonsByCourseId, doRemoveLesson, doUpdateStudentsLesson } from '@app/store/slices/lessonSlice';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
-import { PlusOutlined } from '@ant-design/icons';
+import { CheckOutlined, EditOutlined, EyeInvisibleOutlined, EyeOutlined, LockOutlined, PlusOutlined, QuestionOutlined, UnlockOutlined } from '@ant-design/icons';
 import { doGetCourseStudents } from '@app/store/slices/courseSlice';
 import { useNavigate } from 'react-router-dom';
 import { Role } from '@app/api/auth.api';
 import { doRemoveStudent } from '@app/store/slices/userSlice';
+import { BaseTag } from '@app/components/common/BaseTag/BaseTag';
 
 interface CourseTableProps {
   courseId: string | undefined;
@@ -125,12 +126,10 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
       });
   };
 
-  const handleVisibility = (data: any) => {
-    const {visibility, ...lessonData} = data;
+  const handleVisibility = (data: any) => {    
+    const newVisibility = data.visibility ? 0 : 1;
     
-    lessonData.visibility = visibility ? 0 : 1;
-    
-    dispatch(doUpdateStudentsLesson(lessonData))
+    dispatch(doUpdateStudentsLesson({id: data.id, visibility: newVisibility}))
       .unwrap()
       .then((_res) => {
         notificationController.success({ message: 'Lekci byla změněna viditelnost' });
@@ -141,11 +140,9 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
   }
 
   const handleEditability = (data: any) => {
-    const {editable, ...lessonData} = data;
+    const newEditable = data.editable ? 0 : 1;
 
-    lessonData.editable = editable ? 0 : 1;
-
-    dispatch(doUpdateStudentsLesson(lessonData))
+    dispatch(doUpdateStudentsLesson({id: data.id, editable: newEditable}))
       .unwrap()
       .then((_res) => {
         notificationController.success({ message: 'Lekci byla změněca editovatelnost' });
@@ -155,44 +152,12 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
       });
   }
 
-  const getStudentTableButtons = (record: any) => {  
-    return <BaseSpace>
-      <BaseButton
-        type="ghost"
-        severity='success'
-        onClick={() => {
-          // notificationController.info({ message: t('tables.inviteMessage', { name: record.name }) });
-          if (type === PageType.LESSON) {
-            navigate(`/student/${record.id}/lesson/${lessonId}`);
-          } else {
-            const eUser = {...record};
-            eUser.password = '';
-            setEditableStudent(eUser);
-            setModalOpen(true);
-          }
-        }}
-      >
-        {type === PageType.LESSON ? 'Zobrazit' : 'Upravit'}
-      </BaseButton>
-      {
-        (user!.role === Role.teacher && type === PageType.LESSON) && <>
-            <BaseButton type="default" severity={record.visibility ? 'warning' : 'info'}  onClick={() => handleVisibility(record)}>
-              {record.visibility ? 'Zneviditelnit' : 'Zviditelnit'}
-            </BaseButton>
-            <BaseButton type="default" severity={record.editable ? 'warning' : 'info'} onClick={() => handleEditability(record)}>
-              {record.editable ? 'Znepřístupnit' : 'Zpřístupnit'}
-            </BaseButton>
-        </>
-      }
-      {
-        (user!.role === Role.teacher && type === PageType.STUDENTS) && <>
-            <BaseButton type="default" danger onClick={() => handleDeleteStudent(record.id)}>
-              {t('tables.delete')}
-            </BaseButton>
-        </>
-      }
-    </BaseSpace>
-  }
+  const addNew = (pageType?: PageType) => {
+    if (pageType === PageType.LESSON || pageType === PageType.STUDENTS) {
+      setEditableStudent(null);
+      setModalOpen(true);
+    }
+  };
 
   const studentColumns: ColumnsType<StudentTableRow> = [
     {
@@ -216,13 +181,42 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
       title: t('tables.actions'),
       dataIndex: 'actions',
       width: '15%',
-      render: (_text: string, record) => {
-        return getStudentTableButtons(record);
+      render: (_text: string, record: any) => {
+        return (
+          <BaseSpace>
+              <BaseButton
+                type="ghost"
+                severity='success'
+                onClick={() => {
+                    const eUser = {...record};
+                    eUser.password = '';
+                    setEditableStudent(eUser);
+                    setModalOpen(true);
+                }}
+              >
+                {type === PageType.LESSON ? 'Zobrazit' : 'Upravit'}
+              </BaseButton>
+              <BaseButton type="default" danger onClick={() => handleDeleteStudent(record.id!)}>
+                {t('tables.delete')}
+              </BaseButton>
+          </BaseSpace>
+        );
       },
     },
   ];
 
-  const lessonColumns: ColumnsType<LessonTableRow> = [
+  const lessonsColumns: ColumnsType<LessonTableRow> = [
+    {
+      title: 'Stav',
+      dataIndex: 'status',
+      render: (_text: string, record: any) => {
+        return (
+          <BaseSpace style={{fontSize: '1.5rem'}}>
+            {record.status === LessonStatus.SEED ? <EditOutlined /> : <CheckOutlined />}
+          </BaseSpace>
+        );
+      },
+    },
     {
       title: 'Název',
       dataIndex: 'name',
@@ -259,17 +253,71 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
     },
   ];
 
-  const addNew = (pageType?: PageType) => {
-    if (pageType === PageType.LESSON || pageType === PageType.STUDENTS) {
-      setEditableStudent(null);
-      setModalOpen(true);
-    }
-  };
+  const lessonColumns: ColumnsType<LessonTableRow> = [
+    {
+      title: 'Stav',
+      dataIndex: 'status',
+      width: '15%',
+      render: (_text: string, record: any) => 
+          <BaseSpace style={{fontSize: '1.5rem'}}>
+            {  user?.role === Role.teacher && <>
+                {record.editable ? <UnlockOutlined /> : <LockOutlined />}
+                {record.vidibility ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+              </>
+            }
+
+
+            {record.studentStatus === StudentLessonStatus.CREATED &&  <QuestionOutlined />}
+            {record.studentStatus === StudentLessonStatus.DRAFTED &&  <EditOutlined />}
+            {record.studentStatus === StudentLessonStatus.FINISHED &&  <CheckOutlined />}
+          </BaseSpace>
+    },
+    {
+      title: 'Název',
+      dataIndex: 'name',
+      render: (text: string) => <span>{text}</span>,
+    },
+    {
+      title: 'Popis',
+      dataIndex: 'description',
+    },
+    {
+      title: t('tables.actions'),
+      dataIndex: 'actions',
+      width: '15%',
+      render: (_text: string, record: any) => {
+        return (
+          <BaseSpace>
+            <BaseButton
+              severity={'info'}
+              onClick={() => {
+                // notificationController.info({ message: t('tables.inviteMessage', { name: record.name }) })
+                navigate(`/student/${record.id}/lesson/${lessonId}`);
+              }}
+            >
+              {type === PageType.LESSON ? 'Zobrazit' : 'Upravit'}
+            </BaseButton>
+            {
+              (user!.role === Role.teacher ) && <>
+                  <BaseButton type="default" severity={record.visibility ? 'warning' : 'info'}  onClick={() => handleVisibility(record)}>
+                    {record.visibility ? 'Zneviditelnit' : 'Zviditelnit'}
+                  </BaseButton>
+                  <BaseButton type="default" severity={record.editable ? 'warning' : 'info'} onClick={() => handleEditability(record)}>
+                    {record.editable ? 'Znepřístupnit' : 'Zpřístupnit'}
+                  </BaseButton>
+              </>
+            }
+          </BaseSpace>
+        );
+      },
+    },
+  ];
+
 
   return (
     <>
       <BaseTable
-        columns={type === PageType.LESSONS ? lessonColumns : studentColumns}
+        columns={type === PageType.LESSONS ? lessonsColumns : (type === PageType.STUDENTS ? studentColumns: lessonColumns)}
         dataSource={tableData.data}
         pagination={false}
         loading={tableData.loading}
