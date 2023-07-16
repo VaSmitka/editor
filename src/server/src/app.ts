@@ -14,8 +14,8 @@ import configuration from '@feathersjs/configuration'
 import type { Application } from './declarations'
 import { configurationValidator } from './configuration'
 import { logger } from './logger'
-import { logError } from './hooks/log-error'
 import { sqlite } from './sqlite'
+import { mailer } from './mailer'
 import { authentication } from './authentication'
 import { services } from './services/index'
 
@@ -52,6 +52,7 @@ app.use('/', serveStatic(app.get('public')))
 // Configure services and real-time functionality
 app.configure(rest())
 app.configure(sqlite)
+app.configure(mailer)
 app.configure(authentication)
 app.configure(services)
 
@@ -61,9 +62,7 @@ app.use(errorHandler({ logger }))
 
 // Register hooks that run on all service methods
 app.hooks({
-  around: {
-    all: [logError]
-  },
+  around: {},
   before: {},
   after: {},
   error: {}

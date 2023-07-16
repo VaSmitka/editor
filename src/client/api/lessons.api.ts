@@ -52,8 +52,8 @@ export const getLessonStudents = (id: string): Promise<any> =>
 export const updateLesson = (lessonId: number, lessonData: any): Promise<Lesson> =>
   httpApi.patch(`lessons/${lessonId}`, lessonData).then(({ data }) => data);
 
-export const updateStudentsLesson = (lessonId: number, lessonData: any): Promise<Lesson> =>
-  httpApi.patch(`lesson/users/${lessonId}`, lessonData).then(({ data }) => data);
+export const updateStudentsLesson = (lessonData: any): Promise<Lesson> =>
+  httpApi.patch(`lesson/users/`, lessonData).then(({ data }) => data);
 
 export const removeLesson = (lessonId: number): Promise<Lesson> =>
   httpApi.delete(`lessons/${lessonId}`).then(({ data }) => data);

@@ -6,6 +6,7 @@ import type { KnexAdapterParams, KnexAdapterOptions } from '@feathersjs/knex'
 import type { Application } from '../../../declarations'
 import type { UserHasCourse, UserHasCourseData, UserHasCoursePatch, UserHasCourseQuery } from './users.schema'
 import { ExerciseStudentProressEnum } from '../../../utils/consts'
+import { MailTypes } from '../../notification/notification.class'
 
 
 export type { UserHasCourse, UserHasCourseData, UserHasCoursePatch, UserHasCourseQuery }
@@ -19,16 +20,26 @@ export class UserHasCourseService<ServiceParams extends Params = UserHasCoursePa
   UserHasCourseParams,
   UserHasCoursePatch
 > {
+  notificationService: any;
+
+  constructor(data: any) {
+    super(data)
+    this.notificationService = data.notificationService;
+  }
+
   async create(data: any, params: Params): Promise<any> {
     const { course_id, lesson_id, ...user } = data
 
     try {
+      let userId = -1
+
       await this.Model.transaction(async (trx) => {
         const ids = await trx.insert(user, 'id').into('users')
+        userId = ids[0].id
 
         await trx
           .insert({
-            student_id: ids[0].id,
+            student_id: userId,
             editable: 0,
             visibility: 1,
             course_id
@@ -40,7 +51,7 @@ export class UserHasCourseService<ServiceParams extends Params = UserHasCoursePa
         for (const idObj of lessonsIds) {
           await trx
             .insert({
-              student_id: ids[0].id,
+              student_id: userId,
               editable: 0,
               visibility: 1,
               lesson_id: idObj.id,
@@ -49,10 +60,13 @@ export class UserHasCourseService<ServiceParams extends Params = UserHasCoursePa
             .into('lesson-users')
         }
       })
+
+      await this.notificationService.create({toId: userId, type: MailTypes.STUDENT_CREATED}, {});
     } catch (error) {
       // If we get here, that means that neither the 'Old Books' catalogues insert,
       // nor any of the books inserts will have taken place.
       console.error(error)
+      return { status: 'ERROR' }
     }
 
     return { status: 'OK' }
@@ -85,10 +99,11 @@ export class UserHasCourseService<ServiceParams extends Params = UserHasCoursePa
   }
 }
 
-export const getOptions = (app: Application): KnexAdapterOptions => {
+export const getOptions = (app: Application): KnexAdapterOptions & {notificationService: any} => {
   return {
     paginate: app.get('paginate'),
     Model: app.get('sqliteClient'),
+    notificationService: app.service('notification'),
     name: 'course-users'
   }
 }

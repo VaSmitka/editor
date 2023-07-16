@@ -57,6 +57,14 @@ export async function up(knex: Knex): Promise<void> {
 
     table.timestamp('created_at').defaultTo(knex.raw('CURRENT_TIMESTAMP'))
   })
+
+  await knex.schema.createTable('notification', (table) => {
+    table.increments('id')
+    table.bigint('toId').notNullable()
+    table.string('type').notNullable()
+    table.string('text').nullable()
+    table.string('lesson_id').nullable()
+  })
 }
 
 export async function down(knex: Knex): Promise<void> {
@@ -65,4 +73,5 @@ export async function down(knex: Knex): Promise<void> {
   await knex.schema.dropTable('users')
   await knex.schema.dropTable('course-users')
   await knex.schema.dropTable('lesson-users')
+  await knex.schema.dropTable('notification')
 }

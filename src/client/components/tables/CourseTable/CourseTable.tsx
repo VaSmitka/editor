@@ -147,9 +147,13 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
   };
 
   const handleVisibility = (data: any) => {    
-    const newVisibility = data.visibility ? 0 : 1;
+    const requestBody = {
+      lesson_id: data.lesson_id,
+      student_id: data.student_id,
+      visibility: data.visibility ? 0 : 1
+    }
     
-    dispatch(doUpdateStudentsLesson({id: lessonId, visibility: newVisibility}))
+    dispatch(doUpdateStudentsLesson(requestBody))
       .unwrap()
       .then((_res) => {
         notificationController.success({ message: 'Lekci byla změněna viditelnost' });
@@ -160,9 +164,13 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
   }
 
   const handleEditability = (data: any) => {
-    const newEditable = data.editable ? 0 : 1;
+    const requestBody = {
+      lesson_id: data.lesson_id,
+      student_id: data.student_id,
+      editable: data.editable ? 0 : 1
+    }
 
-    dispatch(doUpdateStudentsLesson({id: lessonId, editable: newEditable}))
+    dispatch(doUpdateStudentsLesson(requestBody))
       .unwrap()
       .then((_res) => {
         notificationController.success({ message: 'Lekci byla změněca editovatelnost' });

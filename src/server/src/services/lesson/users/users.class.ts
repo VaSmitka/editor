@@ -1,11 +1,12 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.class.html#database-services
-import type { Params } from '@feathersjs/feathers'
+import type { Id, NullableId, Params } from '@feathersjs/feathers'
 import { KnexService } from '@feathersjs/knex'
 import type { KnexAdapterParams, KnexAdapterOptions } from '@feathersjs/knex'
 
 import type { Application } from '../../../declarations'
 import type { UserHasLesson, UserHasLessonData, UserHasLessonPatch, UserHasLessonQuery } from './users.schema'
 import { ExerciseStudentProressEnum } from '../../../utils/consts'
+import { MailTypes } from '../../notification/notification.class'
 
 export type { UserHasLesson, UserHasLessonData, UserHasLessonPatch, UserHasLessonQuery }
 
@@ -18,6 +19,13 @@ export class UserHasLessonService<ServiceParams extends Params = UserHasLessonPa
   UserHasLessonParams,
   UserHasLessonPatch
 > {
+  notificationService: any;
+
+  constructor(data: any) {
+    super(data)
+    this.notificationService = data.notificationService;
+  }
+
   async create(data: any, params: Params): Promise<any> {
     const { course_id, lesson_id, ...user } = data
 
@@ -59,12 +67,38 @@ export class UserHasLessonService<ServiceParams extends Params = UserHasLessonPa
     }
     return response
   }
+
+  async patch(id: Id, data: Partial<{ id: number; progress: string; editable: number; visibility: number; student_id: number; lesson_id: number }>, params?: UserHasLessonParams | undefined): Promise<{ id: number; progress: string; editable: number; visibility: number; student_id: number; lesson_id: number }>
+  async patch(id: null, data: Partial<{ id: number; progress: string; editable: number; visibility: number; student_id: number; lesson_id: number }>, params?: UserHasLessonParams | undefined): Promise<{ id: number; progress: string; editable: number; visibility: number; student_id: number; lesson_id: number }[]>
+  async patch(id: NullableId, data: Partial<{ id: number; progress: string; editable: number; visibility: number; student_id: number; lesson_id: number }>, params?: UserHasLessonParams | undefined): Promise<{ id: number; progress: string; editable: number; visibility: number; student_id: number; lesson_id: number } | { id: number; progress: string; editable: number; visibility: number; student_id: number; lesson_id: number }[]>
+  async patch(id: unknown, data: any, params?: any): Promise<any> {
+    const toUpdate: any = {}
+
+    if (data.editable === 0 || data.editable === 1) toUpdate.editable = data.editable
+    if (data.visibility === 0 || data.visibility === 1) toUpdate.visibility = data.visibility
+    if (data.progress) toUpdate.progress = data.progress
+
+    const updatedItem = await this.Model
+      .update(toUpdate, ['id', 'progress', 'editable', 'visibility', 'student_id', 'lesson_id'])
+      .where({ student_id: data.student_id, lesson_id: data.lesson_id })
+      .into('lesson-users')
+    
+     if (data.progress && data.progress === 'FINISHED') {
+      const creators = await this.Model.select('creator').from('lessons').where({id: data.lesson_id});
+      const creator = creators[0].creator
+
+      await this.notificationService.create({toId: creator, lesson_id: data.lesson_id, type: MailTypes.TASK_DONE}, {});
+     }
+
+    return updatedItem
+  }
 }
 
-export const getOptions = (app: Application): KnexAdapterOptions => {
+export const getOptions = (app: Application): KnexAdapterOptions & {notificationService: any} => {
   return {
     paginate: app.get('paginate'),
     Model: app.get('sqliteClient'),
+    notificationService: app.service('notification'),
     name: 'lesson-users'
   }
 }

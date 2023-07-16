@@ -202,9 +202,11 @@ const LessonPage: React.FC = () => {
 
     if (user?.role === Role.student) {
       const requestBody = {
-        id: pageData?.id,
+        lesson_id: pageData?.id,
+        student_id: user.id,
         progress: StudentLessonStatus.DRAFTED
       }
+      
 
       dispatch(doUpdateStudentsLesson(requestBody))
         .unwrap()
@@ -242,7 +244,8 @@ const LessonPage: React.FC = () => {
 
     if (user?.role === Role.student) {
       const requestBody = {
-        id: pageData?.id,
+        lesson_id: pageData?.id,
+        student_id: user.id,
         progress: StudentLessonStatus.FINISHED
       }
 
