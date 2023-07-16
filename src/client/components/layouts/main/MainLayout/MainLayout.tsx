@@ -8,10 +8,12 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { DASHBOARD_PATH } from '@app/components/router/AppRouter';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { References } from '@app/components/common/References/References';
+import ChatSider from '@app/components/chat/ChatSider';
 
 const MainLayout: React.FC = () => {
   const [isTwoColumnsLayout, setIsTwoColumnsLayout] = useState(true);
   const [siderCollapsed, setSiderCollapsed] = useState(false);
+  const [chatSiderCollapsed, setChatSiderCollapsed] = useState(false);
   const { isDesktop } = useResponsive();
   const location = useLocation();
 
@@ -28,12 +30,15 @@ const MainLayout: React.FC = () => {
         <MainHeader isTwoColumnsLayout={isTwoColumnsLayout}>
           <Header toggleSider={toggleSider} isSiderOpened={!siderCollapsed} isTwoColumnsLayout={isTwoColumnsLayout} />
         </MainHeader>
-        <MainContent id="main-content" $isTwoColumnsLayout={isTwoColumnsLayout}>
-          <div>
-            <Outlet />
-          </div>
-          {!isTwoColumnsLayout && <References />}
-        </MainContent>
+        <S.LayoutMain>
+          <MainContent id="main-content" $isTwoColumnsLayout={isTwoColumnsLayout}>
+            <div>
+              <Outlet />
+            </div>
+            {!isTwoColumnsLayout && <References />}
+          </MainContent>
+          <ChatSider isCollapsed={chatSiderCollapsed} setCollapsed={setChatSiderCollapsed}/>
+        </S.LayoutMain>
       </S.LayoutMain>
     </S.LayoutMaster>
   );

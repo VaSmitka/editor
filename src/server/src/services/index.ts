@@ -1,3 +1,4 @@
+import { message } from './messages/messages'
 import { notification } from './notification/notification'
 import { lessenTask } from './lesson/task/task'
 import { userHasCourse } from './course/users/users'
@@ -9,6 +10,7 @@ import { user } from './users/users'
 import type { Application } from '../declarations'
 
 export const services = (app: Application) => {
+  app.configure(message)
   app.configure(notification)
   app.configure(lessenTask)
   app.configure(userHasCourse)
