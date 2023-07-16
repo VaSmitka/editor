@@ -376,10 +376,8 @@ const LessonPage: React.FC = () => {
         <p>{pageData?.description}</p>
       </S.Row>
 
-      { user?.role === Role.teacher && <TextEditor text={taskText.value} changeHandler={handleTaskChange}/> }
-      {(pageData && user?.role === Role.student) && <S.TaskBox>
-        {parse(pageData.task!)}
-      </S.TaskBox>}
+      { (!studentId && user?.role === Role.teacher) && <TextEditor text={taskText.value} changeHandler={handleTaskChange}/> }
+      {(pageData && (user?.role === Role.student || studentId)) && <S.TaskBox>{parse(pageData.task!)}</S.TaskBox>}
 
       <S.Col>
         <BaseTabs defaultActiveKey="1" items={commonTabs} />
