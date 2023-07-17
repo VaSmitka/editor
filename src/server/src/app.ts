@@ -10,7 +10,6 @@ import express, {
   errorHandler
 } from '@feathersjs/express'
 import configuration from '@feathersjs/configuration'
-import socketio from '@feathersjs/socketio'
 import type { Application } from './declarations'
 import { configurationValidator } from './configuration'
 import { logger } from './logger'
@@ -18,7 +17,6 @@ import { sqlite } from './sqlite'
 import { mailer } from './mailer'
 import { authentication } from './authentication'
 import { services } from './services/index'
-import { channels } from './channels'
 import { logError } from './hooks/log-error'
 import ShareDB from 'sharedb'
 // This file is the central point where the OT types are imported.
@@ -49,15 +47,6 @@ app.use(json())
 app.use(urlencoded({ extended: true }))
 // Host the public folder
 app.use('/', serveStatic(app.get('public')))
-app.configure(
-  socketio({
-    path: '/chat/',
-    cors: {
-      origin: app.get('origins')
-    }
-  })
-)
-app.configure(channels)
 // Configure services and real-time functionality
 app.configure(rest())
 app.configure(sqlite)

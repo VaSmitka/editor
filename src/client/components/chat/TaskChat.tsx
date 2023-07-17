@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import useWebSocket, { ReadyState } from 'react-use-websocket';
 import moment, { Moment } from 'moment';
 import * as S from './ChatSider.styles';
 import { BaseCol } from '../common/BaseCol/BaseCol';
@@ -30,21 +31,40 @@ interface MessageRender {
 }
 
 const TaskChat: React.FC<TaskChatProps> = ({ isCollapsed }) => {
+  //Public API that will echo messages sent to it back to the client
+  const [socketUrl, setSocketUrl] = useState('ws://localhost:3030/chat');
+  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
   const dispatch = useAppDispatch();
   const [form] = BaseForm.useForm();
-  const [messageRender, serMessageRender] = useState<MessageRender[]>([]);
+  const [messageRender, setMessageRender] = useState<MessageRender[]>([]);
   const user = useAppSelector((state) => state.user.user);
   const { lessonId } = useParams();
+  const bottomRef = useRef(null);
   // const { t } = useTranslation();
   const initialFromValue = { text: '' };
 
+
+  useEffect(() => {
+    if (lastMessage !== null) {
+      const md: Message = JSON.parse(lastMessage.data);
+
+      setMessageRender(prev => prev.concat({
+        author_id: md.author_id,
+        author: `${md.user.firstName} ${md.user.lastName}`,
+        lesson_id: md.lesson_id,
+        description: md.text,
+        type: user?.id === md.author_id ? PositionType.right : PositionType.left, 
+        date: moment(md.created_at)
+      }))
+    }
+  }, [lastMessage]);
 
   useEffect(() => {
     if (lessonId) {
       dispatch(doGetMessagesByLessonId(lessonId))
         .unwrap()
         .then((results: Message[]) => {
-          serMessageRender(results.map(elm => ({
+          setMessageRender(results.map(elm => ({
             author_id: elm.author_id,
             author: `${elm.user.firstName} ${elm.user.lastName}`,
             lesson_id: elm.lesson_id,
@@ -53,6 +73,9 @@ const TaskChat: React.FC<TaskChatProps> = ({ isCollapsed }) => {
             type: user?.id === elm.author_id ? PositionType.right : PositionType.left, 
             date: moment(elm.created_at)
           })))
+
+          // @ts-ignore
+          bottomRef.current?.scrollIntoView({behavior: 'smooth'});
         })
         .catch((_err: { message: any }) => {
           notificationController.error({ message: 'Nelze načíst zprávy ke cvičení' });
@@ -70,6 +93,8 @@ const TaskChat: React.FC<TaskChatProps> = ({ isCollapsed }) => {
       .unwrap()
       .then((result) => {
         console.log('Message is sended', result);
+        // send websocket info
+        sendMessage(JSON.stringify(result))
         form.resetFields()
       })
       .catch((_err: { message: any }) => {
@@ -88,6 +113,7 @@ const TaskChat: React.FC<TaskChatProps> = ({ isCollapsed }) => {
                   date={elm.date}
                   type={elm.type}
               />)}
+              <div ref={bottomRef} />
             </S.Card>
         </S.ChatBox>
           { !isCollapsed && <S.ChatToolbox form={form} onFinish={handleSubmit} requiredMark="optional" initialValues={initialFromValue} >

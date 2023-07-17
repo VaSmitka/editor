@@ -132,6 +132,9 @@ export const Card = styled(BaseCard)`
   width: 100%;
 
   .ant-card-body {
+    height: calc(100vh - 2*${LAYOUT.desktop.headerHeight} - 12rem);
+    overflow-y: scroll;
+    scroll-behavior: smooth;
     padding: 1rem;
     padding-top: 0;
     display: flex;

@@ -277,7 +277,12 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
               severity={(user?.role === Role.teacher || record.progress !== StudentLessonStatus.FINISHED) ? 'success' : 'info'}
               onClick={() => {
                 // notificationController.info({ message: t('tables.inviteMessage', { name: record.name }) });
-                navigate(`/lesson/${record.id}`);
+                if (user?.role === Role.teacher) {
+                  navigate(`/lesson/${record.id}`);
+                }
+                if (user?.role === Role.student) {
+                  navigate(`/student/${user.id}/lesson/${record.id}`);
+                }
               }}
             >
               {user?.role === Role.teacher ? 'Upravit' : 'Otevřít'}

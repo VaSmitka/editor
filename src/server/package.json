@@ -52,8 +52,6 @@
     "@feathersjs/feathers": "^5.0.6",
     "@feathersjs/knex": "^5.0.6",
     "@feathersjs/schema": "^5.0.6",
-    "@feathersjs/socketio": "^5.0.7",
-    "@feathersjs/transport-commons": "^5.0.7",
     "@feathersjs/typebox": "^5.0.6",
     "@teamwork/websocket-json-stream": "^2.0.0",
     "@types/nodemailer-express-handlebars": "^4.0.2",
