@@ -12,6 +12,7 @@ import { lessonsSchema } from '../lessons/lessons.schema'
 export const messageSchema = Type.Object(
   {
     id: Type.Number(),
+    space_id: Type.Number(),
     text: Type.String(),
     author_id: Type.Number(),
     lesson_id: Type.Number(),
@@ -37,7 +38,7 @@ export const messageResolver = resolve<Message, HookContext>({
 export const messageExternalResolver = resolve<Message, HookContext>({})
 
 // Schema for creating new entries
-export const messageDataSchema = Type.Pick(messageSchema, ['text', 'lesson_id'], {
+export const messageDataSchema = Type.Pick(messageSchema, ['text', 'lesson_id', 'space_id'], {
   $id: 'MessageData'
 })
 export type MessageData = Static<typeof messageDataSchema>
@@ -61,7 +62,7 @@ export const messagePatchValidator = getValidator(messagePatchSchema, dataValida
 export const messagePatchResolver = resolve<Message, HookContext>({})
 
 // Schema for allowed query properties
-export const messageQueryProperties = Type.Pick(messageSchema, ['id', 'text', 'created_at', 'author_id', 'lesson_id'])
+export const messageQueryProperties = Type.Pick(messageSchema, ['id', 'text', 'created_at', 'author_id', 'lesson_id', 'space_id'])
 export const messageQuerySchema = Type.Intersect(
   [
     querySyntax(messageQueryProperties),

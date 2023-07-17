@@ -26,7 +26,7 @@ const MainLayout: React.FC = () => {
   useEffect(() => {
     setIsTwoColumnsLayout([DASHBOARD_PATH].includes(location.pathname) && isDesktop);
     
-    setIsStudentLesson((location.pathname.includes('student') && location.pathname.includes('lesson')) || user!.role === Role.student)
+    setIsStudentLesson((location.pathname.includes('student') && location.pathname.includes('lesson')) || (user!.role === Role.student && location.pathname.includes('lesson')))
   }, [location.pathname, isDesktop]);
 
   return (

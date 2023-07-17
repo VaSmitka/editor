@@ -4,6 +4,7 @@ import { User } from './auth.api';
 
 
 export interface MessageCreateRequest {
+  space_id: number,
   text: string,
   lesson_id: number,
 }
@@ -22,5 +23,5 @@ export const createMessage = (messageData: MessageCreateRequest): Promise<any> =
   httpApi.post('messages', messageData).then(({ data }) => data);
 
 
-export const getMessagesByLessonId = (lesson_id: string): Promise<Message[]> =>
-  httpApi.get(`messages?lesson_id=${lesson_id}&$sort[created_at]=1`).then(({ data }) => data.data);
+export const getMessagesBySpaceId = (space_id: string): Promise<Message[]> =>
+  httpApi.get(`messages?space_id=${space_id}&$sort[created_at]=1`).then(({ data }) => data.data);

@@ -1,4 +1,4 @@
-import { MessageCreateRequest, createMessage, getMessagesByLessonId } from '@app/api/messages.api';
+import { MessageCreateRequest, createMessage, getMessagesBySpaceId } from '@app/api/messages.api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 export interface MessageSlice {}
@@ -12,9 +12,9 @@ export const doCreateMessage = createAsyncThunk('message/send', async (messageDa
   }),
 );
 
-export const doGetMessagesByLessonId = createAsyncThunk('message/getByLesson', async (lesson_id: string) =>
-    getMessagesByLessonId(lesson_id).then((res: any) => {
-        console.log('Get messages by lesson id', res);
+export const doGetMessagesBySpaceId = createAsyncThunk('message/getByLesson', async (space_id: string) =>
+    getMessagesBySpaceId(space_id).then((res: any) => {
+        console.log('Get messages by space id', res);
         return res;
     }),
 );

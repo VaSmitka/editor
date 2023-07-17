@@ -69,6 +69,7 @@ export async function up(knex: Knex): Promise<void> {
 
   await knex.schema.createTable('messages', (table) => {
     table.increments('id')
+    table.integer('space_id')
     table.string('text')
     table.bigint('author_id').notNullable().unsigned().references('users.id')
     table.bigint('lesson_id').notNullable().unsigned().references('lessons.id')

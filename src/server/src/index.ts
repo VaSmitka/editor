@@ -15,12 +15,16 @@ const server = app.listen(port).then((server) => {
   const chat = new WebSocketServer({ noServer: true });
   const editor = new WebSocketServer({ noServer: true });
 
-  chat.on('connection', function connection(ws) {
+  chat.on('connection', function connection(ws, request) {
+    // @ts-ignore
+    ws.id = request.url;
+
     ws.on('error', console.error);
 
     ws.on('message', function message(data, isBinary) {
       chat.clients.forEach(function each(client) {
-        if (client.readyState === 1) {
+        // @ts-ignore
+        if (client.readyState === 1 && request.url === client.id) {
           client.send(data, { binary: isBinary });
         }
       });
@@ -34,11 +38,11 @@ const server = app.listen(port).then((server) => {
   server.on('upgrade', function upgrade(request, socket, head) {
     const pathname  = request.url!;
 
-    if (pathname === '/chat') {
+    if (pathname.includes('/chat')) {
       chat.handleUpgrade(request, socket, head, function done(ws) {
         chat.emit('connection', ws, request);
       });
-    } else if (pathname === '/editor') {
+    } else if (pathname.includes('/editor')) {
       editor.handleUpgrade(request, socket, head, function done(ws) {
         editor.emit('connection', ws, request);
       });

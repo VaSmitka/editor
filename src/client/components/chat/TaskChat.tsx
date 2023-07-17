@@ -6,7 +6,7 @@ import { BaseCol } from '../common/BaseCol/BaseCol';
 import { BaseMessage, PositionType } from '../common/BaseMessage/BaseMessage';
 import { BaseForm } from '../common/forms/BaseForm/BaseForm';
 import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
-import { doCreateMessage, doGetMessagesByLessonId } from '@app/store/slices/messageSlice';
+import { doCreateMessage, doGetMessagesBySpaceId } from '@app/store/slices/messageSlice';
 import { notificationController } from '@app/controllers/notificationController';
 import { useParams } from 'react-router-dom';
 import { Message } from '@app/api/messages.api';
@@ -32,17 +32,17 @@ interface MessageRender {
 
 const TaskChat: React.FC<TaskChatProps> = ({ isCollapsed }) => {
   //Public API that will echo messages sent to it back to the client
-  const [socketUrl, setSocketUrl] = useState('ws://localhost:3030/chat');
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
   const dispatch = useAppDispatch();
   const [form] = BaseForm.useForm();
   const [messageRender, setMessageRender] = useState<MessageRender[]>([]);
   const user = useAppSelector((state) => state.user.user);
-  const { lessonId } = useParams();
+  const { studentId, lessonId } = useParams();
   const bottomRef = useRef(null);
   // const { t } = useTranslation();
   const initialFromValue = { text: '' };
-
+  
+  const socketUrl = `ws://localhost:3030/chat/?token=s${studentId}l${lessonId}`;
+  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
 
   useEffect(() => {
     if (lastMessage !== null) {
@@ -61,7 +61,7 @@ const TaskChat: React.FC<TaskChatProps> = ({ isCollapsed }) => {
 
   useEffect(() => {
     if (lessonId) {
-      dispatch(doGetMessagesByLessonId(lessonId))
+      dispatch(doGetMessagesBySpaceId(studentId+lessonId))
         .unwrap()
         .then((results: Message[]) => {
           setMessageRender(results.map(elm => ({
@@ -85,6 +85,7 @@ const TaskChat: React.FC<TaskChatProps> = ({ isCollapsed }) => {
 
   const handleSubmit = (value: FormData) => {
     const newMessage = {
+      space_id: Number(studentId!+lessonId!),
       text: value.text,
       lesson_id: Number(lessonId),
     }
