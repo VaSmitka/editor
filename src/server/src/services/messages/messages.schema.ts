@@ -15,7 +15,7 @@ export const messageSchema = Type.Object(
     text: Type.String(),
     author_id: Type.Number(),
     lesson_id: Type.Number(),
-    createdAt: Type.Number(),
+    created_at: Type.Number(),
     user: Type.Ref(userSchema),
     lesson: Type.Ref(lessonsSchema)
   },
@@ -47,7 +47,7 @@ export const messageDataResolver = resolve<Message, HookContext>({
     // Associate the record with the id of the authenticated user
     return context.params.user.id
   },
-  createdAt: async () => {
+  created_at: async () => {
     return Date.now()
   }
 })
@@ -61,14 +61,14 @@ export const messagePatchValidator = getValidator(messagePatchSchema, dataValida
 export const messagePatchResolver = resolve<Message, HookContext>({})
 
 // Schema for allowed query properties
-export const messageQueryProperties = Type.Pick(messageSchema, ['id', 'text', 'createdAt', 'author_id', 'lesson_id'])
+export const messageQueryProperties = Type.Pick(messageSchema, ['id', 'text', 'created_at', 'author_id', 'lesson_id'])
 export const messageQuerySchema = Type.Intersect(
   [
     querySyntax(messageQueryProperties),
     // Add additional query properties here
-    Type.Object({}, { additionalProperties: false })
+    Type.Object({}, { additionalProperties: true })
   ],
-  { additionalProperties: false }
+  { additionalProperties: true }
 )
 export type MessageQuery = Static<typeof messageQuerySchema>
 export const messageQueryValidator = getValidator(messageQuerySchema, queryValidator)

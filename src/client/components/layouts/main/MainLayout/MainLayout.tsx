@@ -9,6 +9,8 @@ import { DASHBOARD_PATH } from '@app/components/router/AppRouter';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { References } from '@app/components/common/References/References';
 import ChatSider from '@app/components/chat/ChatSider';
+import { useAppSelector } from '@app/hooks/reduxHooks';
+import { Role } from '@app/api/auth.api';
 
 const MainLayout: React.FC = () => {
   const [isTwoColumnsLayout, setIsTwoColumnsLayout] = useState(true);
@@ -16,6 +18,7 @@ const MainLayout: React.FC = () => {
   const [siderCollapsed, setSiderCollapsed] = useState(false);
   const [chatSiderCollapsed, setChatSiderCollapsed] = useState(false);
   const { isDesktop } = useResponsive();
+  const user = useAppSelector((state) => state.user.user);
   const location = useLocation();
 
   const toggleSider = () => setSiderCollapsed(!siderCollapsed);
@@ -23,7 +26,7 @@ const MainLayout: React.FC = () => {
   useEffect(() => {
     setIsTwoColumnsLayout([DASHBOARD_PATH].includes(location.pathname) && isDesktop);
     
-    setIsStudentLesson(location.pathname.includes('student') && location.pathname.includes('lesson'))
+    setIsStudentLesson((location.pathname.includes('student') && location.pathname.includes('lesson')) || user!.role === Role.student)
   }, [location.pathname, isDesktop]);
 
   return (

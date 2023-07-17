@@ -39,6 +39,7 @@
     "html-react-parser": "^4.0.0",
     "i18next": "^22.5.1",
     "json0-ot-diff": "^1.1.2",
+    "moment": "^2.29.4",
     "nanoid": "^4.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

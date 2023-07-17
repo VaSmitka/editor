@@ -7,10 +7,13 @@ import reportWebVitals from './reportWebVitals';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import './config/config';
 import { store } from '@app/store/store';
+import moment from 'moment';
 
 interface EventTarget {
   state?: 'activated';
 }
+
+moment.locale('cs')
 
 const container = document.getElementById('root') as HTMLElement;
 const root = createRoot(container);

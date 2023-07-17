@@ -72,6 +72,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string('text')
     table.bigint('author_id').notNullable().unsigned().references('users.id')
     table.bigint('lesson_id').notNullable().unsigned().references('lessons.id')
+    table.timestamp('created_at').defaultTo(knex.raw('CURRENT_TIMESTAMP'))
   })
 }
 

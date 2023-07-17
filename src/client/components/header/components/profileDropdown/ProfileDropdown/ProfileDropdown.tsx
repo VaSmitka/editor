@@ -16,7 +16,7 @@ export const ProfileDropdown: React.FC = () => {
   return user ? (
     <BasePopover content={<ProfileOverlay />} trigger="click">
       <S.ProfileDropdownHeader as={BaseRow} align="middle">
-        <BaseCol>
+        <BaseCol style={{marginRight: '1rem'}}>
           <BaseAvatar src={user.imgUrl} alt="User" shape="circle" size={40} />
         </BaseCol>
         {isTablet && (

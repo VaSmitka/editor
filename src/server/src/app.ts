@@ -19,6 +19,7 @@ import { mailer } from './mailer'
 import { authentication } from './authentication'
 import { services } from './services/index'
 import { channels } from './channels'
+import { logError } from './hooks/log-error'
 import ShareDB from 'sharedb'
 // This file is the central point where the OT types are imported.
 // Localized to one file so it's easy to change it in future.
@@ -70,7 +71,9 @@ app.use(errorHandler({ logger }))
 
 // Register hooks that run on all service methods
 app.hooks({
-  around: {},
+  around: {
+    all: [logError]
+  },
   before: {},
   after: {},
   error: {}

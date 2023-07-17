@@ -7,6 +7,7 @@ import { BaseLayout } from '@app/components/common/BaseLayout/BaseLayout';
 import { BaseRow } from '../common/BaseRow/BaseRow';
 import { BaseCard } from '../common/BaseCard/BaseCard';
 import { BaseInput } from '../common/inputs/BaseInput/BaseInput';
+import { BaseForm } from '../common/forms/BaseForm/BaseForm';
 
 export const Sider = styled(BaseLayout.Sider)`
   position: fixed;
@@ -117,9 +118,14 @@ export const ChatBox = styled(BaseRow)`
   flex-grow: 1;
 `
 
-export const ChatToolbox = styled(BaseRow)`
+export const ChatToolbox = styled(BaseForm)`
+  display: flex;
   column-gap: 1rem;
   margin: 1rem 0;
+`
+
+export const Item = styled(BaseForm.Item)`
+  margin-bottom: 1rem; 
 `
 
 export const Card = styled(BaseCard)`
@@ -135,7 +141,6 @@ export const Card = styled(BaseCard)`
 `
 
 export const Textarea = styled(BaseInput.TextArea)`
-  margin-bottom: 1rem;
   background-color: var(--background-color) !important; 
 `
 

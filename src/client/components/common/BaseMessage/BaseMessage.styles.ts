@@ -30,6 +30,7 @@ export const Wrapper = styled.div<{ $type: PositionType }>`
     props.$type === PositionType.left ?
     css`
       margin-right: 20%;
+      border: 1px solid var(--primary-color);
     ` : css`
       margin-left: 20%;
     `}

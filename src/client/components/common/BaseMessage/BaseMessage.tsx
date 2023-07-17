@@ -1,6 +1,7 @@
 import React from 'react';
 import { BaseHashTag, IHashTag } from '../BaseHashTag/BaseHashTag';
 import * as S from './BaseMessage.styles';
+import { Moment } from 'moment';
 
 export enum PositionType {
   left='left',
@@ -9,7 +10,7 @@ export enum PositionType {
 
 export interface BaseBaseMessageProps {
   author?: React.ReactNode;
-  date: Date;
+  date: Moment;
   description: string;
   tags?: IHashTag[];
   className?: string;
@@ -29,7 +30,7 @@ export const BaseMessage: React.FC<BaseBaseMessageProps> = ({
       <S.Header>
         <S.AuthorWrapper>
           <S.Author>{author}</S.Author>
-          <S.DateTime>{date.toDateString()}</S.DateTime>
+          <S.DateTime>{date.format('D.M.YYYY HH:m')}</S.DateTime>
         </S.AuthorWrapper>
       </S.Header>
       <S.InfoWrapper>
