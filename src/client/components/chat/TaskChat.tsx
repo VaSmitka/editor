@@ -32,7 +32,7 @@ const TaskChat: React.FC<TaskChatProps> = ({ isCollapsed, ...props }) => {
                 />
             </S.Card>
         </S.ChatBox>
-        <S.ChatToolbox>
+        { !isCollapsed && <S.ChatToolbox>
             <BaseCol style={{flexGrow:1}}>
                 <S.Textarea rows={4} />
                 <S.ModifyButton>Přilož odkaz na kód</S.ModifyButton>            
@@ -40,7 +40,7 @@ const TaskChat: React.FC<TaskChatProps> = ({ isCollapsed, ...props }) => {
             <BaseCol>
                 <S.Submit type='primary'>Odeslat</S.Submit>
             </BaseCol>
-        </S.ChatToolbox>
+        </S.ChatToolbox> }
     </>
   );
 };

@@ -12,6 +12,7 @@ import ChatSider from '@app/components/chat/ChatSider';
 
 const MainLayout: React.FC = () => {
   const [isTwoColumnsLayout, setIsTwoColumnsLayout] = useState(true);
+  const [isStudentLesson, setIsStudentLesson] = useState(true);
   const [siderCollapsed, setSiderCollapsed] = useState(false);
   const [chatSiderCollapsed, setChatSiderCollapsed] = useState(false);
   const { isDesktop } = useResponsive();
@@ -21,6 +22,8 @@ const MainLayout: React.FC = () => {
 
   useEffect(() => {
     setIsTwoColumnsLayout([DASHBOARD_PATH].includes(location.pathname) && isDesktop);
+    
+    setIsStudentLesson(location.pathname.includes('student') && location.pathname.includes('lesson'))
   }, [location.pathname, isDesktop]);
 
   return (
@@ -37,7 +40,7 @@ const MainLayout: React.FC = () => {
             </div>
             {!isTwoColumnsLayout && <References />}
           </MainContent>
-          <ChatSider isCollapsed={chatSiderCollapsed} setCollapsed={setChatSiderCollapsed}/>
+          {isStudentLesson && <ChatSider isCollapsed={chatSiderCollapsed} setCollapsed={setChatSiderCollapsed}/>}
         </S.LayoutMain>
       </S.LayoutMain>
     </S.LayoutMaster>

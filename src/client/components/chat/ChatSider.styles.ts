@@ -136,6 +136,7 @@ export const Card = styled(BaseCard)`
 
 export const Textarea = styled(BaseInput.TextArea)`
   margin-bottom: 1rem;
+  background-color: var(--background-color) !important; 
 `
 
 export const ModifyButton = styled(BaseButton)`
