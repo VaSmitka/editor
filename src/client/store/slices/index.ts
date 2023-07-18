@@ -6,6 +6,7 @@ import pwaReducer from '@app/store/slices/pwaSlice';
 import courseReducer from '@app/store/slices/courseSlice';
 import lessonReducer from '@app/store/slices/lessonSlice';
 import messageReducer from '@app/store/slices/messageSlice';
+import editorReducer from '@app/store/slices/editorSlice';
 
 export default {
   user: userReducer,
@@ -15,5 +16,6 @@ export default {
   pwa: pwaReducer,
   course: courseReducer,
   lesson: lessonReducer,
-  message: messageReducer
+  message: messageReducer,
+  editor: editorReducer
 };

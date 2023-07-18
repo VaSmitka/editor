@@ -8,6 +8,7 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import './config/config';
 import { store } from '@app/store/store';
 import moment from 'moment';
+import { EditorProvider } from './store/editorContect';
 
 interface EventTarget {
   state?: 'activated';
@@ -21,7 +22,9 @@ const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <EditorProvider>
+        <App />
+      </EditorProvider>
     </Provider>
   </React.StrictMode>,
 );

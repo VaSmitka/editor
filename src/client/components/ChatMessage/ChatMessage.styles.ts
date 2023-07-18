@@ -1,7 +1,7 @@
 import styled, { css }  from 'styled-components';
 import { BORDER_RADIUS, FONT_SIZE, FONT_WEIGHT, media } from '@app/styles/themes/constants';
-import { BaseTypography } from '../BaseTypography/BaseTypography';
-import { PositionType } from './BaseMessage';
+import { BaseTypography } from '../common/BaseTypography/BaseTypography';
+import { PositionType } from './ChatMessage';
 
 export const Header = styled.div`
   display: flex;

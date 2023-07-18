@@ -118,7 +118,7 @@ export const ChatBox = styled(BaseRow)`
   flex-grow: 1;
 `
 
-export const ChatToolbox = styled(BaseForm)`
+export const ChatToolbox = styled(BaseRow)`
   display: flex;
   column-gap: 1rem;
   margin: 1rem 0;

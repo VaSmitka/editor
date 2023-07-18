@@ -3,7 +3,7 @@ import useWebSocket, { ReadyState } from 'react-use-websocket';
 import moment, { Moment } from 'moment';
 import * as S from './ChatSider.styles';
 import { BaseCol } from '../common/BaseCol/BaseCol';
-import { BaseMessage, PositionType } from '../common/BaseMessage/BaseMessage';
+import { BaseMessage, PositionType } from '../ChatMessage/ChatMessage';
 import { BaseForm } from '../common/forms/BaseForm/BaseForm';
 import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
 import { doCreateMessage, doGetMessagesBySpaceId } from '@app/store/slices/messageSlice';
@@ -11,14 +11,12 @@ import { notificationController } from '@app/controllers/notificationController'
 import { useParams } from 'react-router-dom';
 import { Message } from '@app/api/messages.api';
 import { nanoid } from '@reduxjs/toolkit';
+import { EditorContext } from '@app/store/editorContect';
+import TextEditor, { EditorType } from '../textEditor/TextEditor';
 // import { useTranslation } from 'react-i18next';
 
 interface TaskChatProps {
   isCollapsed: boolean;
-}
-
-interface FormData {
-  text: string
 }
 
 interface MessageRender {
@@ -30,19 +28,26 @@ interface MessageRender {
   date: Moment
 }
 
+interface MessageText {
+  value: string | undefined;
+}
+
 const TaskChat: React.FC<TaskChatProps> = ({ isCollapsed }) => {
   //Public API that will echo messages sent to it back to the client
   const dispatch = useAppDispatch();
-  const [form] = BaseForm.useForm();
   const [messageRender, setMessageRender] = useState<MessageRender[]>([]);
+  const [messageText, setMessageText] = useState<MessageText>({ value: undefined });
   const user = useAppSelector((state) => state.user.user);
+  const currentEditorId = useAppSelector((state) => state.editor.currentEditorId);
   const { studentId, lessonId } = useParams();
   const bottomRef = useRef(null);
   // const { t } = useTranslation();
-  const initialFromValue = { text: '' };
   
   const socketUrl = `ws://localhost:3030/chat/?token=s${studentId}l${lessonId}`;
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+
+  const {editorViews} = React.useContext(EditorContext)
+  
 
   useEffect(() => {
     if (lastMessage !== null) {
@@ -83,10 +88,30 @@ const TaskChat: React.FC<TaskChatProps> = ({ isCollapsed }) => {
     }
   }, [lessonId])
 
-  const handleSubmit = (value: FormData) => {
+  const handleCodeSelection = () => {
+    //console.log('currentEditorId', currentEditorId)
+    //console.log(view.state.selection.main.from, view.state.selection.main.to);
+    //console.log(
+    //  view.state.sliceDoc(
+    //    view.state.selection.main.from,
+    //    view.state.selection.main.to
+    //  )
+    //);
+        
+    const view = editorViews[currentEditorId!];
+    setMessageText(old => ({value: old.value + `
+      <a href="${currentEditorId};${view.state.selection.main.from};${view.state.selection.main.to}">Odkaz na kód</a>
+    `}))
+  }
+
+  const handleMessageChange = (value: any) => {
+    setMessageText({ value });
+  };
+
+  const handleSubmit = () => {
     const newMessage = {
       space_id: Number(studentId!+lessonId!),
-      text: value.text,
+      text: messageText.value!,
       lesson_id: Number(lessonId),
     }
 
@@ -96,7 +121,7 @@ const TaskChat: React.FC<TaskChatProps> = ({ isCollapsed }) => {
         console.log('Message is sended', result);
         // send websocket info
         sendMessage(JSON.stringify(result))
-        form.resetFields()
+        setMessageText({ value: undefined });
       })
       .catch((_err: { message: any }) => {
         notificationController.error({ message: 'Nelze poslat zprávu' });
@@ -117,18 +142,13 @@ const TaskChat: React.FC<TaskChatProps> = ({ isCollapsed }) => {
               <div ref={bottomRef} />
             </S.Card>
         </S.ChatBox>
-          { !isCollapsed && <S.ChatToolbox form={form} onFinish={handleSubmit} requiredMark="optional" initialValues={initialFromValue} >
+          { !isCollapsed && <S.ChatToolbox>
             <BaseCol style={{flexGrow:1}}>
-                <S.Item
-                  name="text"
-                  rules={[{ required: true, message: 'Zpráva nesmí být prždná' }]}
-                >
-                  <S.Textarea rows={4}/>
-                </S.Item>
-                <S.ModifyButton>Přilož odkaz na kód</S.ModifyButton>            
+                <TextEditor text={messageText.value} changeHandler={handleMessageChange} type={EditorType.TEXTAREA}/>
+                <S.ModifyButton onClick={handleCodeSelection}>Přilož odkaz na kód</S.ModifyButton>            
             </BaseCol>
             <BaseCol>
-                <S.Submit type='primary' htmlType='submit'>Odeslat</S.Submit>
+                <S.Submit type='primary' onClick={handleSubmit}>Odeslat</S.Submit>
             </BaseCol>
         </S.ChatToolbox> }
     </>

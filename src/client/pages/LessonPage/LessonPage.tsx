@@ -21,8 +21,9 @@ import { Placeholder } from '@app/components/Error/Placeholder';
 
 import error404 from '@app/assets/images/error404.svg';
 import { Role } from '@app/api/auth.api';
-import TextEditor from '@app/components/textEditor/TextEditor';
+import TextEditor, { EditorType } from '@app/components/textEditor/TextEditor';
 import parse from 'html-react-parser';
+import { setCurrentEditor } from '@app/store/slices/editorSlice';
 
 interface FilesData {
   htmlFileId: string;
@@ -279,6 +280,7 @@ const LessonPage: React.FC = () => {
     }
 
     // Set initial data.
+    dispatch(setCurrentEditor(fileStructure.htmlFileId))
     setData(fileStructure);
     setIsLoading(false);
   };
@@ -286,7 +288,7 @@ const LessonPage: React.FC = () => {
   const commonTabs = useMemo(
     () => [
       {
-        key: '1',
+        key: 'htmlFileId',
         label: <BaseTooltip title="index.html">HTML</BaseTooltip>,
         children: (
           <S.EditorBox>
@@ -302,7 +304,7 @@ const LessonPage: React.FC = () => {
         ),
       },
       {
-        key: '2',
+        key: 'cssFileId',
         label: <BaseTooltip title="style.css">CSS</BaseTooltip>,
         children: (
           <S.EditorBox>
@@ -318,7 +320,7 @@ const LessonPage: React.FC = () => {
         ),
       },
       {
-        key: '3',
+        key: 'jsFileId',
         label: <BaseTooltip title="index.js">JavaScript</BaseTooltip>,
         children: (
           <S.EditorBox>
@@ -355,6 +357,11 @@ const LessonPage: React.FC = () => {
     setTaskText({ value });
   };
 
+  const handleChangeTab = (activeKey: string) => {
+    // @ts-ignore
+    dispatch(setCurrentEditor(data[activeKey]))
+  }
+
   return loading ? <Loading /> : (
         (user?.role === Role.student && pageData?.status === LessonStatus.SEED) ? (
       <Placeholder img={error404} msg="Cvičení není ještě připravené" />
@@ -376,11 +383,11 @@ const LessonPage: React.FC = () => {
         <p>{pageData?.description}</p>
       </S.Row>
 
-      { (!studentId && user?.role === Role.teacher) && <TextEditor text={taskText.value} changeHandler={handleTaskChange}/> }
+      { (!studentId && user?.role === Role.teacher) && <TextEditor text={taskText.value} changeHandler={handleTaskChange} type={EditorType.RICH}/> }
       {(pageData && (user?.role === Role.student || studentId)) && <S.TaskBox>{parse(pageData.task!)}</S.TaskBox>}
 
       <S.Col>
-        <BaseTabs defaultActiveKey="1" items={commonTabs} />
+        <BaseTabs onChange={handleChangeTab} defaultActiveKey="htmlFileId" items={commonTabs} />
       </S.Col>
 
       <S.Row>

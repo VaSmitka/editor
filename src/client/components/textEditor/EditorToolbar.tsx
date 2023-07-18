@@ -52,7 +52,7 @@ Font.whitelist = [
 Quill.register(Font, true);
 
 // Modules object for setting up the Quill editor
-export const modules = {
+export const modulesRich = {
   toolbar: {
     container: "#toolbar",
     handlers: {
@@ -60,6 +60,15 @@ export const modules = {
       redo: redoChange
     }
   },
+  history: {
+    delay: 500,
+    maxStack: 100,
+    userOnly: true
+  }
+};
+
+export const modulesTextarea = {
+  toolbar: false,
   history: {
     delay: 500,
     maxStack: 100,
