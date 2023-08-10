@@ -24,11 +24,15 @@ import { Role } from '@app/api/auth.api';
 import TextEditor, { EditorType } from '@app/components/textEditor/TextEditor';
 import parse from 'html-react-parser';
 import { setCurrentEditor } from '@app/store/slices/editorSlice';
+// @ts-ignore
+import { PhpWeb as PHP } from 'php-wasm/PhpWeb';
+const php = new PHP;
 
 interface FilesData {
   htmlFileId: string;
   cssFileId: string;
   jsFileId: string;
+  phpFileId: string;
 }
 
 // Register our custom JSON1 OT type that supports presence.
@@ -50,6 +54,7 @@ const LessonPage: React.FC = () => {
   const { pathname } = useLocation();
   const { studentId, lessonId } = useParams();
   const user = useAppSelector((state) => state.user.user);
+  const currentEditorId = useAppSelector((state) => state.editor.currentEditorId);
 
   const [pageData, setPageData] = useState<Lesson>();
   const [taskText, setTaskText] = useState({ value: undefined });
@@ -78,7 +83,12 @@ const LessonPage: React.FC = () => {
     htmlFileId: '',
     cssFileId: '',
     jsFileId: '',
+    phpFileId: ''
   });
+
+  const [PHPData, setPHPData] = useState<string>('');
+  const [resultPHP, setResultPHP] = useState<string>('');
+  const [isPHPReady, setIsPHPReady] = useState(false);
 
   // Since there is only ever a single document,
   // these things are pretty arbitrary.
@@ -150,8 +160,22 @@ const LessonPage: React.FC = () => {
       });
     }
 
+    function handleIsPHPReady() {
+      setIsPHPReady(true)
+    }
+
+    function handleWebAssemblyResult(event) {
+      console.log(event)
+      setResultPHP(event.detail)
+    }
+
+    php.addEventListener('ready', handleIsPHPReady);
+    php.addEventListener('output', handleWebAssemblyResult);
+
     return () => {
       if (pageData) commitLesson(collectionId);
+      php.removeEventListener('ready', handleIsPHPReady);
+      php.removeEventListener('output', handleWebAssemblyResult);
     }
   }, [pathname]);
 
@@ -268,6 +292,7 @@ const LessonPage: React.FC = () => {
       htmlFileId: '',
       cssFileId: '',
       jsFileId: '',
+      phpFileId: ''
     };
 
     for (const [key, value] of Object.entries(shareDBDoc.data)) {
@@ -277,11 +302,14 @@ const LessonPage: React.FC = () => {
       if (value.name.includes('css')) fileStructure.cssFileId = key;
       // @ts-ignore
       if (value.name.includes('js')) fileStructure.jsFileId = key;
+      // @ts-ignore
+      if (value.name.includes('php')) fileStructure.phpFileId = key;
     }
 
     // Set initial data.
     dispatch(setCurrentEditor(fileStructure.htmlFileId))
     setData(fileStructure);
+    setPHPData(shareDBDoc.data[fileStructure.phpFileId].text)
     setIsLoading(false);
   };
 
@@ -335,12 +363,34 @@ const LessonPage: React.FC = () => {
           </S.EditorBox>
         ),
       },
+      {
+        key: 'phpFileId',
+        label: <BaseTooltip title="index.php">PHP</BaseTooltip>,
+        children: (
+          <S.EditorBox>
+            {data && data.phpFileId ? (
+              <CodeEditor
+                shareDBDoc={shareDBDoc}
+                localPresence={localPresence}
+                docPresence={docPresence}
+                activeFileId={data.phpFileId}
+              />
+            ) : null}
+          </S.EditorBox>
+        ),
+      },
     ],
     [data],
   );
 
   const refreshPreview = () => {
-    setiframeKey(oldValue => oldValue + 1)
+    if (currentEditorId === data.phpFileId) {
+      if (isPHPReady) {
+        php.run(PHPData)
+    }
+    } else {
+      setiframeKey(oldValue => oldValue + 1)
+    }
   }
 
   const setFinishButtonType = () => {
@@ -374,7 +424,7 @@ const LessonPage: React.FC = () => {
         <S.Title level={2}>{pageData?.name}</S.Title>
         <BaseButton onClick={() => commitLesson(collectionId)}>Uložit lekci</BaseButton>
         <BaseButton severity={setFinishButtonType()} onClick={() => changeLessonStatus(collectionId)}>{
-          user?.role === Role.teacher ? 'Lekce je připravena' : 'Lekce mám hotovou'
+          user?.role === Role.teacher ? 'Lekce je připravena' : 'Lekci mám hotovou'
         }</BaseButton>
       </S.Row>       
 
@@ -395,7 +445,14 @@ const LessonPage: React.FC = () => {
         <BaseButton onClick={() => refreshPreview()}>Zobrazit</BaseButton>
       </S.Row>
 
-      <S.IFrame key={iframeKey} src={`${previewBaseUrl}${collectionId}/`}/>
+      {
+        currentEditorId !== data.phpFileId ? 
+          <S.IFrame key={iframeKey} src={`${previewBaseUrl}${collectionId}/`}/> 
+          : 
+          <div>
+            {isPHPReady && resultPHP}
+          </div>
+      }
     </>
   )
   );

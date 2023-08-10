@@ -6,6 +6,7 @@ import { markdown } from '@codemirror/lang-markdown';
 import {indentWithTab} from "@codemirror/commands";
 import { html } from '@codemirror/lang-html';
 import { css } from '@codemirror/lang-css';
+import { php } from '@codemirror/lang-php';
 import { oneDark } from '@codemirror/theme-one-dark';
 // @ts-ignore
 import { json1Sync } from 'codemirror-ot';
@@ -59,6 +60,8 @@ export const getOrCreateEditor = ({ fileId, shareDBDoc, localPresence, docPresen
     extensions.push(css());
   } else if (fileExtension === 'md') {
     extensions.push(markdown());
+  } else if (fileExtension === 'php') {
+    extensions.push(php());
   }
 
   let editor = editorCache.get(fileId);
