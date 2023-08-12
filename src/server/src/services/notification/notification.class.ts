@@ -83,7 +83,7 @@ export class NotificationService<ServiceParams extends Params = NotificationPara
 export const getOptions = (app: Application): KnexAdapterOptions & {transport: any} => {
   return {
     paginate: app.get('paginate'),
-    Model: app.get('sqliteClient'),
+    Model: (process.env.NODE_ENV === 'dev') ? app.get('sqliteClient') : app.get('postgresqlClient'),
     name: 'notification',
     transport: app.get('mailerClient')
   }

@@ -82,7 +82,7 @@ export class CoursesService<ServiceParams extends Params = CoursesParams> extend
 export const getOptions = (app: Application): KnexAdapterOptions => {
   return {
     paginate: app.get('paginate'),
-    Model: app.get('sqliteClient'),
+    Model: (process.env.NODE_ENV === 'dev') ? app.get('sqliteClient') : app.get('postgresqlClient'),
     name: 'courses'
   }
 }

@@ -21,7 +21,7 @@ export class MessageService<ServiceParams extends Params = MessageParams> extend
 export const getOptions = (app: Application): KnexAdapterOptions => {
   return {
     paginate: app.get('paginate'),
-    Model: app.get('sqliteClient'),
+    Model: (process.env.NODE_ENV === 'dev') ? app.get('sqliteClient') : app.get('postgresqlClient'),
     name: 'messages'
   }
 }
