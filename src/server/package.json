@@ -64,6 +64,7 @@
     "nodemailer": "^6.9.3",
     "nodemailer-express-handlebars": "^6.1.0",
     "sharedb": "^4.0.0",
+    "sharedb-client-browser": "^4.2.1",
     "sqlite3": "^5.1.6",
     "winston": "^3.9.0",
     "ws": "^8.13.0"
