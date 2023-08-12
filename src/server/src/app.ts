@@ -50,7 +50,7 @@ app.use(urlencoded({ extended: true }))
 app.use('/', serveStatic(app.get('public')))
 // Configure services and real-time functionality
 app.configure(rest())
-if (process.env.DEV) {
+if (process.env.NODE_ENV === 'dev') {
   app.configure(sqlite)
 } else {
   app.configure(postgresql)
