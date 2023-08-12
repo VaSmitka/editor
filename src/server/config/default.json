@@ -15,6 +15,9 @@
     "connection": "Featherjs",
     "useNullAsDefault": true
   },
+  "postgresql": {
+    "client": "pg"
+  },
   "authentication": {
     "entity": "user",
     "service": "users",

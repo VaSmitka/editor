@@ -14,6 +14,7 @@ import type { Application } from './declarations'
 import { configurationValidator } from './configuration'
 import { logger } from './logger'
 import { sqlite } from './sqlite'
+import { postgresql } from './postgre'
 import { mailer } from './mailer'
 import { authentication } from './authentication'
 import { services } from './services/index'
@@ -49,7 +50,11 @@ app.use(urlencoded({ extended: true }))
 app.use('/', serveStatic(app.get('public')))
 // Configure services and real-time functionality
 app.configure(rest())
-app.configure(sqlite)
+if (process.env.DEV) {
+  app.configure(sqlite)
+} else {
+  app.configure(postgresql)
+}
 app.configure(mailer)
 app.configure(authentication)
 app.configure(services)
