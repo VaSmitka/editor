@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 import { ApiError } from '@app/api/ApiError';
 import { readToken } from '@app/services/localStorage.service';
 
-const htmlProtocol = import.meta.env.VITE_ENV === 'prod' ? 'http' : 'https'
+const htmlProtocol = import.meta.env.VITE_ENV === 'prod' ? 'https' : 'http'
 
 export interface Response<T> {
   total: number;

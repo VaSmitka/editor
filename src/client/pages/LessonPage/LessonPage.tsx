@@ -46,7 +46,7 @@ const wsProtocol = import.meta.env.VITE_ENV === 'prod' ? 'wss' : 'ws'
 const socket = new WebSocket(`${wsProtocol}://${import.meta.env.VITE_REACT_APP_BASE_HOST}/editor`);
 const connection = new Connection(socket);
 
-const htmlProtocol = import.meta.env.VITE_ENV === 'prod' ? 'http' : 'https'
+const htmlProtocol = import.meta.env.VITE_ENV === 'prod' ? 'https' : 'http'
 const previewBaseUrl = `${htmlProtocol}://${import.meta.env.VITE_REACT_APP_BASE_HOST}/studentDirectory/`
 
 const LessonPage: React.FC = () => {
