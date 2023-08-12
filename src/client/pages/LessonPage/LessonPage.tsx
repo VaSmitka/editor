@@ -87,7 +87,7 @@ const LessonPage: React.FC = () => {
   });
 
   const [PHPData, setPHPData] = useState<string>('');
-  const [resultPHP, setResultPHP] = useState<string>('');
+  const [resultPHP, setResultPHP] = useState<string[]>([]);
   const [isPHPReady, setIsPHPReady] = useState(false);
 
   // Since there is only ever a single document,
@@ -164,9 +164,8 @@ const LessonPage: React.FC = () => {
       setIsPHPReady(true)
     }
 
-    function handleWebAssemblyResult(event) {
-      console.log(event)
-      setResultPHP(event.detail)
+    function handleWebAssemblyResult(event: { detail: ConcatArray<string>; }) {
+      setResultPHP(old => old.concat(event.detail))
     }
 
     php.addEventListener('ready', handleIsPHPReady);
@@ -307,7 +306,6 @@ const LessonPage: React.FC = () => {
     }
 
     // Set initial data.
-    dispatch(setCurrentEditor(fileStructure.htmlFileId))
     setData(fileStructure);
     setPHPData(shareDBDoc.data[fileStructure.phpFileId].text)
     setIsLoading(false);
@@ -386,6 +384,7 @@ const LessonPage: React.FC = () => {
   const refreshPreview = () => {
     if (currentEditorId === data.phpFileId) {
       if (isPHPReady) {
+        setResultPHP([]);
         php.run(PHPData)
     }
     } else {
@@ -412,6 +411,7 @@ const LessonPage: React.FC = () => {
     dispatch(setCurrentEditor(data[activeKey]))
   }
 
+  console.log(currentEditorId, data.phpFileId, isPHPReady, resultPHP)
   return loading ? <Loading /> : (
         (user?.role === Role.student && pageData?.status === LessonStatus.SEED) ? (
       <Placeholder img={error404} msg="Cvičení není ještě připravené" />
@@ -449,9 +449,9 @@ const LessonPage: React.FC = () => {
         currentEditorId !== data.phpFileId ? 
           <S.IFrame key={iframeKey} src={`${previewBaseUrl}${collectionId}/`}/> 
           : 
-          <div>
-            {isPHPReady && resultPHP}
-          </div>
+          <S.ConsoleBox>
+            {isPHPReady && resultPHP.map((row, index) => <p key={index}>{row}</p>)}
+          </S.ConsoleBox>
       }
     </>
   )

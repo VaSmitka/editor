@@ -1,10 +1,9 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
-import useWebSocket, { ReadyState } from 'react-use-websocket';
+import React, { useState, useEffect, useRef } from 'react';
+import useWebSocket from 'react-use-websocket';
 import moment, { Moment } from 'moment';
 import * as S from './ChatSider.styles';
 import { BaseCol } from '../common/BaseCol/BaseCol';
 import { BaseMessage, PositionType } from '../ChatMessage/ChatMessage';
-import { BaseForm } from '../common/forms/BaseForm/BaseForm';
 import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
 import { doCreateMessage, doGetMessagesBySpaceId } from '@app/store/slices/messageSlice';
 import { notificationController } from '@app/controllers/notificationController';
@@ -44,7 +43,7 @@ const TaskChat: React.FC<TaskChatProps> = ({ isCollapsed }) => {
   // const { t } = useTranslation();
   
   const socketUrl = `ws://localhost:3030/chat/?token=s${studentId}l${lessonId}`;
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+  const { sendMessage, lastMessage } = useWebSocket(socketUrl);
 
   const {editorViews} = React.useContext(EditorContext)
   

@@ -40,3 +40,11 @@ export const TaskBox = styled.div`
     margin-left: 2rem;
   }
 `
+
+export const ConsoleBox = styled.div`
+  height: 600px;
+  background-color: #282c34;
+  overflow: scroll;
+  color: white;
+  padding: 0.5rem;
+`
