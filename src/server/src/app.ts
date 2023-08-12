@@ -50,6 +50,8 @@ app.use(urlencoded({ extended: true }))
 app.use('/', serveStatic(app.get('public')))
 // Configure services and real-time functionality
 app.configure(rest())
+
+require('dotenv').config();
 if (process.env.NODE_ENV === 'dev') {
   app.configure(sqlite)
 } else {

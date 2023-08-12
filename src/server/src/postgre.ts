@@ -10,10 +10,8 @@ declare module './declarations' {
 }
 
 export const postgresql = (app: Application) => {
-  const config = app.get('postgresql')
-
   const db = knex({
-    ...config!,
+    client: 'pg',
     connection: {
         host: process.env.DB_HOST,
         port: Number(process.env.DB_PORT),
