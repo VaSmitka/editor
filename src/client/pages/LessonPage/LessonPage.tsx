@@ -42,7 +42,7 @@ ShareDBClient.types.register(json1Presence.type);
 // Establish the singleton ShareDB connection over WebSockets.
 // TODO consider using reconnecting WebSocket
 const { Connection } = ShareDBClient;
-const socket = new WebSocket('ws://localhost:3030/editor');
+const socket = new WebSocket(`ws://${import.meta.env.VITE_REACT_APP_BASE_URL}/editor`);
 const connection = new Connection(socket);
 
 const previewBaseUrl = `${import.meta.env.VITE_REACT_APP_BASE_URL}/studentDirectory/`

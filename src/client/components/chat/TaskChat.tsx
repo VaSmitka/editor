@@ -42,7 +42,7 @@ const TaskChat: React.FC<TaskChatProps> = ({ isCollapsed }) => {
   const bottomRef = useRef(null);
   // const { t } = useTranslation();
   
-  const socketUrl = `ws://localhost:3030/chat/?token=s${studentId}l${lessonId}`;
+  const socketUrl = `ws://${import.meta.env.VITE_REACT_APP_BASE_URL}/chat/?token=s${studentId}l${lessonId}`;
   const { sendMessage, lastMessage } = useWebSocket(socketUrl);
 
   const {editorViews} = React.useContext(EditorContext)

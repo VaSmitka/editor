@@ -10,6 +10,7 @@ const config = (process.env.NODE_ENV === 'dev') ? app.get('sqlite') : {
             user: process.env.DB_USER,
             database: process.env.DB_NAME,
             password: process.env.DB_PASSWORD,
+            ssl: { rejectUnauthorized: false }
         },
         useNullAsDefault: true
     }  
