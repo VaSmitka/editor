@@ -41,8 +41,8 @@ const TaskChat: React.FC<TaskChatProps> = ({ isCollapsed }) => {
   const { studentId, lessonId } = useParams();
   const bottomRef = useRef(null);
   // const { t } = useTranslation();
-  
-  const socketUrl = `ws://${import.meta.env.VITE_REACT_APP_BASE_URL}/chat/?token=s${studentId}l${lessonId}`;
+  const protocol = import.meta.env.VITE_ENV === 'prod' ? 'wss' : 'ws'
+  const socketUrl = `${protocol}://${import.meta.env.VITE_REACT_APP_BASE_URL}/chat/?token=s${studentId}l${lessonId}`;
   const { sendMessage, lastMessage } = useWebSocket(socketUrl);
 
   const {editorViews} = React.useContext(EditorContext)
