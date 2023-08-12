@@ -3,6 +3,8 @@ import { AxiosError } from 'axios';
 import { ApiError } from '@app/api/ApiError';
 import { readToken } from '@app/services/localStorage.service';
 
+const htmlProtocol = import.meta.env.VITE_ENV === 'prod' ? 'http' : 'https'
+
 export interface Response<T> {
   total: number;
   limit: number;
@@ -11,7 +13,7 @@ export interface Response<T> {
 }
 
 export const httpApi = axios.create({
-  baseURL: import.meta.env.VITE_REACT_APP_BASE_URL,
+  baseURL: htmlProtocol + "://" + import.meta.env.VITE_REACT_APP_BASE_HOST,
 });
 
 httpApi.interceptors.request.use((config) => {

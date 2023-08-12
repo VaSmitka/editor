@@ -33,6 +33,8 @@ const server = app.listen(port).then((server) => {
   
   editor.on('connection', function connection(ws) {
     shareDBBackend.listen(new WebSocketJSONStream(ws))
+
+    ws.on('error', console.error);
   });
   
   server.on('upgrade', function upgrade(request, socket, head) {

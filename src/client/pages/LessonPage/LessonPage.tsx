@@ -42,11 +42,12 @@ ShareDBClient.types.register(json1Presence.type);
 // Establish the singleton ShareDB connection over WebSockets.
 // TODO consider using reconnecting WebSocket
 const { Connection } = ShareDBClient;
-const protocol = import.meta.env.VITE_ENV === 'prod' ? 'wss' : 'ws'
-const socket = new WebSocket(`${protocol}://${import.meta.env.VITE_REACT_APP_BASE_URL}/editor`);
+const wsProtocol = import.meta.env.VITE_ENV === 'prod' ? 'wss' : 'ws'
+const socket = new WebSocket(`${wsProtocol}://${import.meta.env.VITE_REACT_APP_BASE_HOST}/editor`);
 const connection = new Connection(socket);
 
-const previewBaseUrl = `${import.meta.env.VITE_REACT_APP_BASE_URL}/studentDirectory/`
+const htmlProtocol = import.meta.env.VITE_ENV === 'prod' ? 'http' : 'https'
+const previewBaseUrl = `${htmlProtocol}://${import.meta.env.VITE_REACT_APP_BASE_HOST}/studentDirectory/`
 
 const LessonPage: React.FC = () => {
   // const { t } = useTranslation();
