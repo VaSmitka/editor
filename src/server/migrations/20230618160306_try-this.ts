@@ -61,10 +61,12 @@ export async function up(knex: Knex): Promise<void> {
 
   await knex.schema.createTable('notification', (table) => {
     table.increments('id').primary()
-    table.bigint('toId').notNullable()
     table.string('type').notNullable()
     table.string('text', 1000).nullable()
-    table.string('lesson_id').nullable()
+    
+    table.bigint('toId').notNullable().unsigned().references('users.id')
+    table.string('lesson_id').nullable().unsigned().references('lessons.id')
+    
     table.timestamp('created_at').defaultTo(knex.raw('CURRENT_TIMESTAMP'))
   })
 

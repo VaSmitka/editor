@@ -72,7 +72,7 @@ export class NotificationService<ServiceParams extends Params = NotificationPara
         toId: data.toId,
         lesson_id: data.lesson_id,
         type: data.type,
-        error: err?.response
+        text: ""
       }).into('notification')
     });
 

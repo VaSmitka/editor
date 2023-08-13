@@ -12,9 +12,10 @@ export const notificationSchema = Type.Object(
   {
     id: Type.Number(),
     toId: Type.Number(),
-    lesson_id: Type.Optional(Type.Number()),
     type: StringEnum(NotificationTypes),
-    error: Type.String()
+    text: Type.String(),
+    lesson_id: Type.Optional(Type.Number()),
+    created_at: Type.Number(),
   },
   { $id: 'Notification', additionalProperties: false }
 )
