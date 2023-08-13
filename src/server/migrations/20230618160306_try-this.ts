@@ -2,7 +2,7 @@ import { Knex } from 'knex'
 
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('users', (table) => {
-    table.increments('id')
+    table.increments('id').primary()
     table.string('firstName')
     table.string('lastName')
     table.string('email').unique()
@@ -60,15 +60,16 @@ export async function up(knex: Knex): Promise<void> {
   })
 
   await knex.schema.createTable('notification', (table) => {
-    table.increments('id')
+    table.increments('id').primary()
     table.bigint('toId').notNullable()
     table.string('type').notNullable()
     table.string('text').nullable()
     table.string('lesson_id').nullable()
+    table.timestamp('created_at').defaultTo(knex.raw('CURRENT_TIMESTAMP'))
   })
 
   await knex.schema.createTable('messages', (table) => {
-    table.increments('id')
+    table.increments('id').primary()
     table.integer('space_id')
     table.string('text')
     table.bigint('author_id').notNullable().unsigned().references('users.id')

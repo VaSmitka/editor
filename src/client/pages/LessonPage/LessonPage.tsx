@@ -309,8 +309,8 @@ const LessonPage: React.FC = () => {
 
     // Set initial data.
     setData(fileStructure);
-    setPHPData(shareDBDoc.data[fileStructure.phpFileId].text)
     setIsLoading(false);
+    if (shareDBDoc.data[fileStructure.phpFileId]) setPHPData(shareDBDoc.data[fileStructure.phpFileId].text)
   };
 
   const commonTabs = useMemo(
