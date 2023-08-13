@@ -3,7 +3,7 @@ import { app } from './src/app'
 
 // Load our database connection info from the app configuration
 const config = (process.env.NODE_ENV === 'dev') ? app.get('sqlite') : {
-        ...app.get('postgresql')!,
+        client: 'pg',
         connection: {
             host: process.env.DB_HOST,
             port: Number(process.env.DB_PORT),

@@ -47,9 +47,6 @@ export const messageDataResolver = resolve<Message, HookContext>({
   author_id: async (_value, _message, context) => {
     // Associate the record with the id of the authenticated user
     return context.params.user.id
-  },
-  created_at: async () => {
-    return Date.now()
   }
 })
 

@@ -9,7 +9,6 @@ const initialState: EditorReduxState = {
 };
 
 export const setCurrentEditor = createAction<PrepareAction<string>>('editor/setCurrentEditor', (editorId: string) => {
-  console.log('ho do this')
   return {
     payload: editorId
   };

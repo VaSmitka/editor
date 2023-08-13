@@ -3,11 +3,11 @@ import { Knex } from 'knex'
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('users', (table) => {
     table.increments('id').primary()
-    table.string('firstName')
-    table.string('lastName')
-    table.string('email').unique()
-    table.string('password')
-    table.string('role')
+    table.string('firstName').notNullable()
+    table.string('lastName').notNullable()
+    table.string('email').unique().notNullable()
+    table.string('password').notNullable()
+    table.string('role').notNullable()
     table.string('avatar').nullable()
 
     table.timestamp('created_at').defaultTo(knex.raw('CURRENT_TIMESTAMP'))
@@ -29,7 +29,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string('name').notNullable()
     table.string('description').notNullable()
     table.string('status').notNullable()
-    table.string('task').nullable()
+    table.string('task', 3000).nullable()
 
     table.bigint('creator').notNullable().unsigned().references('users.id')
     table.bigint('course_id').notNullable().unsigned().references('courses.id')
@@ -63,15 +63,15 @@ export async function up(knex: Knex): Promise<void> {
     table.increments('id').primary()
     table.bigint('toId').notNullable()
     table.string('type').notNullable()
-    table.string('text').nullable()
+    table.string('text', 1000).nullable()
     table.string('lesson_id').nullable()
     table.timestamp('created_at').defaultTo(knex.raw('CURRENT_TIMESTAMP'))
   })
 
   await knex.schema.createTable('messages', (table) => {
     table.increments('id').primary()
-    table.integer('space_id')
-    table.string('text')
+    table.integer('space_id').notNullable()
+    table.string('text', 1000).notNullable()
     table.bigint('author_id').notNullable().unsigned().references('users.id')
     table.bigint('lesson_id').notNullable().unsigned().references('lessons.id')
     table.timestamp('created_at').defaultTo(knex.raw('CURRENT_TIMESTAMP'))

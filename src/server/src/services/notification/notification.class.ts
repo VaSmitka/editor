@@ -49,7 +49,7 @@ export class NotificationService<ServiceParams extends Params = NotificationPara
     if (data.type === MailTypes.STUDENT_CREATED) {
       message.subject = 'Vzdělávací platforma - Vítej u Nás!'
       message.context ={
-        loginUrl: `http://${process.env.domain}/auth/login`
+        loginUrl: `${process.env.domain}/auth/login`
       }
     }
     if (data.type === MailTypes.TASK_DONE) {
@@ -59,7 +59,7 @@ export class NotificationService<ServiceParams extends Params = NotificationPara
       message.context = {
         studentName: lesson[0].name,
         lessonName: `${user[0].firsName} ${user[0].lastName}`,
-        loginUrl: `http://${process.env.domain}/student/${user[0].id}/lesson/${lesson[0].id}`
+        loginUrl: `${process.env.domain}/student/${user[0].id}/lesson/${lesson[0].id}`
     }
     }
 

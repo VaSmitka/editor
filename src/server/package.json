@@ -37,6 +37,8 @@
     "mocha": "cross-env NODE_ENV=test mocha test/ --require ts-node/register --recursive --extension .ts --exit",
     "test": "cross-env NODE_ENV=test npm run migrate && npm run mocha",
     "bundle:client": "npm run compile && npm pack --pack-destination ./public",
+    "migrate:up": "knex migrate:up",
+    "migrate:down": "knex migrate:down",
     "migrate": "knex migrate:latest",
     "migrate:make": "knex migrate:make"
   },
