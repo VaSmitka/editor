@@ -148,8 +148,8 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
 
   const handleVisibility = (data: any) => {    
     const requestBody = {
-      lesson_id: data.lesson_id,
-      student_id: data.student_id,
+      lesson_id: Number(data.lesson_id),
+      student_id: Number(data.student_id),
       visibility: data.visibility ? 0 : 1
     }
     
@@ -165,8 +165,8 @@ export const CourseTable: React.FC<CourseTableProps> = ({ courseId, lessonId, ty
 
   const handleEditability = (data: any) => {
     const requestBody = {
-      lesson_id: data.lesson_id,
-      student_id: data.student_id,
+      lesson_id: Number(data.lesson_id),
+      student_id: Number(data.student_id),
       editable: data.editable ? 0 : 1
     }
 
