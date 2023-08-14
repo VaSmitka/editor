@@ -7,7 +7,7 @@ import { doGetCoursesByCreator, doGetCoursesByStudent } from '@app/store/slices/
 import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
 import { notificationController } from '@app/controllers/notificationController';
 import { CourseCreatorData } from '@app/api/course.api';
-import { BlockOutlined, ProfileOutlined } from '@ant-design/icons';
+import { ProfileOutlined } from '@ant-design/icons';
 import { Role } from '@app/api/auth.api';
 
 interface SiderContentProps {
