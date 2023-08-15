@@ -65,7 +65,7 @@ export const SignUpForm: React.FC<SingUpProps> = ({ role }: SingUpProps) => {
 
   return (
     <Auth.FormWrapper>
-      <BaseForm layout="vertical" onFinish={handleSubmit} requiredMark="optional" initialValues={initValues}>
+      <BaseForm layout="vertical" onFinish={handleSubmit} requiredMark="optional">
         <S.Title>{t('common.signUp')}</S.Title>
         <Auth.FormItem
           name="firstName"

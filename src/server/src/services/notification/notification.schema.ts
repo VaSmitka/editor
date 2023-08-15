@@ -27,7 +27,7 @@ export const notificationExternalResolver = resolve<Notification, HookContext>({
 
 // Schema for creating new entries
 export const notificationDataSchema = Type.Pick(notificationSchema, ['toId', 'type', 'lesson_id'], {
-  $id: 'NotificationData'
+  $id: 'NotificationData', additionalProperties: true
 })
 export type NotificationData = Static<typeof notificationDataSchema>
 export const notificationDataValidator = getValidator(notificationDataSchema, dataValidator)

@@ -29,7 +29,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string('name').notNullable()
     table.string('description').notNullable()
     table.string('status').notNullable()
-    table.string('task', 3000).nullable()
+    table.string('task', 5000).nullable()
 
     table.bigint('creator').notNullable().unsigned().references('users.id')
     table.bigint('course_id').notNullable().unsigned().references('courses.id')

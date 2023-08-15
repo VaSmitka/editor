@@ -87,7 +87,7 @@ export class UserHasLessonService<ServiceParams extends Params = UserHasLessonPa
       const creators = await this.Model.select('creator').from('lessons').where({id: data.lesson_id});
       const creator = creators[0].creator
 
-      await this.notificationService.create({toId: creator, lesson_id: data.lesson_id, type: MailTypes.TASK_DONE}, {});
+      await this.notificationService.create({toId: creator, byId: data.student_id, lesson_id: data.lesson_id, type: MailTypes.TASK_DONE}, {});
      }
 
     return updatedItem

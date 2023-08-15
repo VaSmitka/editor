@@ -54,12 +54,13 @@ export class NotificationService<ServiceParams extends Params = NotificationPara
     }
     if (data.type === MailTypes.TASK_DONE) {
       const lesson = await this.Model.from('lessons').where({ id: data.lesson_id })
+      const byUser = await this.Model.from('users').where({ id: data.byId })
 
-      message.subject = `Vzdělávací platforma - Uživatel ${user[0].firstName} ${user[0].lastName} dokončil cvičení ${lesson[0].name}`
+      message.subject = `Vzdělávací platforma - Uživatel ${byUser[0].firstName} ${byUser[0].lastName} dokončil cvičení ${lesson[0].name}`
       message.context = {
-        studentName: lesson[0].name,
-        lessonName: `${user[0].firsName} ${user[0].lastName}`,
-        loginUrl: `${process.env.domain}/student/${user[0].id}/lesson/${lesson[0].id}`
+        studentName: `${byUser[0].firstName} ${byUser[0].lastName}`,
+        lessonName: lesson[0].name,
+        loginUrl: `${process.env.domain}/student/${byUser[0].id}/lesson/${lesson[0].id}`
     }
     }
 
