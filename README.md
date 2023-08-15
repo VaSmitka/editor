@@ -44,6 +44,16 @@ Student part: (after registred by lector)
 3. Work on - writing code
 4. Go out of lesson
 
+### Serverová část
+
+Zdrojové soubory jsou uloženy v adresáři /src/server, kde jsou i bližší informace spuštění.
+
+### SMTP služba pro testování mailové komunikace
+
+url: https://ethereal.email
+email: kaylin96@ethereal.email
+heslo: KBRxYaMK5de47nZaV6
+
 ### Repository
 
 [Github](https://github.com/VaSmitka/learning-platorm)
